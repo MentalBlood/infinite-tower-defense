@@ -22,6 +22,9 @@ void menuKeyPressed()
 		++menuSelectedEntryNumber;
 		menuEntries[menuSelectedEntryNumber].setFillColor(menuSelectedEntryColor);
 	}
+	else
+	if (event.key.code == sf::Keyboard::Return)
+	{ menuFunctions[menuSelectedEntryNumber](); }
 }
 
 void menuMouseButtonPressed()
@@ -38,7 +41,7 @@ void menuMouseMoved()
 		menuEntries[0].setFillColor(menuSelectedEntryColor);
 		return;
 	}
-	
+
 	if (event.mouseMove.y > menuY1 + 6*menuFontSize)
 	{
 		menuEntries[menuSelectedEntryNumber].setFillColor(menuFontColor);
@@ -48,6 +51,7 @@ void menuMouseMoved()
 	}
 
 	int index = int(event.mouseMove.y - menuY1) / (1.5*menuFontSize);
+	if (index == menuSelectedEntryNumber) return;
 	menuEntries[menuSelectedEntryNumber].setFillColor(menuFontColor);
 	menuSelectedEntryNumber = index;
 	menuEntries[index].setFillColor(menuSelectedEntryColor);

@@ -9,22 +9,22 @@ int menuFontSize,
 float menuY1;
 
 sf::Text menuEntries[4];
+void (*menuFunctions[4])();
 
 void updateMenuVariables()
 {
-	menuFontSize = sqrt(windowSize.x*windowSize.y) / 20;
+	menuFontSize = sqrt(windowSize.x * windowSize.y) / 20;
 	menuY1 = float(windowSize.y) / 10;
 	for (int i = 0; i < 4; i++)
 	{
 		menuEntries[i].setCharacterSize(menuFontSize);
-		menuEntries[i].setPosition(sf::Vector2<float>(float(windowSize.x) / 20, menuY1 + i*menuFontSize*1.5));
+		menuEntries[i].setPosition(float(windowSize.x) / 20, menuY1 + i*menuFontSize*1.5);
 	}
 }
 
 void setMenuVariables()
 {
-	if (!menuFont.loadFromFile("fonts/Signal-Regular.otf"))
-		window.close();
+	if (!menuFont.loadFromFile("fonts/Signal-Regular.otf")) Closed();
 
 	updateMenuVariables();
 	
@@ -37,7 +37,11 @@ void setMenuVariables()
 	menuEntries[menuSelectedEntryNumber].setFillColor(menuSelectedEntryColor);
 
 	menuEntries[0].setString("start");
+	menuFunctions[0] = nothing;
 	menuEntries[1].setString("developer mode");
+	menuFunctions[1] = nothing;
 	menuEntries[2].setString("map editor");
+	menuFunctions[2] = startNewMapSettings;
 	menuEntries[3].setString("exit");
+	menuFunctions[3] = Closed;
 }
