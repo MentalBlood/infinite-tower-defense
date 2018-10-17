@@ -49,11 +49,11 @@ void newMapSettingsMouseMoved()
 	{
 		newMapSettings[newMapSettingsSelectedSettingNumber].unselect();
 		newMapSettingsSelectedSettingNumber = newMapSettings.size()-1;
-		newMapSettings[newMapSettingsSelectedSettingNumber].select();
+		newMapSettings[newMapSettings.size()-1].select();
 		return;
 	}
 
-	int index = int(event.mouseMove.y - newMapSettingsY1) / (1.5*newMapSettingsFontSize);
+	int index = int(event.mouseMove.y - newMapSettingsY1) / (6.0/newMapSettings.size()*newMapSettingsFontSize);
 	if (index == newMapSettingsSelectedSettingNumber) return;
 	newMapSettings[newMapSettingsSelectedSettingNumber].unselect();
 	newMapSettingsSelectedSettingNumber = index;
