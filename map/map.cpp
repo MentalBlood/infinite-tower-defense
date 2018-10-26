@@ -27,7 +27,6 @@ class Map
 		std::vector<char> path;
 		std::vector<std::vector<bool> > pathMap;
 
-	public:
 		void createPathMap()
 		{
 			pathMap.resize(mapWidth);
@@ -39,6 +38,14 @@ class Map
 			}
 		}
 
+		void clearPathMap()
+		{
+			for (int i = 0; i < pathMap.size(); i++)
+				for (int j = 0; j < pathMap[i].size(); j++)
+					pathMap[i][j] = 0;
+		}
+
+	public:
 		Map(int width, int height,
 			sf::Color towerCellBordersColor, sf::Color towerCellFillColor, sf::Color cellSelectorColor):
 			x1(0), y1(0), x2(1), y2(0), zoom(1), towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL),
@@ -84,7 +91,6 @@ class Map
 
 		void setTextures(float cellRelativeSize)
 		{
-			printf("setTextures\n");
 			//1 drawing tower cell texture
 			cellTextureSize = 32;
 			realCellTextureSize = cellTextureSize * zoom;
@@ -93,7 +99,6 @@ class Map
 			towerCellRenderTexture.clear(sf::Color(0, 0, 0, 0));
 
 			//1.1 drawing borders
-			printf("drawing borders\n");
 			float cellSize = cellTextureSize * cellRelativeSize;
 			float indent = (cellTextureSize - cellSize) / 2;
 			float bordersThickness = cellSize / 8;
@@ -101,7 +106,6 @@ class Map
 			makeVertexArrayFrame(&borders, indent, indent, cellSize, cellSize, bordersThickness, towerCellBordersColor);
 
 			//1.2 drawing fill
-			printf("drawing fill\n");
 			sf::VertexArray fill;
 			makeVertexArrayQuad(&fill, indent + bordersThickness, indent + bordersThickness,
 								cellSize - 2*bordersThickness, cellSize - 2*bordersThickness,
@@ -112,14 +116,12 @@ class Map
 			towerCellRenderTexture.display();
 
 			//1.3 setting texture to sprite
-			printf("setting texture to sprite\n");
 			if (towerCellTexture) delete towerCellTexture;
 			towerCellTexture = new sf::Texture(towerCellRenderTexture.getTexture());
 			towerCellSprite.setTextureRect(sf::IntRect(0, 0, cellTextureSize, cellTextureSize));
 			towerCellSprite.setTexture(*towerCellTexture);
 
 			//2 drawing path cell texture
-			printf("drawing path cell texture\n");
 			sf::RenderTexture pathCellRenderTexture;
 			if (!pathCellRenderTexture.create(cellTextureSize, cellTextureSize)) Closed();
 
@@ -127,14 +129,12 @@ class Map
 			pathCellRenderTexture.display();
 
 			//setting texture to sprite
-			printf("setting texture to sprite\n");
 			if (pathCellTexture) delete pathCellTexture;
 			pathCellTexture = new sf::Texture(pathCellRenderTexture.getTexture());
 			pathCellSprite.setTextureRect(sf::IntRect(0, 0, cellTextureSize, cellTextureSize));
 			pathCellSprite.setTexture(*pathCellTexture);
 
 			//3 drawing cell selector texture
-			printf("drawing cell selector texture\n");
 			sf::RenderTexture cellSelectorRenderTexture;
 			if (!cellSelectorRenderTexture.create(cellTextureSize, cellTextureSize));
 
@@ -147,12 +147,10 @@ class Map
 			cellSelectorRenderTexture.display();
 
 			//setting texture to sprite
-			printf("setting texture to sprite\n");
 			if (cellSelectorTexture) delete cellSelectorTexture;
 			cellSelectorTexture = new sf::Texture(cellSelectorRenderTexture.getTexture());
 			cellSelectorSprite.setTextureRect(sf::IntRect(0, 0, cellTextureSize, cellTextureSize));
 			cellSelectorSprite.setTexture(*cellSelectorTexture);
-			printf("OK\n");
 		}
 
 		void setPosition(float x, float y)
@@ -302,5 +300,32 @@ class Map
 			pathMap[x2][y2] = true;
 
 			return true;
+		}
+
+		void checkMouseForNewPathCells(float x, float y, bool canStartNewPath)
+		{
+			int selectedCellX = int((x - mapPositionX) / realCellTextureSize),
+				selectedCellY = int((y - mapPositionY) / realCellTextureSize);
+
+			if (selectedCellX == x2)
+			{
+				if (selectedCellY == y2) return;
+				if (selectedCellY < y2) changePath(UP);
+				else changePath(DOWN);
+			}
+			else
+			{
+				if (selectedCellY != y2)
+				{
+					if (!canStartNewPath) return;
+					clearPathMap();
+					x1 = selectedCellX; y1 = selectedCellY;
+					x2 = selectedCellX; y2 = selectedCellY;
+					pathMap[x1][y1] = true;
+					return;
+				}
+				if (selectedCellX < x2) changePath(LEFT);
+				else changePath(RIGHT);
+			}
 		}
 };

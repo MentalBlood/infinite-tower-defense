@@ -50,12 +50,10 @@ int main(void)
 	while (window.isOpen())
 	{
 		elapsed = clock.restart();
-		printf("elapsed %f\n", elapsed.asSeconds());
 		updateFunction();
 
 		while (window.pollEvent(event))
 		{
-			printf("event %d\n", event.type);
 			events[event.type]();
 		}
 
