@@ -118,11 +118,14 @@ void updateNewMapSettingsVariables()
 
 void setNewMapSettingsVariables()
 {
+	printf("setNewMapSettingsVariables\n");
 	if (!newMapSettingsFont.loadFromFile("fonts/newMapSettingsFont.otf")) Closed();
 
-	newMapSettings.push_back(Setting(sf::String("width"), &newMapSettingsFont, newMapSettingsFontColor, 1, 8, 32));
-	newMapSettings.push_back(Setting(sf::String("height"), &newMapSettingsFont, newMapSettingsFontColor, 1, 8, 32));
+	newMapSettings.push_back(Setting(sf::String("width"), &newMapSettingsFont, newMapSettingsFontColor, 1, 8, 128));
+	newMapSettings.push_back(Setting(sf::String("height"), &newMapSettingsFont, newMapSettingsFontColor, 1, 8, 128));
 
 	updateNewMapSettingsVariables();
+	newMapSettingsSelectedSettingNumber = 0;
 	newMapSettings[0].select();
+	printf("OK\n");
 }

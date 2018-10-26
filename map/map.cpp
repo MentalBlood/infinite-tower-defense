@@ -3,13 +3,19 @@
 #define LEFT 3
 #define DOWN 4
 
+#define EMPTY 0
+#define PATH 1
+#define BEGIN 2
+#define END 3
+
 class Map
 {
 	private:
 		int mapHeight, mapWidth,
 			x1, y1,
 			x2, y2;
-		float mapPositionX, mapPositionY,
+		float mapPositionX,
+			  mapPositionY,
 			  zoom;
 
 		unsigned int cellTextureSize;
@@ -20,12 +26,16 @@ class Map
 		sf::Sprite	towerCellSprite,
 					pathCellSprite,
 					cellSelectorSprite;
+		int cellSelectorX,
+			cellSelectorY;
+		bool cellSelectorPressed;
+
 		sf::Color	towerCellBordersColor,
 					towerCellFillColor,
 					cellSelectorColor;
 
 		std::vector<char> path;
-		std::vector<std::vector<bool> > pathMap;
+		std::vector<std::vector<char> > pathMap;
 
 		void createPathMap()
 		{
@@ -50,21 +60,26 @@ class Map
 			sf::Color towerCellBordersColor, sf::Color towerCellFillColor, sf::Color cellSelectorColor):
 			x1(0), y1(0), x2(1), y2(0), zoom(1), towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL),
 			towerCellBordersColor(towerCellBordersColor), towerCellFillColor(towerCellFillColor),
-			cellSelectorColor(cellSelectorColor)
+			cellSelectorColor(cellSelectorColor), cellSelectorPressed(false)
 		{
 			mapWidth = width;
 			mapHeight = height;
 			createPathMap();
 
-			path.push_back(RIGHT);
-
-			pathMap[0][0] = true;
-			pathMap[1][0] = true;
+			pathMap[0][0] = 2;
+			pathMap[width-1][height-1] = 3;
 		}
 
 		Map(char *fileName): towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL), zoom(1)
 		{
 			loadFile(fileName);
+		}
+
+		~Map()
+		{
+			delete towerCellTexture;
+			delete pathCellTexture;
+			delete cellSelectorTexture;
 		}
 
 		void loadFile(char *fileName)
@@ -164,23 +179,88 @@ class Map
 			towerCellSprite.setScale(zoom, zoom);
 			pathCellSprite.setScale(zoom, zoom);
 			cellSelectorSprite.setScale(zoom, zoom);
+
 			realCellTextureSize = cellTextureSize * zoom;
 		}
 
-		void changeZoom(float delta)
+		void changeZoom(float delta, float mouseX, float mouseY)
 		{
-			if ((delta < 0) && (zoom < (0.1 + delta))) return;
+			if ((delta < 1.0) && (zoom < (0.1 / delta))) return;
 
-			float correctionDelta = realCellTextureSize * (((zoom+delta)/zoom) - 1) / 2;
-			mapPositionX -= mapWidth * correctionDelta;
-			mapPositionY -= mapHeight * correctionDelta;
+			float correctionDelta = realCellTextureSize * (delta - 1),
+				  realMapWidth = mapWidth * realCellTextureSize,
+				  realMapHeight = mapHeight * realCellTextureSize;
+			mapPositionX -= mapWidth * correctionDelta * ((mouseX - mapPositionX) / realMapWidth);
+			mapPositionY -= mapHeight * correctionDelta * ((mouseY - mapPositionY) / realMapHeight);
 
-			zoom += delta;
+			zoom *= delta;
 			zoomTextures();
 		}
 
 		sf::Vector2f getPosition()
 		{ return sf::Vector2f(mapPositionX, mapPositionY); }
+
+		void pressOnCell()
+		{
+			if (pathMap[cellSelectorX][cellSelectorY] == EMPTY)
+				pathMap[cellSelectorX][cellSelectorY] = PATH;
+			else
+			if (pathMap[cellSelectorX][cellSelectorY] == PATH)
+				pathMap[cellSelectorX][cellSelectorY] = EMPTY;
+		}
+
+		void pressCellSelector()
+		{
+			if (cellSelectorPressed) return;
+			cellSelectorPressed = true;
+			pressOnCell();
+		}
+
+		void unpressCellSelector()
+		{
+			cellSelectorPressed = false;
+		}
+
+		void moveCellSelector(char direction)
+		{
+			printf("moveCellSelector\n");
+			if (direction == LEFT)
+			{
+				if (cellSelectorX) --cellSelectorX;
+			}
+			else
+			if (direction == RIGHT)
+			{
+				if ((cellSelectorX+1) < mapWidth) ++cellSelectorX;
+			}
+			else
+			if (direction == DOWN)
+			{
+				if ((cellSelectorY+1) < mapHeight) ++cellSelectorY;
+			}
+			else
+			if (direction == UP)
+			{
+				if (cellSelectorY) --cellSelectorY;
+			}
+
+			if (cellSelectorPressed) pressOnCell();
+		}
+
+		void moveCellSelectorToMouse(float x, float y)
+		{
+			int selectedCellX = int((x - mapPositionX) / realCellTextureSize),
+				selectedCellY = int((y - mapPositionY) / realCellTextureSize);
+
+			if ((selectedCellX == cellSelectorX) && (selectedCellY == cellSelectorY)) return;
+			
+			if ((selectedCellX < 0) || (selectedCellX >= mapWidth) ||
+				(selectedCellY < 0) || (selectedCellY >= mapHeight)) return;
+			cellSelectorX = selectedCellX;
+			cellSelectorY = selectedCellY;
+
+			if (cellSelectorPressed) pressOnCell();
+		}
 
 		void draw()
 		{
@@ -205,126 +285,8 @@ class Map
 				cellSpriteY = mapPositionY;
 			}
 
-			cellSelectorSprite.setPosition(x2 * realCellTextureSize + mapPositionX,
-											y2 * realCellTextureSize + mapPositionY);
+			cellSelectorSprite.setPosition(cellSelectorX * realCellTextureSize + mapPositionX,
+											cellSelectorY * realCellTextureSize + mapPositionY);
 			window.draw(cellSelectorSprite);
-		}
-
-		bool cellFitsForPath(int x, int y, char direction)
-		{
-			if ((x == x1) && (y == y1)) return false;
-
-			if (direction == RIGHT)
-			{
-				printf("RIGHT\n");
-				if ((x+1) < mapWidth)
-					if (pathMap[x+1][y]) return false;
-				if ((y+1) < mapHeight)
-					if (pathMap[x][y+1]) return false;
-				if (y)
-					if (pathMap[x][y-1]) return false;
-			}
-			else
-			if (direction == LEFT)
-			{
-				printf("LEFT\n");
-				if (x)
-					if (pathMap[x-1][y]) return false;
-				if ((y+1) < mapHeight)
-					if (pathMap[x][y+1]) return false;
-				if (y)
-					if (pathMap[x][y-1]) return false;
-			}
-			else
-			if (direction == UP)
-			{
-				printf("UP\n");
-				if ((x+1) < mapWidth)
-					if (pathMap[x+1][y]) return false;
-				if (x)
-					if (pathMap[x-1][y]) return false;
-				if (y)
-					if (pathMap[x][y-1]) return false;
-			}
-			else
-			if (direction == DOWN)
-			{
-				printf("DOWN\n");
-				if ((x+1) < mapWidth)
-					if (pathMap[x+1][y]) return false;
-				if (x)
-					if (pathMap[x-1][y]) return false;
-				if ((y+1) < mapWidth)
-					if (pathMap[x][y+1]) return false;
-			}
-			return true;
-		}
-
-		bool changePath(char pathDirection)
-		{
-			if ((pathDirection + path[path.size()-1]) == 5) //if moving backward (see defines)
-				if (path.size() > 1)
-				{
-					path.pop_back();
-					pathMap[x2][y2] = false;
-					if (pathDirection == RIGHT) ++x2;
-					else if (pathDirection == LEFT) --x2;
-					else if (pathDirection == UP) --y2;
-					else if (pathDirection == DOWN) ++y2;
-					return true;
-				}
-
-			if (pathDirection == RIGHT)
-			{
-				if (((x2 + 1) < mapWidth) && cellFitsForPath(x2+1, y2, pathDirection)) ++x2;
-				else return false;
-			}
-			else if (pathDirection == LEFT)
-			{
-				if (x2 && cellFitsForPath(x2-1, y2, pathDirection)) --x2;
-				else return false;
-			}
-			else if (pathDirection == UP)
-			{
-				if (y2 && cellFitsForPath(x2, y2-1, pathDirection)) --y2;
-				else return false;
-			}
-			else if (pathDirection == DOWN)
-			{
-				if (((y2 + 1) < mapHeight) && cellFitsForPath(x2, y2+1, pathDirection)) ++y2;
-				else return false;
-			}
-
-			path.push_back(pathDirection);
-			pathMap[x2][y2] = true;
-
-			return true;
-		}
-
-		void checkMouseForNewPathCells(float x, float y, bool canStartNewPath)
-		{
-			int selectedCellX = int((x - mapPositionX) / realCellTextureSize),
-				selectedCellY = int((y - mapPositionY) / realCellTextureSize);
-
-			if (selectedCellX == x2)
-			{
-				if (selectedCellY == y2) return;
-				if (selectedCellY < y2) changePath(UP);
-				else changePath(DOWN);
-			}
-			else
-			{
-				if (selectedCellY != y2)
-				{
-					if (!canStartNewPath) return;
-					clearPathMap();
-					x1 = selectedCellX; y1 = selectedCellY;
-					x2 = selectedCellX; y2 = selectedCellY;
-					pathMap[x1][y1] = true;
-					return;
-				}
-				if (selectedCellX < x2) changePath(LEFT);
-				else changePath(RIGHT);
-			}
 		}
 };

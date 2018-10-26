@@ -1,8 +1,7 @@
 Map *mapEditorMap;
 float mapEditorCellRelativeSize;
 
-bool mapEditorMapDragging,
-	 mapEditorAddingPathByMouse;
+bool mapEditorMapDragging;
 float mapEditorMapDraggingMouseX1,
 	  mapEditorMapDraggingMouseY1;
 sf::Vector2f mapEditorMapDraggingMapInitialCoordinates;

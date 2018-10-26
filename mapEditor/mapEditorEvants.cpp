@@ -5,18 +5,33 @@ void mapEditorResized()
 	updateMapEditorVariables();
 }
 
+void mapEditorExit()
+{
+	delete mapEditorMap;
+	startFunctions[1]();
+}
+
 void mapEditorKeyPressed()
 {
 	if (event.key.code == sf::Keyboard::Up)
-		mapEditorMap->changePath(UP);
+		mapEditorMap->moveCellSelector(UP);
 	else if (event.key.code == sf::Keyboard::Down)
-		mapEditorMap->changePath(DOWN);
+		mapEditorMap->moveCellSelector(DOWN);
 	else if (event.key.code == sf::Keyboard::Right)
-		mapEditorMap->changePath(RIGHT);
+		mapEditorMap->moveCellSelector(RIGHT);
 	else if (event.key.code == sf::Keyboard::Left)
-		mapEditorMap->changePath(LEFT);
-	else if (event.key.code == sf::Keyboard::PageUp) mapEditorMap->changeZoom(0.02);
-	else if (event.key.code == sf::Keyboard::PageDown) mapEditorMap->changeZoom(-0.02);
+		mapEditorMap->moveCellSelector(LEFT);
+	else if (event.key.code == sf::Keyboard::Space)
+		mapEditorMap->pressCellSelector();
+	else if (event.key.code == sf::Keyboard::PageUp) mapEditorMap->changeZoom(1.02, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+	else if (event.key.code == sf::Keyboard::PageDown) mapEditorMap->changeZoom(0.98, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+	else if (event.key.code == sf::Keyboard::End) mapEditorExit();
+}
+
+void mapEditorKeyReleased()
+{
+	if (event.key.code == sf::Keyboard::Space)
+		mapEditorMap->unpressCellSelector();
 }
 
 void mapEditorMouseButtonPressed()
@@ -31,15 +46,15 @@ void mapEditorMouseButtonPressed()
 	else
 	if (event.mouseButton.button == sf::Mouse::Right)
 	{
-		mapEditorMap->checkMouseForNewPathCells(event.mouseButton.x, event.mouseButton.y, true);
-		mapEditorAddingPathByMouse = true;
+		mapEditorMap->moveCellSelectorToMouse(event.mouseButton.x, event.mouseButton.y);
+		mapEditorMap->pressCellSelector();
 	}
 }
 
 void mapEditorMouseButtonReleased()
 {
 	mapEditorMapDragging = false;
-	mapEditorAddingPathByMouse = false;
+	mapEditorMap->unpressCellSelector();
 }
 
 void mapEditorMouseMoved()
@@ -51,16 +66,13 @@ void mapEditorMouseMoved()
 				mapEditorMapDraggingMapInitialCoordinates.y + event.mouseMove.y - mapEditorMapDraggingMouseY1);
 	}
 	else
-	if (mapEditorAddingPathByMouse)
-		mapEditorMap->checkMouseForNewPathCells(event.mouseMove.x, event.mouseMove.y, false);
+	mapEditorMap->moveCellSelectorToMouse(event.mouseMove.x, event.mouseMove.y);
 }
 
 void mapEditorMouseWheelScrolled()
 {
 	if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
-	{
-		mapEditorMap->changeZoom(event.mouseWheelScroll.delta/50);
-	}
+		mapEditorMap->changeZoom(1 + event.mouseWheelScroll.delta/50, event.mouseWheelScroll.x, event.mouseWheelScroll.y);
 }
 
 void setMapEditorEvents()
@@ -68,7 +80,7 @@ void setMapEditorEvents()
 	events[1] = mapEditorResized; //resized
 	events[4] = nothing; //text entered
 	events[5] = mapEditorKeyPressed; //key pressed
-	events[6] = nothing; //key released
+	events[6] = mapEditorKeyReleased; //key released
 	events[8] = mapEditorMouseWheelScrolled; //mouse wheel scrolled
 	events[9] = mapEditorMouseButtonPressed; //mouse button pressed
 	events[10] = mapEditorMouseButtonReleased; //mouse button released

@@ -11,6 +11,8 @@ sf::Time elapsed;
 void (*updateFunction)(),
 	 (*drawFunction)();
 
+std::vector<void (*)()> startFunctions;
+
 #include "graphicsFunctions/vertexArrays.cpp"
 
 #include "events.cpp"
@@ -37,6 +39,9 @@ void (*updateFunction)(),
 
 int main(void)
 {
+	startFunctions.push_back(startMenu);
+	startFunctions.push_back(startNewMapSettings);
+
 	//sf::ContextSettings settings;
 	//settings.antialiasingLevel = 8;
 	window.create(sf::VideoMode(800, 600), "Infinite Tower Defense");
