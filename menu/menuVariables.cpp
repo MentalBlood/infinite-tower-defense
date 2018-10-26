@@ -24,6 +24,7 @@ void updateMenuVariables()
 
 void setMenuVariables()
 {
+	printf("setMenuVariables\n");
 	if (!menuFont.loadFromFile("fonts/menuFont.otf")) Closed();
 
 	updateMenuVariables();

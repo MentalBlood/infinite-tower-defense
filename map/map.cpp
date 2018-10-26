@@ -14,20 +14,29 @@ class Map
 		int mapHeight, mapWidth,
 			x1, y1,
 			x2, y2;
+
 		float mapPositionX,
 			  mapPositionY,
 			  zoom;
 
 		unsigned int cellTextureSize;
 		float realCellTextureSize;
+
 		sf::Texture *towerCellTexture,
 					*pathCellTexture,
-					*cellSelectorTexture;
+					*cellSelectorTexture,
+					*startCellTexture,
+					*endCellTexture;
+
 		sf::Sprite	towerCellSprite,
 					pathCellSprite,
-					cellSelectorSprite;
+					cellSelectorSprite,
+					startCellSprite,
+					endCellSprite;
+
 		int cellSelectorX,
 			cellSelectorY;
+
 		bool cellSelectorPressed;
 
 		sf::Color	towerCellBordersColor,
@@ -58,7 +67,8 @@ class Map
 	public:
 		Map(int width, int height,
 			sf::Color towerCellBordersColor, sf::Color towerCellFillColor, sf::Color cellSelectorColor):
-			x1(0), y1(0), x2(1), y2(0), zoom(1), towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL),
+			x1(0), y1(0), x2(width - 1), y2(height - 1), zoom(1),
+			towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL), startCellTexture(NULL), endCellTexture(NULL),
 			towerCellBordersColor(towerCellBordersColor), towerCellFillColor(towerCellFillColor),
 			cellSelectorColor(cellSelectorColor), cellSelectorPressed(false)
 		{
@@ -70,7 +80,7 @@ class Map
 			pathMap[width-1][height-1] = 3;
 		}
 
-		Map(char *fileName): towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL), zoom(1)
+		Map(char *fileName)
 		{
 			loadFile(fileName);
 		}
@@ -109,9 +119,9 @@ class Map
 			//1 drawing tower cell texture
 			cellTextureSize = 32;
 			realCellTextureSize = cellTextureSize * zoom;
-			sf::RenderTexture towerCellRenderTexture;
-			if (!towerCellRenderTexture.create(cellTextureSize, cellTextureSize)) Closed();
-			towerCellRenderTexture.clear(sf::Color(0, 0, 0, 0));
+			sf::RenderTexture RenderTexture;
+			if (!RenderTexture.create(cellTextureSize, cellTextureSize)) Closed();
+			RenderTexture.clear(sf::Color(0, 0, 0, 0));
 
 			//1.1 drawing borders
 			float cellSize = cellTextureSize * cellRelativeSize;
@@ -126,44 +136,56 @@ class Map
 								cellSize - 2*bordersThickness, cellSize - 2*bordersThickness,
 								towerCellFillColor);
 
-			towerCellRenderTexture.draw(borders);
-			towerCellRenderTexture.draw(fill);
-			towerCellRenderTexture.display();
+			RenderTexture.draw(borders);
+			RenderTexture.draw(fill);
+			RenderTexture.display();
 
 			//1.3 setting texture to sprite
 			if (towerCellTexture) delete towerCellTexture;
-			towerCellTexture = new sf::Texture(towerCellRenderTexture.getTexture());
+			towerCellTexture = new sf::Texture(RenderTexture.getTexture());
 			towerCellSprite.setTextureRect(sf::IntRect(0, 0, cellTextureSize, cellTextureSize));
 			towerCellSprite.setTexture(*towerCellTexture);
 
 			//2 drawing path cell texture
-			sf::RenderTexture pathCellRenderTexture;
-			if (!pathCellRenderTexture.create(cellTextureSize, cellTextureSize)) Closed();
+			if (!RenderTexture.create(cellTextureSize, cellTextureSize)) Closed();
 
-			pathCellRenderTexture.clear(sf::Color(0, 0, 0, 0));
-			pathCellRenderTexture.display();
+			RenderTexture.clear(sf::Color(0, 0, 0, 0));
+			RenderTexture.display();
 
 			//setting texture to sprite
 			if (pathCellTexture) delete pathCellTexture;
-			pathCellTexture = new sf::Texture(pathCellRenderTexture.getTexture());
+			pathCellTexture = new sf::Texture(RenderTexture.getTexture());
 			pathCellSprite.setTextureRect(sf::IntRect(0, 0, cellTextureSize, cellTextureSize));
 			pathCellSprite.setTexture(*pathCellTexture);
 
-			//3 drawing cell selector texture
-			sf::RenderTexture cellSelectorRenderTexture;
-			if (!cellSelectorRenderTexture.create(cellTextureSize, cellTextureSize));
+			//3 setting start cell texture
+			if (!startCellTexture) delete startCellTexture;
+			startCellTexture = new sf::Texture();
+			startCellTexture->loadFromFile("textures/startCell.png");
+			startCellSprite.setTextureRect(sf::IntRect(0, 0, cellTextureSize, cellTextureSize));
+			startCellSprite.setTexture(*startCellTexture);
+
+			//4 setting end cell texture
+			if (!endCellTexture) delete endCellTexture;
+			endCellTexture = new sf::Texture();
+			endCellTexture->loadFromFile("textures/endCell.png");
+			endCellSprite.setTextureRect(sf::IntRect(0, 0, cellTextureSize, cellTextureSize));
+			endCellSprite.setTexture(*endCellTexture);
+
+			//5 drawing cell selector texture
+			if (!RenderTexture.create(cellTextureSize, cellTextureSize));
 
 			sf::VertexArray cellSelectorVertexArray;
 			makeVertexArrayFrame(&cellSelectorVertexArray, 0, 0, cellTextureSize, cellTextureSize,
 														indent, cellSelectorColor);
 
-			cellSelectorRenderTexture.clear(sf::Color(0, 0, 0, 0));
-			cellSelectorRenderTexture.draw(cellSelectorVertexArray);
-			cellSelectorRenderTexture.display();
+			RenderTexture.clear(sf::Color(0, 0, 0, 0));
+			RenderTexture.draw(cellSelectorVertexArray);
+			RenderTexture.display();
 
 			//setting texture to sprite
 			if (cellSelectorTexture) delete cellSelectorTexture;
-			cellSelectorTexture = new sf::Texture(cellSelectorRenderTexture.getTexture());
+			cellSelectorTexture = new sf::Texture(RenderTexture.getTexture());
 			cellSelectorSprite.setTextureRect(sf::IntRect(0, 0, cellTextureSize, cellTextureSize));
 			cellSelectorSprite.setTexture(*cellSelectorTexture);
 		}
@@ -179,6 +201,8 @@ class Map
 			towerCellSprite.setScale(zoom, zoom);
 			pathCellSprite.setScale(zoom, zoom);
 			cellSelectorSprite.setScale(zoom, zoom);
+			startCellSprite.setScale(zoom, zoom);
+			endCellSprite.setScale(zoom, zoom);
 
 			realCellTextureSize = cellTextureSize * zoom;
 		}
@@ -284,6 +308,12 @@ class Map
 				}
 				cellSpriteY = mapPositionY;
 			}
+
+			startCellSprite.setPosition(x1*realCellTextureSize + mapPositionX, y1*realCellTextureSize + mapPositionY);
+			window.draw(startCellSprite);
+
+			endCellSprite.setPosition(x2*realCellTextureSize + mapPositionX, y2*realCellTextureSize + mapPositionY);
+			window.draw(endCellSprite);
 
 			cellSelectorSprite.setPosition(cellSelectorX * realCellTextureSize + mapPositionX,
 											cellSelectorY * realCellTextureSize + mapPositionY);

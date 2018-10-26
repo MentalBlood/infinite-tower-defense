@@ -5,6 +5,12 @@ void newMapSettingsResized()
 	updateNewMapSettingsVariables();
 }
 
+void newMapSettingsExit()
+{
+	newMapSettings.clear();
+	startFunctions[0]();
+}
+
 void newMapSettingsKeyPressed()
 {
 	if (event.key.code == sf::Keyboard::Up)
@@ -34,6 +40,9 @@ void newMapSettingsKeyPressed()
 		startMapEditor(newMapSettings[0].getValue(), newMapSettings[1].getValue());
 		newMapSettings.clear();
 	}
+	else
+	if (event.key.code == sf::Keyboard::End)
+		newMapSettingsExit();
 }
 
 void newMapSettingsMouseButtonPressed()
