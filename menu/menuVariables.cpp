@@ -13,18 +13,18 @@ void (*menuFunctions[4])();
 
 void updateMenuVariables()
 {
-	menuFontSize = sqrt(windowSize.x * windowSize.y) / 20;
-	menuY1 = float(windowSize.y) / 10;
+	menuFontSize = sqrt(windowSize.x * windowSize.y) / 16;
+	menuY1 = float(windowSize.y) / 8;
 	for (int i = 0; i < 4; i++)
 	{
 		menuEntries[i].setCharacterSize(menuFontSize);
-		menuEntries[i].setPosition(float(windowSize.x) / 20, menuY1 + i*menuFontSize*1.5);
+		menuEntries[i].setPosition(float(windowSize.x) / 16, menuY1 + i*menuFontSize*1.5);
 	}
 }
 
 void setMenuVariables()
 {
-	if (!menuFont.loadFromFile("fonts/Signal-Regular.otf")) Closed();
+	if (!menuFont.loadFromFile("fonts/menuFont.otf")) Closed();
 
 	updateMenuVariables();
 	

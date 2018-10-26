@@ -1,133 +1,306 @@
-#define PATH_END 0
 #define UP 1
 #define RIGHT 2
-#define DOWN 3
-#define LEFT 4
+#define LEFT 3
+#define DOWN 4
 
 class Map
 {
 	private:
 		int mapHeight, mapWidth,
-			x1, y1;
-		char *path;
+			x1, y1,
+			x2, y2;
+		float mapPositionX, mapPositionY,
+			  zoom;
+
+		unsigned int cellTextureSize;
+		float realCellTextureSize;
+		sf::Texture *towerCellTexture,
+					*pathCellTexture,
+					*cellSelectorTexture;
+		sf::Sprite	towerCellSprite,
+					pathCellSprite,
+					cellSelectorSprite;
+		sf::Color	towerCellBordersColor,
+					towerCellFillColor,
+					cellSelectorColor;
+
+		std::vector<char> path;
+		std::vector<std::vector<bool> > pathMap;
 
 	public:
-		Map(int height, int width):
-			mapHeight(height), mapWidth(width), x1(0), y1(0)
+		void createPathMap()
 		{
-			path = (char*)malloc(sizeof(char)*16);
-			path[0] = RIGHT;
-			path[1] = PATH_END;
+			pathMap.resize(mapWidth);
+			for (int i = 0; i < mapWidth; i++)
+			{
+				pathMap[i].resize(mapHeight);
+				for (int j = 0; j < mapHeight; j++)
+					pathMap[i][j] = 0;
+			}
 		}
 
-		Map(char *fileName)
+		Map(int width, int height,
+			sf::Color towerCellBordersColor, sf::Color towerCellFillColor, sf::Color cellSelectorColor):
+			x1(0), y1(0), x2(1), y2(0), zoom(1), towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL),
+			towerCellBordersColor(towerCellBordersColor), towerCellFillColor(towerCellFillColor),
+			cellSelectorColor(cellSelectorColor)
+		{
+			mapWidth = width;
+			mapHeight = height;
+			createPathMap();
+
+			path.push_back(RIGHT);
+
+			pathMap[0][0] = true;
+			pathMap[1][0] = true;
+		}
+
+		Map(char *fileName): towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL), zoom(1)
 		{
 			loadFile(fileName);
 		}
 
 		void loadFile(char *fileName)
 		{
-			delete path;
-
 			FILE *file = fopen(fileName, "rb");
-
-			//read map size and initial dot coordinates
 			fscanf(file, "%d%d%d%d", &mapWidth, &mapHeight, &x1, &y1);
 
 			//read path
-			path = (char*)malloc(sizeof(char)*16);
-			int pathIndex = 0;
+			x2 = x1;
+			y2 = y1;
 			while (true)
 			{
 				char c = char(fgetc(file));
 				if (!c) break;
-				path[pathIndex] = c;
-				++pathIndex;
-				if (pathIndex % 16)
-					path = (char*)realloc(path, sizeof(char)*(pathIndex+16));
+				if (c == RIGHT) ++x2;
+				else if (c == LEFT) --x2;
+				else if (c == UP) --y2;
+				else if (c == DOWN) ++y2;
+				path.push_back(c);
 			}
-			path[pathIndex] = 0;
-			++pathIndex;
-			if (!(pathIndex % 16))
-				path = (char*)realloc(path, sizeof(char)*pathIndex);
+
+			createPathMap();
 		}
 
-		const sf::Texture& textureFromLoaded(unsigned int mapTextureHeight)
+		void setTextures(float cellRelativeSize)
 		{
-			unsigned int mapTextureWidth = (unsigned int)(float(mapTextureHeight) * (float(mapHeight)/float(mapWidth)));
+			printf("setTextures\n");
+			//1 drawing tower cell texture
+			cellTextureSize = 32;
+			realCellTextureSize = cellTextureSize * zoom;
+			sf::RenderTexture towerCellRenderTexture;
+			if (!towerCellRenderTexture.create(cellTextureSize, cellTextureSize)) Closed();
+			towerCellRenderTexture.clear(sf::Color(0, 0, 0, 0));
 
-			//1. drawing cell texture
-			unsigned int cellTextureSize = (unsigned int)(float(mapTextureWidth) / float(mapWidth));
-			sf::RenderTexture cellRenderTexture;
-			if (!cellRenderTexture.create(cellTextureSize, cellTextureSize)) Closed();
+			//1.1 drawing borders
+			printf("drawing borders\n");
+			float cellSize = cellTextureSize * cellRelativeSize;
+			float indent = (cellTextureSize - cellSize) / 2;
+			float bordersThickness = cellSize / 8;
+			sf::VertexArray borders;
+			makeVertexArrayFrame(&borders, indent, indent, cellSize, cellSize, bordersThickness, towerCellBordersColor);
 
-			cellRenderTexture.clear();
+			//1.2 drawing fill
+			printf("drawing fill\n");
+			sf::VertexArray fill;
+			makeVertexArrayQuad(&fill, indent + bordersThickness, indent + bordersThickness,
+								cellSize - 2*bordersThickness, cellSize - 2*bordersThickness,
+								towerCellFillColor);
 
-			//1.1 drawing rounded corners by circles
-			sf::CircleShape circle((unsigned int)(float(cellTextureSize)/4), (std::size_t)cellTextureSize);
-			circle.setFillColor(sf::Color(255, 0, 0));
-			//1.1.1 upper left
-			circle.setPosition(sf::Vector2f(float(cellTextureSize)/4, float(cellTextureSize)/4));
-			cellRenderTexture.draw(circle);
-			//1.1.2 upper right
-			circle.setPosition(sf::Vector2f(3*float(cellTextureSize)/4, float(cellTextureSize)/4));
-			cellRenderTexture.draw(circle);
-			//1.1.3 bottom left
-			circle.setPosition(sf::Vector2f(float(cellTextureSize)/4, 3*float(cellTextureSize)/4));
-			cellRenderTexture.draw(circle);
-			//1.1.4 bottom right
-			circle.setPosition(sf::Vector2f(3*float(cellTextureSize)/4, 3*float(cellTextureSize)/4));
-			cellRenderTexture.draw(circle);
+			towerCellRenderTexture.draw(borders);
+			towerCellRenderTexture.draw(fill);
+			towerCellRenderTexture.display();
 
-			//1.2 drawing borders/interior
-			sf::RectangleShape rectangle(sf::Vector2f(cellTextureSize, float(cellTextureSize)/2));
-			rectangle.setFillColor(sf::Color(0, 0, 255));
-			//1.2.1 left and right
-			rectangle.setPosition(sf::Vector2f(0, float(cellTextureSize)/4));
-			cellRenderTexture.draw(rectangle);
-			//1.2.2 bottom and upper
-			rectangle.setSize(sf::Vector2f(float(cellTextureSize)/4, float(cellTextureSize)));
-			rectangle.setPosition(sf::Vector2f(float(cellTextureSize), 0));
-			cellRenderTexture.draw(rectangle);
+			//1.3 setting texture to sprite
+			printf("setting texture to sprite\n");
+			if (towerCellTexture) delete towerCellTexture;
+			towerCellTexture = new sf::Texture(towerCellRenderTexture.getTexture());
+			towerCellSprite.setTextureRect(sf::IntRect(0, 0, cellTextureSize, cellTextureSize));
+			towerCellSprite.setTexture(*towerCellTexture);
 
-			cellRenderTexture.display();
+			//2 drawing path cell texture
+			printf("drawing path cell texture\n");
+			sf::RenderTexture pathCellRenderTexture;
+			if (!pathCellRenderTexture.create(cellTextureSize, cellTextureSize)) Closed();
 
-			sf::Sprite cellSprite(cellRenderTexture.getTexture());
+			pathCellRenderTexture.clear(sf::Color(0, 0, 0, 0));
+			pathCellRenderTexture.display();
 
-			//2. drawing map texture
-			sf::RenderTexture mapRenderTexture;
-			if (!mapRenderTexture.create(mapTextureWidth, mapTextureHeight)) Closed();
+			//setting texture to sprite
+			printf("setting texture to sprite\n");
+			if (pathCellTexture) delete pathCellTexture;
+			pathCellTexture = new sf::Texture(pathCellRenderTexture.getTexture());
+			pathCellSprite.setTextureRect(sf::IntRect(0, 0, cellTextureSize, cellTextureSize));
+			pathCellSprite.setTexture(*pathCellTexture);
 
-			mapRenderTexture.clear();
+			//3 drawing cell selector texture
+			printf("drawing cell selector texture\n");
+			sf::RenderTexture cellSelectorRenderTexture;
+			if (!cellSelectorRenderTexture.create(cellTextureSize, cellTextureSize));
 
-			//2.1 drawing towers cells
-			cellSprite.setPosition(0, 0);
-			float cellSpriteX = 0,
-				  cellSpriteY = 0;
-			for (int i = 0; i < mapHeight; i++, cellSpriteY += cellTextureSize)
-				for (int j = 0; j < mapWidth; j++, cellSpriteX += cellTextureSize)
-				{
-					cellSprite.setPosition(sf::Vector2f(cellSpriteX, cellSpriteY));
-					mapRenderTexture.draw(cellSprite);
-				}
+			sf::VertexArray cellSelectorVertexArray;
+			makeVertexArrayFrame(&cellSelectorVertexArray, 0, 0, cellTextureSize, cellTextureSize,
+														indent, cellSelectorColor);
 
-			//2.2 drawing path cells
-			cellSprite.setColor(sf::Color(0, 255, 0));
-			cellSpriteX = float(x1)*cellTextureSize;
-			cellSpriteY = float(y1)*cellTextureSize;
-			cellSprite.setPosition(sf::Vector2f(cellSpriteX, cellSpriteY));
-			for (char *pathDirection = path; *path; path++)
+			cellSelectorRenderTexture.clear(sf::Color(0, 0, 0, 0));
+			cellSelectorRenderTexture.draw(cellSelectorVertexArray);
+			cellSelectorRenderTexture.display();
+
+			//setting texture to sprite
+			printf("setting texture to sprite\n");
+			if (cellSelectorTexture) delete cellSelectorTexture;
+			cellSelectorTexture = new sf::Texture(cellSelectorRenderTexture.getTexture());
+			cellSelectorSprite.setTextureRect(sf::IntRect(0, 0, cellTextureSize, cellTextureSize));
+			cellSelectorSprite.setTexture(*cellSelectorTexture);
+			printf("OK\n");
+		}
+
+		void setPosition(float x, float y)
+		{
+			mapPositionX = x;
+			mapPositionY = y;
+		}
+
+		void zoomTextures()
+		{
+			towerCellSprite.setScale(zoom, zoom);
+			pathCellSprite.setScale(zoom, zoom);
+			cellSelectorSprite.setScale(zoom, zoom);
+			realCellTextureSize = cellTextureSize * zoom;
+		}
+
+		void changeZoom(float delta)
+		{
+			if ((delta < 0) && (zoom < (0.1 + delta))) return;
+
+			float correctionDelta = realCellTextureSize * (((zoom+delta)/zoom) - 1) / 2;
+			mapPositionX -= mapWidth * correctionDelta;
+			mapPositionY -= mapHeight * correctionDelta;
+
+			zoom += delta;
+			zoomTextures();
+		}
+
+		sf::Vector2f getPosition()
+		{ return sf::Vector2f(mapPositionX, mapPositionY); }
+
+		void draw()
+		{
+			float cellSpriteX = mapPositionX, 
+				  cellSpriteY = mapPositionY;
+
+			for (int i = 0; i < pathMap.size(); i++, cellSpriteX += realCellTextureSize)
 			{
-				if (*pathDirection == UP) cellSpriteY -= cellTextureSize;
-				else if (*pathDirection == DOWN) cellSpriteY += cellTextureSize;
-				else if (*pathDirection == LEFT) cellSpriteX -= cellTextureSize;
-				else if (*pathDirection == RIGHT) cellSpriteX += cellTextureSize;
-				cellSprite.setPosition(sf::Vector2f(cellSpriteX, cellSpriteY));
-				mapRenderTexture.draw(cellSprite);
+				for (int j = 0; j < pathMap[i].size(); j++, cellSpriteY += realCellTextureSize)
+				{
+					if (pathMap[i][j])
+					{
+						pathCellSprite.setPosition(cellSpriteX, cellSpriteY);
+						window.draw(pathCellSprite);
+					}
+					else
+					{
+						towerCellSprite.setPosition(cellSpriteX, cellSpriteY);
+						window.draw(towerCellSprite);
+					}
+				}
+				cellSpriteY = mapPositionY;
 			}
 
-			//2.3 returning map texture
-			mapRenderTexture.display();
-			return mapRenderTexture.getTexture();
+			cellSelectorSprite.setPosition(x2 * realCellTextureSize + mapPositionX,
+											y2 * realCellTextureSize + mapPositionY);
+			window.draw(cellSelectorSprite);
+		}
+
+		bool cellFitsForPath(int x, int y, char direction)
+		{
+			if ((x == x1) && (y == y1)) return false;
+
+			if (direction == RIGHT)
+			{
+				printf("RIGHT\n");
+				if ((x+1) < mapWidth)
+					if (pathMap[x+1][y]) return false;
+				if ((y+1) < mapHeight)
+					if (pathMap[x][y+1]) return false;
+				if (y)
+					if (pathMap[x][y-1]) return false;
+			}
+			else
+			if (direction == LEFT)
+			{
+				printf("LEFT\n");
+				if (x)
+					if (pathMap[x-1][y]) return false;
+				if ((y+1) < mapHeight)
+					if (pathMap[x][y+1]) return false;
+				if (y)
+					if (pathMap[x][y-1]) return false;
+			}
+			else
+			if (direction == UP)
+			{
+				printf("UP\n");
+				if ((x+1) < mapWidth)
+					if (pathMap[x+1][y]) return false;
+				if (x)
+					if (pathMap[x-1][y]) return false;
+				if (y)
+					if (pathMap[x][y-1]) return false;
+			}
+			else
+			if (direction == DOWN)
+			{
+				printf("DOWN\n");
+				if ((x+1) < mapWidth)
+					if (pathMap[x+1][y]) return false;
+				if (x)
+					if (pathMap[x-1][y]) return false;
+				if ((y+1) < mapWidth)
+					if (pathMap[x][y+1]) return false;
+			}
+			return true;
+		}
+
+		bool changePath(char pathDirection)
+		{
+			printf("%d + %d = %d\n", pathDirection, path[path.size()-1], pathDirection + path[path.size()-1]);
+			if ((pathDirection + path[path.size()-1]) == 5) //if moving backward (see defines)
+				if (path.size() > 1)
+				{
+					path.pop_back();
+					pathMap[x2][y2] = false;
+					if (pathDirection == RIGHT) ++x2;
+					else if (pathDirection == LEFT) --x2;
+					else if (pathDirection == UP) --y2;
+					else if (pathDirection == DOWN) ++y2;
+					return true;
+				}
+
+			if (pathDirection == RIGHT)
+			{
+				if (((x2 + 1) < mapWidth) && cellFitsForPath(x2+1, y2, pathDirection)) ++x2;
+				else return false;
+			}
+			else if (pathDirection == LEFT)
+			{
+				if (x2 && cellFitsForPath(x2-1, y2, pathDirection)) --x2;
+				else return false;
+			}
+			else if (pathDirection == UP)
+			{
+				if (y2 && cellFitsForPath(x2, y2-1, pathDirection)) --y2;
+				else return false;
+			}
+			else if (pathDirection == DOWN)
+			{
+				if (((y2 + 1) < mapHeight) && cellFitsForPath(x2, y2+1, pathDirection)) ++y2;
+				else return false;
+			}
+
+			path.push_back(pathDirection);
+			pathMap[x2][y2] = true;
+
+			return true;
 		}
 };

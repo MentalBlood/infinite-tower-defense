@@ -28,6 +28,9 @@ void newMapSettingsKeyPressed()
 	else
 	if (event.key.code == sf::Keyboard::Right)
 		newMapSettings[newMapSettingsSelectedSettingNumber].increaseValue();
+	else
+	if (event.key.code == sf::Keyboard::Return)
+		startMapEditor(newMapSettings[0].getValue(), newMapSettings[1].getValue());
 }
 
 void newMapSettingsMouseButtonPressed()

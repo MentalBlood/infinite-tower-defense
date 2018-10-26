@@ -96,6 +96,9 @@ class Setting
 			refreshText();
 		}
 
+		int getValue()
+		{ return currentValue; }
+
 		void draw()
 		{ window.draw(text); }
 };
@@ -104,21 +107,21 @@ std::vector<Setting> newMapSettings;
 
 void updateNewMapSettingsVariables()
 {
-	newMapSettingsFontSize = sqrt(windowSize.x * windowSize.y) / 20;
-	newMapSettingsY1 = float(windowSize.y) / 10;
+	newMapSettingsFontSize = sqrt(windowSize.x * windowSize.y) / 16;
+	newMapSettingsY1 = float(windowSize.y) / 8;
 	for (int i = 0; i < newMapSettings.size(); i++)
 	{
 		newMapSettings[i].setFontSize(newMapSettingsFontSize);
-		newMapSettings[i].setPosition(float(windowSize.x) / 20, newMapSettingsY1 + i*newMapSettingsFontSize*1.5);
+		newMapSettings[i].setPosition(float(windowSize.x) / 16, newMapSettingsY1 + i*newMapSettingsFontSize*1.5);
 	}
 }
 
 void setNewMapSettingsVariables()
 {
-	if (!newMapSettingsFont.loadFromFile("fonts/Signal-Regular.otf")) Closed();
+	if (!newMapSettingsFont.loadFromFile("fonts/newMapSettingsFont.otf")) Closed();
 
-	newMapSettings.push_back(Setting(sf::String("width"), &newMapSettingsFont, newMapSettingsFontColor, 1, 16, 128));
-	newMapSettings.push_back(Setting(sf::String("height"), &newMapSettingsFont, newMapSettingsFontColor, 1, 16, 128));
+	newMapSettings.push_back(Setting(sf::String("width"), &newMapSettingsFont, newMapSettingsFontColor, 1, 8, 32));
+	newMapSettings.push_back(Setting(sf::String("height"), &newMapSettingsFont, newMapSettingsFontColor, 1, 8, 32));
 
 	updateNewMapSettingsVariables();
 	newMapSettings[0].select();
