@@ -24,12 +24,13 @@ void menuKeyPressed()
 	}
 	else
 	if (event.key.code == sf::Keyboard::Return)
-	{ menuFunctions[menuSelectedEntryNumber](); }
+		menuFunctions[menuSelectedEntryNumber]();
 }
 
 void menuMouseButtonPressed()
 {
-
+	if (event.mouseButton.button == sf::Mouse::Left)
+		menuFunctions[menuSelectedEntryNumber]();
 }
 
 void menuMouseMoved()

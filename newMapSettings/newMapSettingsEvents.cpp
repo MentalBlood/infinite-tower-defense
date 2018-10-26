@@ -48,7 +48,7 @@ void newMapSettingsMouseMoved()
 		return;
 	}
 
-	if (event.mouseMove.y > newMapSettingsY1 + 6*newMapSettingsFontSize)
+	if (event.mouseMove.y > newMapSettingsY1 + 1.5*newMapSettings.size()*newMapSettingsFontSize)
 	{
 		newMapSettings[newMapSettingsSelectedSettingNumber].unselect();
 		newMapSettingsSelectedSettingNumber = newMapSettings.size()-1;
@@ -56,11 +56,22 @@ void newMapSettingsMouseMoved()
 		return;
 	}
 
-	int index = int(event.mouseMove.y - newMapSettingsY1) / (6.0/newMapSettings.size()*newMapSettingsFontSize);
+	int index = int(event.mouseMove.y - newMapSettingsY1) / (1.5*newMapSettingsFontSize);
 	if (index == newMapSettingsSelectedSettingNumber) return;
 	newMapSettings[newMapSettingsSelectedSettingNumber].unselect();
 	newMapSettingsSelectedSettingNumber = index;
 	newMapSettings[index].select();
+}
+
+void newMapSettingsMouseWheelScrolled()
+{
+	if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+	{
+		if (event.mouseWheelScroll.delta > 0)
+			newMapSettings[newMapSettingsSelectedSettingNumber].increaseValue();
+		else
+			newMapSettings[newMapSettingsSelectedSettingNumber].decreaseValue();
+	}
 }
 
 void setNewMapSettingsEvents()
@@ -69,7 +80,7 @@ void setNewMapSettingsEvents()
 	events[4] = nothing; //text entered
 	events[5] = newMapSettingsKeyPressed; //key pressed
 	events[6] = nothing; //key released
-	events[8] = nothing; //mouse wheel scrolled
+	events[8] = newMapSettingsMouseWheelScrolled; //mouse wheel scrolled
 	events[9] = newMapSettingsMouseButtonPressed; //mouse button pressed
 	events[10] = nothing; //mouse button released
 	events[11] = newMapSettingsMouseMoved; //mouse moved
