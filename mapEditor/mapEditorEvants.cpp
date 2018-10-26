@@ -15,8 +15,8 @@ void mapEditorKeyPressed()
 		mapEditorMap->changePath(RIGHT);
 	else if (event.key.code == sf::Keyboard::Left)
 		mapEditorMap->changePath(LEFT);
-	else if (event.key.code == sf::Keyboard::Add) mapEditorMap->changeZoom(0.02);
-	else if (event.key.code == sf::Keyboard::Subtract) mapEditorMap->changeZoom(-0.02);
+	else if (event.key.code == sf::Keyboard::PageUp) mapEditorMap->changeZoom(0.02);
+	else if (event.key.code == sf::Keyboard::PageDown) mapEditorMap->changeZoom(-0.02);
 }
 
 void mapEditorMouseButtonPressed()

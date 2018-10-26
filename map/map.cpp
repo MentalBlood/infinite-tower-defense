@@ -262,7 +262,6 @@ class Map
 
 		bool changePath(char pathDirection)
 		{
-			printf("%d + %d = %d\n", pathDirection, path[path.size()-1], pathDirection + path[path.size()-1]);
 			if ((pathDirection + path[path.size()-1]) == 5) //if moving backward (see defines)
 				if (path.size() > 1)
 				{
