@@ -7,6 +7,7 @@
 #define PATH 1
 #define BEGIN 2
 #define END 3
+#define ROCK 4
 
 class Map
 {
@@ -26,20 +27,23 @@ class Map
 					*pathCellTexture,
 					*cellSelectorTexture,
 					*startCellTexture,
-					*endCellTexture;
+					*endCellTexture,
+					*rockCellTexture;
 
 		sf::Sprite	towerCellSprite,
 					pathCellSprite,
 					cellSelectorSprite,
 					startCellSprite,
-					endCellSprite;
+					endCellSprite,
+					rockCellSprite;
 
 		int cellSelectorX,
 			cellSelectorY;
 
 		bool cellSelectorPressed,
 			 draggingStartCell,
-			 draggingEndCell;
+			 draggingEndCell,
+			 settingRocks;
 
 		sf::Color	towerCellBordersColor,
 					towerCellFillColor,
@@ -70,9 +74,11 @@ class Map
 		Map(int width, int height,
 			sf::Color towerCellBordersColor, sf::Color towerCellFillColor, sf::Color cellSelectorColor):
 			x1(0), y1(0), x2(width - 1), y2(height - 1), zoom(1), cellSelectorX(0), cellSelectorY(0),
-			towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL), startCellTexture(NULL), endCellTexture(NULL),
+			towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL), startCellTexture(NULL),
+			endCellTexture(NULL), rockCellTexture(NULL),
 			towerCellBordersColor(towerCellBordersColor), towerCellFillColor(towerCellFillColor),
-			cellSelectorColor(cellSelectorColor), cellSelectorPressed(false), draggingStartCell(false), draggingEndCell(false)
+			cellSelectorColor(cellSelectorColor), cellSelectorPressed(false), draggingStartCell(false),
+			draggingEndCell(false), settingRocks(false)
 		{
 			mapWidth = width;
 			mapHeight = height;
@@ -188,7 +194,14 @@ class Map
 			endCellSprite.setTextureRect(sf::IntRect(0, 0, cellTextureSize, cellTextureSize));
 			endCellSprite.setTexture(*endCellTexture);
 
-			//5 drawing cell selector texture
+			//5 setting rock cell texture
+			if (!rockCellTexture) delete rockCellTexture;
+			rockCellTexture = new sf::Texture();
+			rockCellTexture->loadFromFile("textures/rockCell.png");
+			rockCellSprite.setTextureRect(sf::IntRect(0, 0, cellTextureSize, cellTextureSize));
+			rockCellSprite.setTexture(*rockCellTexture);
+
+			//6 drawing cell selector texture
 			if (!RenderTexture.create(cellTextureSize, cellTextureSize));
 
 			sf::VertexArray cellSelectorVertexArray;
@@ -255,6 +268,22 @@ class Map
 				draggingEndCell = true;
 		}
 
+		void setRockOnCell()
+		{
+			if (pathMap[cellSelectorX][cellSelectorY] < 2)
+				pathMap[cellSelectorX][cellSelectorY] = ROCK;
+		}
+
+		void startSettingRocks()
+		{
+			if (cellSelectorPressed) return;
+			settingRocks = true;
+			setRockOnCell();
+		}
+
+		void finishSettingRocks()
+		{ settingRocks = false; }
+
 		void pressCellSelector()
 		{
 			if (cellSelectorPressed) return;
@@ -298,31 +327,33 @@ class Map
 				else return;
 			}
 
+			if (settingRocks) setRockOnCell();
+			else
 			if (draggingStartCell)
 			{
-				if (pathMap[cellSelectorX][cellSelectorY] == 3)
+				if (pathMap[cellSelectorX][cellSelectorY] == END)
 				{
 					draggingEndCell = false;
 					cellSelectorX = oldCellSelectorX;
 					cellSelectorY = oldCellSelectorY;
 					return;
 				}
-				pathMap[oldCellSelectorX][oldCellSelectorY] = 0;
-				pathMap[cellSelectorX][cellSelectorY] = 2;
+				pathMap[oldCellSelectorX][oldCellSelectorY] = EMPTY;
+				pathMap[cellSelectorX][cellSelectorY] = BEGIN;
 				x1 = cellSelectorX; y1 = cellSelectorY;
 			}
 			else
 			if (draggingEndCell)
 			{
-				if (pathMap[cellSelectorX][cellSelectorY] == 2)
+				if (pathMap[cellSelectorX][cellSelectorY] == BEGIN)
 				{
 					draggingStartCell = false;
 					cellSelectorX = oldCellSelectorX;
 					cellSelectorY = oldCellSelectorY;
 					return;
 				}
-				pathMap[oldCellSelectorX][oldCellSelectorY] = 0;
-				pathMap[cellSelectorX][cellSelectorY] = 3;
+				pathMap[oldCellSelectorX][oldCellSelectorY] = EMPTY;
+				pathMap[cellSelectorX][cellSelectorY] = END;
 				x2 = cellSelectorX; y2 = cellSelectorY;
 			}
 			else
@@ -339,15 +370,22 @@ class Map
 			if ((selectedCellX < 0) || (selectedCellX >= mapWidth) ||
 				(selectedCellY < 0) || (selectedCellY >= mapHeight)) return false;
 
+			if (settingRocks)
+			{
+				cellSelectorX = selectedCellX;
+				cellSelectorY = selectedCellY;
+				setRockOnCell();
+				return false;
+			}
 			if (draggingStartCell)
 			{
-				if (pathMap[selectedCellX][selectedCellY] == 3)
+				if (pathMap[selectedCellX][selectedCellY] == END)
 				{
 					unpressCellSelector();
 					return false;
 				}
-				pathMap[x1][y1] = 0;
-				pathMap[selectedCellX][selectedCellY] = 2;
+				pathMap[x1][y1] = EMPTY;
+				pathMap[selectedCellX][selectedCellY] = BEGIN;
 				x1 = selectedCellX; y1 = selectedCellY;
 
 				cellSelectorX = selectedCellX;
@@ -358,13 +396,13 @@ class Map
 			else
 			if (draggingEndCell)
 			{
-				if (pathMap[selectedCellX][selectedCellY] == 2)
+				if (pathMap[selectedCellX][selectedCellY] == BEGIN)
 				{
 					unpressCellSelector();
 					return false;
 				}
-				pathMap[x2][y2] = 0;
-				pathMap[selectedCellX][selectedCellY] = 3;
+				pathMap[x2][y2] = EMPTY;
+				pathMap[selectedCellX][selectedCellY] = END;
 				x2 = selectedCellX; y2 = selectedCellY;
 
 				cellSelectorX = selectedCellX;
@@ -376,19 +414,12 @@ class Map
 			cellSelectorX = selectedCellX;
 			cellSelectorY = selectedCellY;
 
-			if (pathMap[selectedCellX][selectedCellY] == 2)
+			if (cellSelectorPressed)
 			{
-				draggingStartCell = true;
-				return false;
-			}
-			if (pathMap[selectedCellX][selectedCellY] == 3)
-			{
-				draggingEndCell = true;
+				pressOnCell();
 				return false;
 			}
 
-			if (cellSelectorPressed) pressOnCell();
-			
 			return true;
 		}
 
@@ -399,17 +430,26 @@ class Map
 
 			for (int i = 0; i < pathMap.size(); i++, cellSpriteX += realCellTextureSize)
 			{
+				if (((cellSpriteX + realCellTextureSize) < 0) || (cellSpriteX > windowSize.x)) continue;
 				for (int j = 0; j < pathMap[i].size(); j++, cellSpriteY += realCellTextureSize)
 				{
-					if (pathMap[i][j])
+					if (((cellSpriteY + realCellTextureSize) < 0) || (cellSpriteY > windowSize.y)) continue;
+					if (pathMap[i][j] == PATH)
 					{
 						pathCellSprite.setPosition(cellSpriteX, cellSpriteY);
 						window.draw(pathCellSprite);
 					}
 					else
+					if (pathMap[i][j] == EMPTY)
 					{
 						towerCellSprite.setPosition(cellSpriteX, cellSpriteY);
 						window.draw(towerCellSprite);
+					}
+					else
+					if (pathMap[i][j] == ROCK)
+					{
+						rockCellSprite.setPosition(cellSpriteX, cellSpriteY);
+						window.draw(rockCellSprite);
 					}
 				}
 				cellSpriteY = mapPositionY;

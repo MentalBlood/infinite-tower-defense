@@ -23,6 +23,8 @@ void mapEditorKeyPressed()
 		mapEditorMap->moveCellSelector(LEFT);
 	else if (event.key.code == sf::Keyboard::Space)
 		mapEditorMap->pressCellSelector();
+	else if (event.key.code == sf::Keyboard::R)
+		mapEditorMap->startSettingRocks();
 	else if (event.key.code == sf::Keyboard::PageUp) mapEditorMap->changeZoom(1.02, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
 	else if (event.key.code == sf::Keyboard::PageDown) mapEditorMap->changeZoom(0.98, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
 	else if (event.key.code == sf::Keyboard::End) mapEditorExit();
@@ -32,6 +34,8 @@ void mapEditorKeyReleased()
 {
 	if (event.key.code == sf::Keyboard::Space)
 		mapEditorMap->unpressCellSelector();
+	else if (event.key.code == sf::Keyboard::R)
+		mapEditorMap->finishSettingRocks();
 }
 
 void mapEditorMouseButtonPressed()
