@@ -232,6 +232,7 @@ class Map
 			cellSelectorSprite.setScale(zoom, zoom);
 			startCellSprite.setScale(zoom, zoom);
 			endCellSprite.setScale(zoom, zoom);
+			rockCellSprite.setScale(zoom, zoom);
 
 			realCellTextureSize = cellTextureSize * zoom;
 		}
@@ -261,6 +262,8 @@ class Map
 			if (pathMap[cellSelectorX][cellSelectorY] == PATH)
 				pathMap[cellSelectorX][cellSelectorY] = EMPTY;
 			else
+			if (pathMap[cellSelectorX][cellSelectorY] == ROCK)
+				pathMap[cellSelectorX][cellSelectorY] = EMPTY;
 			if (pathMap[cellSelectorX][cellSelectorY] == BEGIN)
 				draggingStartCell = true;
 			else
@@ -272,11 +275,14 @@ class Map
 		{
 			if (pathMap[cellSelectorX][cellSelectorY] < 2)
 				pathMap[cellSelectorX][cellSelectorY] = ROCK;
+			else
+			if (pathMap[cellSelectorX][cellSelectorY] == ROCK)
+				pathMap[cellSelectorX][cellSelectorY] = EMPTY;
 		}
 
 		void startSettingRocks()
 		{
-			if (cellSelectorPressed) return;
+			if (cellSelectorPressed || settingRocks) return;
 			settingRocks = true;
 			setRockOnCell();
 		}
@@ -377,6 +383,7 @@ class Map
 				setRockOnCell();
 				return false;
 			}
+			else
 			if (draggingStartCell)
 			{
 				if (pathMap[selectedCellX][selectedCellY] == END)
