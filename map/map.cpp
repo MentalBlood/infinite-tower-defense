@@ -37,7 +37,9 @@ class Map
 		int cellSelectorX,
 			cellSelectorY;
 
-		bool cellSelectorPressed;
+		bool cellSelectorPressed,
+			 draggingStartCell,
+			 draggingEndCell;
 
 		sf::Color	towerCellBordersColor,
 					towerCellFillColor,
@@ -67,10 +69,10 @@ class Map
 	public:
 		Map(int width, int height,
 			sf::Color towerCellBordersColor, sf::Color towerCellFillColor, sf::Color cellSelectorColor):
-			x1(0), y1(0), x2(width - 1), y2(height - 1), zoom(1),
+			x1(0), y1(0), x2(width - 1), y2(height - 1), zoom(1), cellSelectorX(0), cellSelectorY(0),
 			towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL), startCellTexture(NULL), endCellTexture(NULL),
 			towerCellBordersColor(towerCellBordersColor), towerCellFillColor(towerCellFillColor),
-			cellSelectorColor(cellSelectorColor), cellSelectorPressed(false)
+			cellSelectorColor(cellSelectorColor), cellSelectorPressed(false), draggingStartCell(false), draggingEndCell(false)
 		{
 			mapWidth = width;
 			mapHeight = height;
@@ -123,6 +125,9 @@ class Map
 
 			x1 = 0; y1 = 0;
 			x2 = mapWidth - 1; y2 = mapHeight - 1;
+
+			cellSelectorX = 0;
+			cellSelectorY = 0;
 		}
 
 		void setTextures(float cellRelativeSize)
@@ -242,6 +247,12 @@ class Map
 			else
 			if (pathMap[cellSelectorX][cellSelectorY] == PATH)
 				pathMap[cellSelectorX][cellSelectorY] = EMPTY;
+			else
+			if (pathMap[cellSelectorX][cellSelectorY] == BEGIN)
+				draggingStartCell = true;
+			else
+			if (pathMap[cellSelectorX][cellSelectorY] == END)
+				draggingEndCell = true;
 		}
 
 		void pressCellSelector()
@@ -254,11 +265,15 @@ class Map
 		void unpressCellSelector()
 		{
 			cellSelectorPressed = false;
+			draggingStartCell = false;
+			draggingEndCell = false;
 		}
 
 		void moveCellSelector(char direction)
 		{
-			printf("moveCellSelector\n");
+			int oldCellSelectorX = cellSelectorX,
+				oldCellSelectorY = cellSelectorY;
+
 			if (direction == LEFT)
 			{
 				if (cellSelectorX) --cellSelectorX;
@@ -283,6 +298,34 @@ class Map
 				else return;
 			}
 
+			if (draggingStartCell)
+			{
+				if (pathMap[cellSelectorX][cellSelectorY] == 3)
+				{
+					draggingEndCell = false;
+					cellSelectorX = oldCellSelectorX;
+					cellSelectorY = oldCellSelectorY;
+					return;
+				}
+				pathMap[oldCellSelectorX][oldCellSelectorY] = 0;
+				pathMap[cellSelectorX][cellSelectorY] = 2;
+				x1 = cellSelectorX; y1 = cellSelectorY;
+			}
+			else
+			if (draggingEndCell)
+			{
+				if (pathMap[cellSelectorX][cellSelectorY] == 2)
+				{
+					draggingStartCell = false;
+					cellSelectorX = oldCellSelectorX;
+					cellSelectorY = oldCellSelectorY;
+					return;
+				}
+				pathMap[oldCellSelectorX][oldCellSelectorY] = 0;
+				pathMap[cellSelectorX][cellSelectorY] = 3;
+				x2 = cellSelectorX; y2 = cellSelectorY;
+			}
+			else
 			if (cellSelectorPressed) pressOnCell();
 		}
 
@@ -296,10 +339,56 @@ class Map
 			if ((selectedCellX < 0) || (selectedCellX >= mapWidth) ||
 				(selectedCellY < 0) || (selectedCellY >= mapHeight)) return false;
 
+			if (draggingStartCell)
+			{
+				if (pathMap[selectedCellX][selectedCellY] == 3)
+				{
+					unpressCellSelector();
+					return false;
+				}
+				pathMap[x1][y1] = 0;
+				pathMap[selectedCellX][selectedCellY] = 2;
+				x1 = selectedCellX; y1 = selectedCellY;
+
+				cellSelectorX = selectedCellX;
+				cellSelectorY = selectedCellY;
+
+				return false;
+			}
+			else
+			if (draggingEndCell)
+			{
+				if (pathMap[selectedCellX][selectedCellY] == 2)
+				{
+					unpressCellSelector();
+					return false;
+				}
+				pathMap[x2][y2] = 0;
+				pathMap[selectedCellX][selectedCellY] = 3;
+				x2 = selectedCellX; y2 = selectedCellY;
+
+				cellSelectorX = selectedCellX;
+				cellSelectorY = selectedCellY;
+
+				return false;
+			}
+
 			cellSelectorX = selectedCellX;
 			cellSelectorY = selectedCellY;
 
+			if (pathMap[selectedCellX][selectedCellY] == 2)
+			{
+				draggingStartCell = true;
+				return false;
+			}
+			if (pathMap[selectedCellX][selectedCellY] == 3)
+			{
+				draggingEndCell = true;
+				return false;
+			}
+
 			if (cellSelectorPressed) pressOnCell();
+			
 			return true;
 		}
 
