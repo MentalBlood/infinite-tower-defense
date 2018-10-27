@@ -9,6 +9,110 @@
 #define END 3
 #define ROCK 4
 
+#define CHANGE_CELL 0
+#define MOVE_BEGIN 1
+#define MOVE_END 2
+
+class MapChange
+{
+	public:
+		int cellX, cellY;
+		char was, become;
+
+		MapChange(int x, int y, char was, char become): cellX(x), cellY(y), was(was), become(become)
+		{}
+};
+
+class EditorAction
+{
+	private:
+		std::vector<MapChange> mapChanges;
+
+	public:
+		//just one cell changed
+		EditorAction(int cellX, int cellY, char was, char become)
+		{ mapChanges.push_back(MapChange(cellX, cellY, was, become)); }
+
+		//start or end cell moved
+		EditorAction(char movingCell, char toCell, int fromX, int fromY, int toX, int toY)
+		{
+			mapChanges.push_back(MapChange(fromX, fromY, movingCell, EMPTY));
+			mapChanges.push_back(MapChange(toX, toY, toCell, movingCell));
+		}
+
+		//map reseted
+		EditorAction(std::vector<std::vector<char> > &pathMap)
+		{
+			for (int i = 0; i < pathMap.size(); i++)
+				for (int j = 0; j < pathMap[i].size(); j++)
+					//start cell is in left upper corner by default
+					if ((!i) && (!j) && (pathMap[i][j] != BEGIN))
+						mapChanges.push_back(MapChange(i, j, pathMap[i][j], BEGIN));
+					else
+					//end cell is in right bottom corner by default
+					if ((i == (pathMap.size()-1)) && (j == (pathMap[0].size()-1)) && (pathMap[i][j] != END))
+						mapChanges.push_back(MapChange(i, j, pathMap[i][j], END));
+					else
+					//other cells are empty by default
+					if (pathMap[i][j] != EMPTY)
+						mapChanges.push_back(MapChange(i, j, pathMap[i][j], EMPTY));
+		}
+
+		void undo(std::vector<std::vector<char> > &pathMap, int *x1, int *y1, int *x2, int *y2)
+		{
+			if (mapChanges.size() > 1)
+			{
+				for (int i = 0; i < mapChanges.size(); i++)
+				{
+					pathMap[mapChanges[i].cellX][mapChanges[i].cellY] = mapChanges[i].was;
+					if (mapChanges[i].was == BEGIN)
+					{
+						*x1 = mapChanges[i].cellX;
+						*y1 = mapChanges[i].cellY;
+					}
+					else
+					if (mapChanges[i].was == END)
+					{
+						*x2 = mapChanges[i].cellX;
+						*y2 = mapChanges[i].cellY;
+					}
+				}
+			}
+			else
+				pathMap[mapChanges[0].cellX][mapChanges[0].cellY] = mapChanges[0].was;
+		}
+
+		void redo(std::vector<std::vector<char> > &pathMap, int *x1, int *y1, int *x2, int *y2)
+		{
+			if (mapChanges.size() > 1)
+			{
+				for (int i = 0; i < mapChanges.size(); i++)
+				{
+					pathMap[mapChanges[i].cellX][mapChanges[i].cellY] = mapChanges[i].become;
+					if (mapChanges[i].become == BEGIN)
+					{
+						*x1 = mapChanges[i].cellX;
+						*y1 = mapChanges[i].cellY;
+					}
+					else
+					if (mapChanges[i].become == END)
+					{
+						*x2 = mapChanges[i].cellX;
+						*y2 = mapChanges[i].cellY;
+					}
+				}
+			}
+			else
+				pathMap[mapChanges[0].cellX][mapChanges[0].cellY] = mapChanges[0].become;
+		}
+
+		void print()
+		{
+			for (int i = 0; i < mapChanges.size(); i++)
+				printf("(%d, %d): %d -> %d\n", mapChanges[i].cellX, mapChanges[i].cellY, mapChanges[i].was, mapChanges[i].become);
+		}
+};
+
 class Map
 {
 	private:
@@ -52,6 +156,9 @@ class Map
 		std::vector<char> path;
 		std::vector<std::vector<char> > pathMap;
 
+		std::vector<EditorAction> actions;
+		int lastActionIndex;
+
 		void createPathMap()
 		{
 			pathMap.resize(mapWidth);
@@ -70,6 +177,50 @@ class Map
 					pathMap[i][j] = 0;
 		}
 
+		void changeCell(int x, int y, char newCell)
+		{
+			//erasing "future" actions
+			if (lastActionIndex != (actions.size()-1))
+			{
+				printf("ERASING; lastActionIndex = %d ; actions.size() = %d\n", lastActionIndex, actions.size());
+				actions.erase(actions.begin() + lastActionIndex+1, actions.end());
+			}
+			++lastActionIndex;
+
+			actions.push_back(EditorAction(x, y, pathMap[x][y], newCell));
+			pathMap[x][y] = newCell;
+		}
+
+		void moveCell(int fromX, int fromY, int toX, int toY)
+		{
+			//erasing "future" actions
+			if (lastActionIndex != (actions.size()-1))
+			{
+				printf("ERASING; lastActionIndex = %d ; actions.size() = %d\n", lastActionIndex, actions.size());
+				actions.erase(actions.begin() + lastActionIndex+1, actions.end());
+			}
+			++lastActionIndex;
+
+			actions.push_back(EditorAction(pathMap[fromX][fromY], pathMap[toX][toY], fromX, fromY, toX, toY));
+			pathMap[toX][toY] = pathMap[fromX][fromY];
+			pathMap[fromX][fromY] = EMPTY;
+
+			//start cell was moved
+			if (pathMap[toX][toY] == BEGIN)
+			{
+				x1 = toX;
+				y1 = toY;
+			}
+			//end cell was moved
+			else
+			{
+				x2 = toX;
+				y2 = toY;
+			}
+		}
+
+		
+
 	public:
 		Map(int width, int height,
 			sf::Color towerCellBordersColor, sf::Color towerCellFillColor, sf::Color cellSelectorColor):
@@ -78,7 +229,7 @@ class Map
 			endCellTexture(NULL), rockCellTexture(NULL),
 			towerCellBordersColor(towerCellBordersColor), towerCellFillColor(towerCellFillColor),
 			cellSelectorColor(cellSelectorColor), cellSelectorPressed(false), draggingStartCell(false),
-			draggingEndCell(false), settingRocks(false)
+			draggingEndCell(false), settingRocks(false), lastActionIndex(-1)
 		{
 			mapWidth = width;
 			mapHeight = height;
@@ -88,10 +239,8 @@ class Map
 			pathMap[width-1][height-1] = 3;
 		}
 
-		Map(char *fileName)
-		{
-			loadFile(fileName);
-		}
+		Map(char *fileName): lastActionIndex(-1)
+		{ loadFile(fileName); }
 
 		~Map()
 		{
@@ -122,8 +271,40 @@ class Map
 			createPathMap();
 		}
 
+		void undo()
+		{
+			printf("undo; lastActionIndex = %d\n", lastActionIndex);
+			if (lastActionIndex == -1) return;
+
+			actions[lastActionIndex].undo(pathMap, &x1, &y1, &x2, &y2);
+			--lastActionIndex;
+		}
+
+		void redo()
+		{
+			printf("redo; lastActionIndex = %d; actions.size() = %d\n", lastActionIndex, actions.size());
+			if (lastActionIndex >= int(actions.size()-1)) return;
+
+			printf("lastActionIndex ok, redo action\n");
+			++lastActionIndex;
+			actions[lastActionIndex].redo(pathMap, &x1, &y1, &x2, &y2);
+			printf("redo done\n");
+		}
+
+		void print_actions()
+		{
+			for (int i = 0; i < actions.size(); i++)
+			{
+				printf("\t%d\t\n", i);
+				actions[i].print();
+				printf("\n");
+			}
+		}
+
 		void reset()
 		{
+			printf("reseting, lastActionIndex = %d\n", lastActionIndex);
+			actions.push_back(EditorAction(pathMap));
 			clearPathMap();
 			
 			pathMap[0][0] = 2;
@@ -134,6 +315,8 @@ class Map
 
 			cellSelectorX = 0;
 			cellSelectorY = 0;
+			++lastActionIndex;
+			printf("reseted, lastActionIndex = %d\n", lastActionIndex);
 		}
 
 		void setTextures(float cellRelativeSize)
@@ -257,13 +440,13 @@ class Map
 		void pressOnCell()
 		{
 			if (pathMap[cellSelectorX][cellSelectorY] == EMPTY)
-				pathMap[cellSelectorX][cellSelectorY] = PATH;
+				changeCell(cellSelectorX, cellSelectorY, PATH);
 			else
 			if (pathMap[cellSelectorX][cellSelectorY] == PATH)
-				pathMap[cellSelectorX][cellSelectorY] = EMPTY;
+				changeCell(cellSelectorX, cellSelectorY, EMPTY);
 			else
 			if (pathMap[cellSelectorX][cellSelectorY] == ROCK)
-				pathMap[cellSelectorX][cellSelectorY] = EMPTY;
+				changeCell(cellSelectorX, cellSelectorY, EMPTY);
 			if (pathMap[cellSelectorX][cellSelectorY] == BEGIN)
 				draggingStartCell = true;
 			else
@@ -274,10 +457,10 @@ class Map
 		void setRockOnCell()
 		{
 			if (pathMap[cellSelectorX][cellSelectorY] < 2)
-				pathMap[cellSelectorX][cellSelectorY] = ROCK;
+				changeCell(cellSelectorX, cellSelectorY, ROCK);
 			else
 			if (pathMap[cellSelectorX][cellSelectorY] == ROCK)
-				pathMap[cellSelectorX][cellSelectorY] = EMPTY;
+				changeCell(cellSelectorX, cellSelectorY, EMPTY);
 		}
 
 		void startSettingRocks()
@@ -344,8 +527,7 @@ class Map
 					cellSelectorY = oldCellSelectorY;
 					return;
 				}
-				pathMap[oldCellSelectorX][oldCellSelectorY] = EMPTY;
-				pathMap[cellSelectorX][cellSelectorY] = BEGIN;
+				moveCell(oldCellSelectorX, oldCellSelectorY, cellSelectorX, cellSelectorY);
 				x1 = cellSelectorX; y1 = cellSelectorY;
 			}
 			else
@@ -358,8 +540,7 @@ class Map
 					cellSelectorY = oldCellSelectorY;
 					return;
 				}
-				pathMap[oldCellSelectorX][oldCellSelectorY] = EMPTY;
-				pathMap[cellSelectorX][cellSelectorY] = END;
+				moveCell(oldCellSelectorX, oldCellSelectorY, cellSelectorX, cellSelectorY);
 				x2 = cellSelectorX; y2 = cellSelectorY;
 			}
 			else
@@ -391,8 +572,7 @@ class Map
 					unpressCellSelector();
 					return false;
 				}
-				pathMap[x1][y1] = EMPTY;
-				pathMap[selectedCellX][selectedCellY] = BEGIN;
+				moveCell(x1, y1, selectedCellX, selectedCellY);
 				x1 = selectedCellX; y1 = selectedCellY;
 
 				cellSelectorX = selectedCellX;
@@ -408,8 +588,7 @@ class Map
 					unpressCellSelector();
 					return false;
 				}
-				pathMap[x2][y2] = EMPTY;
-				pathMap[selectedCellX][selectedCellY] = END;
+				moveCell(x2, y2, selectedCellX, selectedCellY);
 				x2 = selectedCellX; y2 = selectedCellY;
 
 				cellSelectorX = selectedCellX;
