@@ -38,6 +38,9 @@ void mapEditorMouseButtonPressed()
 {
 	if (event.mouseButton.button == sf::Mouse::Left)
 	{
+		for (int i = 0; i < mapEditorButtons.size(); i++)
+			if (mapEditorButtons[i].tryToPress(event.mouseButton.x, event.mouseButton.y))
+				return;
 		mapEditorMapDragging = true;
 		mapEditorMapDraggingMouseX1 = event.mouseButton.x;
 		mapEditorMapDraggingMouseY1 = event.mouseButton.y;
@@ -46,8 +49,8 @@ void mapEditorMouseButtonPressed()
 	else
 	if (event.mouseButton.button == sf::Mouse::Right)
 	{
-		mapEditorMap->moveCellSelectorToMouse(event.mouseButton.x, event.mouseButton.y);
-		mapEditorMap->pressCellSelector();
+		if (mapEditorMap->moveCellSelectorToMouse(event.mouseButton.x, event.mouseButton.y))
+			mapEditorMap->pressCellSelector();
 	}
 }
 
@@ -55,6 +58,8 @@ void mapEditorMouseButtonReleased()
 {
 	mapEditorMapDragging = false;
 	mapEditorMap->unpressCellSelector();
+	for (int i = 0; i < mapEditorButtons.size(); i++)
+		mapEditorButtons[i].unpress();
 }
 
 void mapEditorMouseMoved()

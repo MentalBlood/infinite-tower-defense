@@ -13,16 +13,18 @@ void (*updateFunction)(),
 
 std::vector<void (*)()> startFunctions;
 
+#include "events.cpp"
+
 #include "graphicsFunctions/vertexArrays.cpp"
 
-#include "events.cpp"
+#include "guiElements/TwoConditionButton.cpp"
 
 #include "map/map.cpp"
 
 #include "mapEditor/mapEditorVariables.cpp"
 #include "mapEditor/updateMapEditor.cpp"
 #include "mapEditor/drawMapEditor.cpp"
-#include "mapEditor/mapEditorEvants.cpp"
+#include "mapEditor/mapEditorEvents.cpp"
 #include "mapEditor/startMapEditor.cpp"
 
 #include "newMapSettings/newMapSettingsVariables.cpp"

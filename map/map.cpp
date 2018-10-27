@@ -114,6 +114,17 @@ class Map
 			createPathMap();
 		}
 
+		void reset()
+		{
+			clearPathMap();
+			
+			pathMap[0][0] = 2;
+			pathMap[mapWidth-1][mapHeight-1] = 3;
+
+			x1 = 0; y1 = 0;
+			x2 = mapWidth - 1; y2 = mapHeight - 1;
+		}
+
 		void setTextures(float cellRelativeSize)
 		{
 			//1 drawing tower cell texture
@@ -251,39 +262,45 @@ class Map
 			if (direction == LEFT)
 			{
 				if (cellSelectorX) --cellSelectorX;
+				else return;
 			}
 			else
 			if (direction == RIGHT)
 			{
 				if ((cellSelectorX+1) < mapWidth) ++cellSelectorX;
+				else return;
 			}
 			else
 			if (direction == DOWN)
 			{
 				if ((cellSelectorY+1) < mapHeight) ++cellSelectorY;
+				else return;
 			}
 			else
 			if (direction == UP)
 			{
 				if (cellSelectorY) --cellSelectorY;
+				else return;
 			}
 
 			if (cellSelectorPressed) pressOnCell();
 		}
 
-		void moveCellSelectorToMouse(float x, float y)
+		bool moveCellSelectorToMouse(float x, float y)
 		{
 			int selectedCellX = int((x - mapPositionX) / realCellTextureSize),
 				selectedCellY = int((y - mapPositionY) / realCellTextureSize);
 
-			if ((selectedCellX == cellSelectorX) && (selectedCellY == cellSelectorY)) return;
-			
+			if ((selectedCellX == cellSelectorX) && (selectedCellY == cellSelectorY)) return true;
+
 			if ((selectedCellX < 0) || (selectedCellX >= mapWidth) ||
-				(selectedCellY < 0) || (selectedCellY >= mapHeight)) return;
+				(selectedCellY < 0) || (selectedCellY >= mapHeight)) return false;
+
 			cellSelectorX = selectedCellX;
 			cellSelectorY = selectedCellY;
 
 			if (cellSelectorPressed) pressOnCell();
+			return true;
 		}
 
 		void draw()
