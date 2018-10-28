@@ -6,12 +6,16 @@ float mapEditorMapDraggingMouseX1,
 	  mapEditorMapDraggingMouseY1;
 sf::Vector2f mapEditorMapDraggingMapInitialCoordinates;
 
+EnterFileNameDialog *mapEditorFileNameDialog = NULL;
+
 #include "mapEditorButtons.cpp"
 
 void updateMapEditorVariables()
 {
 	for (int i = 0; i < mapEditorButtons.size(); i++)
 		mapEditorButtons[i].updatePositionAndSize();
+	if (mapEditorFileNameDialog)
+		mapEditorFileNameDialog->updatePositionAndSize();
 }
 
 void setMapEditorVariables(int mapEditorMapWidth, int mapEditorMapHeight)
@@ -25,6 +29,8 @@ void setMapEditorVariables(int mapEditorMapWidth, int mapEditorMapHeight)
 
 	windowSize = window.getSize();
 	setMapEditorButtons();
+	if (mapEditorFileNameDialog) delete mapEditorFileNameDialog;
+	mapEditorFileNameDialog = NULL;
 
 	updateMapEditorVariables();
 }

@@ -8,11 +8,15 @@ void mapEditorResized()
 void mapEditorExit()
 {
 	delete mapEditorMap;
+	delete mapEditorFileNameDialog;
+	mapEditorFileNameDialog = NULL;
 	startFunctions[1]();
 }
 
 void mapEditorKeyPressed()
 {
+	if (mapEditorFileNameDialog) return;
+
 	if (event.key.code == sf::Keyboard::Up)
 		mapEditorMap->moveCellSelector(UP);
 	else if (event.key.code == sf::Keyboard::Down)
@@ -33,19 +37,36 @@ void mapEditorKeyPressed()
 	else if (event.key.code == sf::Keyboard::X) mapEditorMap->print_actions();
 	else if (event.key.code == sf::Keyboard::PageUp) mapEditorMap->changeZoom(1.02, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
 	else if (event.key.code == sf::Keyboard::PageDown) mapEditorMap->changeZoom(0.98, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
-	else if (event.key.code == sf::Keyboard::End) mapEditorExit();
+
+
+	if (event.key.code == sf::Keyboard::End) mapEditorExit();
 }
 
 void mapEditorKeyReleased()
 {
+	if (mapEditorFileNameDialog) return;
+
 	if (event.key.code == sf::Keyboard::Space)
 		mapEditorMap->unpressCellSelector();
 	else if (event.key.code == sf::Keyboard::R)
 		mapEditorMap->finishSettingRocks();
 }
 
+void mapEditorTextEntered()
+{
+	if (!mapEditorFileNameDialog) return;
+	if (event.text.unicode < 128)
+		if (!mapEditorFileNameDialog->processCharacter(event.text.unicode))
+		{
+			delete mapEditorFileNameDialog;
+			mapEditorFileNameDialog = NULL;
+		}
+}
+
 void mapEditorMouseButtonPressed()
 {
+	if (mapEditorFileNameDialog) return;
+
 	if (event.mouseButton.button == sf::Mouse::Left)
 	{
 		for (int i = 0; i < mapEditorButtons.size(); i++)
@@ -74,6 +95,8 @@ void mapEditorMouseButtonReleased()
 
 void mapEditorMouseMoved()
 {
+	if (mapEditorFileNameDialog) return;
+
 	if (mapEditorMapDragging)
 	{
 		mapEditorMap->setPosition(
@@ -86,6 +109,7 @@ void mapEditorMouseMoved()
 
 void mapEditorMouseWheelScrolled()
 {
+	if (mapEditorFileNameDialog) return;
 	if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
 		mapEditorMap->changeZoom(1 + event.mouseWheelScroll.delta/50, event.mouseWheelScroll.x, event.mouseWheelScroll.y);
 }
@@ -93,7 +117,7 @@ void mapEditorMouseWheelScrolled()
 void setMapEditorEvents()
 {
 	events[1] = mapEditorResized; //resized
-	events[4] = nothing; //text entered
+	events[4] = mapEditorTextEntered; //text entered
 	events[5] = mapEditorKeyPressed; //key pressed
 	events[6] = mapEditorKeyReleased; //key released
 	events[8] = mapEditorMouseWheelScrolled; //mouse wheel scrolled

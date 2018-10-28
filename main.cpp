@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <math.h>
 #include <iostream>
+#include <string>
 #include <vector>
 #include <list>
 
@@ -16,8 +17,10 @@ std::vector<void (*)()> startFunctions;
 #include "events.cpp"
 
 #include "graphicsFunctions/vertexArrays.cpp"
+#include "graphicsFunctions/textFunctions.cpp"
 
 #include "guiElements/TwoConditionButton.cpp"
+#include "guiElements/EnterFileNameDialog.cpp"
 
 #include "map/map.cpp"
 

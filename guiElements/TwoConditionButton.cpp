@@ -26,22 +26,18 @@ class TwoConditionButton
 			  x, y, width, height;
 
 	public:
-		TwoConditionButton(void (*functionOnPress)(), void (*functionOnUnpress)(), sf::String textStringArg, sf::String textFontFileName,
-					sf::Color textColor, sf::Color fillColor, sf::Color bordersColor, 
-					float relativeXArg, float relativeYArg, float relativeWidthArg, float relativeHeightArg):
+		TwoConditionButton(	void (*functionOnPress)(), void (*functionOnUnpress)(), sf::String textString,
+							sf::String textFontFileName, sf::Color textColor, sf::Color fillColor, sf::Color bordersColor, 
+							float relativeX, float relativeY, float relativeWidth, float relativeHeight):
 			functionOnPress(functionOnPress), functionOnUnpress(functionOnUnpress),
-			pressed(false), textString(textStringArg), fillColor(fillColor), bordersColor(bordersColor)
+			pressed(false), textString(textString), fillColor(fillColor), bordersColor(bordersColor),
+			relativeX(relativeX), relativeY(relativeY), relativeWidth(relativeWidth), relativeHeight(relativeHeight)
 		{
-			font = new sf::Font();
+			font = new sf::Font;
 			if (!font->loadFromFile(textFontFileName)) Closed();
 			text.setFont(*font);
 			text.setString(textString);
 			text.setFillColor(textColor);
-
-			relativeX = relativeXArg;
-			relativeY = relativeYArg;
-			relativeWidth = relativeWidthArg;
-			relativeHeight = relativeHeightArg;
 		}
 
 		void updatePositionAndSize()
@@ -50,22 +46,10 @@ class TwoConditionButton
 			y = windowSize.y * relativeY;
 			width = windowSize.x * relativeWidth;
 			height = windowSize.y * relativeHeight;
-
 			float bordersThickness = sqrt(width * height) / 64;
 
-			//find out how many pixels is font grow up with every character size unit
-			//(supposed that font grows linear)
-			text.setCharacterSize(10);
-			float fontSizeCoefficientY = text.getLocalBounds().height / 10,
-				  fontSizeCoefficientX = text.getLocalBounds().width / 10;
-
-			//set the font size so that the text is placed in the button
-			float fontSize = minf((width-4*bordersThickness)*3/4 / fontSizeCoefficientX, (height - 4*bordersThickness)*3/4 / fontSizeCoefficientY);
-			text.setCharacterSize(fontSize);
-
-			//set font position so that the text is placed in the center of the button
-			text.setPosition(	x + width/2 - text.getLocalBounds().width/2,
-								y + height/2 - text.getLocalBounds().height/2 - 2*bordersThickness);
+			fitTextIntoRectangle(&text, x + 2*bordersThickness, y + 2*bordersThickness,
+								width - 4*bordersThickness, height - 8*bordersThickness);
 
 			makeVertexArrayFrame(&borders, x, y, width, height, bordersThickness, bordersColor);
 			makeVertexArrayQuad(&fill, x + bordersThickness, y + bordersThickness,
