@@ -227,6 +227,51 @@ class Map
 			}
 		}
 
+		void loadFile(const char *fileName)
+		{
+			printf("loadFile\n");
+			FILE *file = fopen(fileName, "rb");
+			printf("file opened\n");
+
+			//read start and end cells
+			printf("read start and end cells\n");
+			fscanf(file, "%d%d%d%d", &mapWidth, &mapHeight, &x1, &y1);
+			//creating path map of read size
+			createPathMap();
+			pathMap[x1][y1] = BEGIN;
+
+			//read rocks coordinates
+			printf("read rocks coordinates\n");
+			int rockX,
+				rockY;
+			while (true)
+			{
+				fscanf(file, "%d", &rockX);
+				if (rockX == -1) break;
+
+				fscanf(file, "%d", &rockY);
+				pathMap[rockX][rockY] = ROCK;
+			}
+
+			//read path
+			printf("read path\n");
+			x2 = x1;
+			y2 = y1;
+			while (!feof(file))
+			{
+				char c = char(fgetc(file));
+				if (c == RIGHT) ++x2;
+				else if (c == LEFT) --x2;
+				else if (c == UP) --y2;
+				else if (c == DOWN) ++y2;
+				pathMap[x2][y2] = PATH;
+			}
+			pathMap[x2][y2] = END;
+
+			printf("closing file\n");
+			fclose(file);
+		}
+
 		void changeCell(int x, int y, char newCell)
 		{
 			//erasing "future" actions
@@ -319,38 +364,26 @@ class Map
 			pathMap[width-1][height-1] = 3;
 		}
 
-		Map(char *fileName): lastActionIndex(-1)
-		{ loadFile(fileName); }
+		Map(const char *fileName,
+			sf::Color towerCellBordersColor, sf::Color towerCellFillColor, sf::Color cellSelectorColor):
+			zoom(1), cellSelectorX(0), cellSelectorY(0),
+			towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL), startCellTexture(NULL),
+			endCellTexture(NULL), rockCellTexture(NULL),
+			towerCellBordersColor(towerCellBordersColor), towerCellFillColor(towerCellFillColor),
+			cellSelectorColor(cellSelectorColor), cellSelectorPressed(false), draggingStartCell(false),
+			draggingEndCell(false), settingRocks(false), lastActionIndex(-1)
+		{
+			loadFile(fileName);
+		}
 
 		~Map()
 		{
 			delete towerCellTexture;
 			delete pathCellTexture;
 			delete cellSelectorTexture;
-		}
-
-		void loadFile(char *fileName)
-		{
-			FILE *file = fopen(fileName, "rb");
-			fscanf(file, "%d%d%d%d", &mapWidth, &mapHeight, &x1, &y1);
-
-			//read path
-			x2 = x1;
-			y2 = y1;
-			while (true)
-			{
-				char c = char(fgetc(file));
-				if (!c) break;
-				if (c == RIGHT) ++x2;
-				else if (c == LEFT) --x2;
-				else if (c == UP) --y2;
-				else if (c == DOWN) ++y2;
-				path.push_back(c);
-			}
-
-			createPathMap();
-
-			fclose(file);
+			delete startCellTexture;
+			delete endCellTexture;
+			delete rockCellTexture;
 		}
 
 		bool check()

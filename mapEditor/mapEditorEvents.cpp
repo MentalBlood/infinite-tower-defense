@@ -39,7 +39,7 @@ void mapEditorKeyPressed()
 	else if (event.key.code == sf::Keyboard::PageDown) mapEditorMap->changeZoom(0.98, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
 
 
-	if (event.key.code == sf::Keyboard::End) mapEditorExit();
+	if (event.key.code == sf::Keyboard::Escape) mapEditorExit();
 }
 
 void mapEditorKeyReleased()

@@ -25,6 +25,13 @@ class TwoConditionButton
 			  relativeHeight,
 			  x, y, width, height;
 
+		void press()
+		{
+			pressed = true;
+			for (int i = 0; i < 4; i++) fill[i].color = bordersColor;
+			functionOnPress();
+		}
+
 	public:
 		TwoConditionButton(	void (*functionOnPress)(), void (*functionOnUnpress)(), sf::String textString,
 							sf::String textFontFileName, sf::Color textColor, sf::Color fillColor, sf::Color bordersColor, 
@@ -38,6 +45,7 @@ class TwoConditionButton
 			text.setFont(*font);
 			text.setString(textString);
 			text.setFillColor(textColor);
+			updatePositionAndSize();
 		}
 
 		void updatePositionAndSize()
@@ -56,15 +64,9 @@ class TwoConditionButton
 								width - 2*bordersThickness, height - 2*bordersThickness, fillColor);
 		}
 
-		void press()
-		{
-			pressed = true;
-			for (int i = 0; i < 4; i++) fill[i].color = bordersColor;
-			functionOnPress();
-		}
-
 		void unpress()
 		{
+			if (!pressed) return;
 			pressed = false;
 			for (int i = 0; i < 4; i++) fill[i].color = fillColor;
 			functionOnUnpress();
@@ -72,6 +74,7 @@ class TwoConditionButton
 
 		bool tryToPress(float mouseX, float mouseY)
 		{
+			if (pressed) return true;
 			if ((mouseX > x) && (mouseX < x + width) &&
 				(mouseY > y) && (mouseY < y + height))
 			{

@@ -41,7 +41,7 @@ void newMapSettingsKeyPressed()
 		newMapSettings.clear();
 	}
 	else
-	if (event.key.code == sf::Keyboard::End)
+	if (event.key.code == sf::Keyboard::Escape)
 		newMapSettingsExit();
 }
 

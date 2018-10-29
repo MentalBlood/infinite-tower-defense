@@ -22,7 +22,8 @@ std::vector<void (*)()> startFunctions;
 #include "guiElements/TwoConditionButton.cpp"
 #include "guiElements/EnterFileNameDialog.cpp"
 
-#include "map/map.cpp"
+#include "map/mapForEditing.cpp"
+#include "map/checkMapFile.cpp"
 
 #include "mapEditor/mapEditorVariables.cpp"
 #include "mapEditor/updateMapEditor.cpp"
@@ -35,6 +36,12 @@ std::vector<void (*)()> startFunctions;
 #include "newMapSettings/drawNewMapSettings.cpp"
 #include "newMapSettings/newMapSettingsEvents.cpp"
 #include "newMapSettings/startNewMapSettings.cpp"
+
+#include "chooseNewOrSavedMapToEditDialog/chooseNewOrSavedMapToEditDialogVariables.cpp"
+#include "chooseNewOrSavedMapToEditDialog/updateChooseNewOrSavedMapToEditDialog.cpp"
+#include "chooseNewOrSavedMapToEditDialog/drawChooseNewOrSavedMapToEditDialog.cpp"
+#include "chooseNewOrSavedMapToEditDialog/chooseNewOrSavedMapToEditDialogEvents.cpp"
+#include "chooseNewOrSavedMapToEditDialog/startChooseNewOrSavedMapToEditDialog.cpp"
 
 #include "menu/menuVariables.cpp"
 #include "menu/updateMenu.cpp"
