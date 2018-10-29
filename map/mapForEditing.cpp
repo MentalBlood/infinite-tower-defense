@@ -407,9 +407,10 @@ class Map
 					if (j < (pathMap[0].size()-1)) //DOWN
 						if (pathMap[i][j+1] && (pathMap[i][j+1] != ROCK)) ++pathesFromCell;
 
+
 					if (pathMap[i][j] == PATH)
 					{
-						if ((pathesFromCell > 2) || (!pathesFromCell)) return false;
+						if (pathesFromCell != 2) return false;
 					}
 					else //BEGIN or END
 						if (pathesFromCell != 1) return false;
