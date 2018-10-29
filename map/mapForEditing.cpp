@@ -260,10 +260,12 @@ class Map
 			while (!feof(file))
 			{
 				char c = char(fgetc(file));
+				printf("%d\n", c);
 				if (c == RIGHT) ++x2;
 				else if (c == LEFT) --x2;
 				else if (c == UP) --y2;
 				else if (c == DOWN) ++y2;
+				else break;
 				pathMap[x2][y2] = PATH;
 			}
 			pathMap[x2][y2] = END;

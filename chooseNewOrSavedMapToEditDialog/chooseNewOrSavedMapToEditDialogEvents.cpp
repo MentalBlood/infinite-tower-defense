@@ -10,13 +10,7 @@ void chooseNewOrSavedMapToEditDialogTextEntered()
 	if (!chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog) return;
 
 	if (event.text.unicode < 128)
-		if (!chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog->processCharacter(event.text.unicode))
-		{
-			printf("deleting chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog\n");
-			delete chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog;
-			chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog = NULL;
-			printf("deleted\n");
-		}
+		chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog->processCharacter(event.text.unicode);
 }
 
 void chooseNewOrSavedMapToEditDialogMouseButtonPressed()

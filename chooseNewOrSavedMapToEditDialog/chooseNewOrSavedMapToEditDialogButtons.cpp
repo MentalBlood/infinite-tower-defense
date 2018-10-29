@@ -3,7 +3,12 @@ TwoConditionButton *chooseNewOrSavedMapToEditDialogNewMapButton,
 
 void chooseNewOrSavedMapToEditDialogTryOpenMap(std::string fileName)
 {
-	
+	if (checkMapFile(fileName))
+	{
+		delete chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog;
+		chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog = NULL;
+		startMapEditor(fileName);
+	}
 }
 
 void chooseNewOrSavedMapToEditDialogSavedMapButtonPress()
@@ -11,7 +16,7 @@ void chooseNewOrSavedMapToEditDialogSavedMapButtonPress()
 	if (chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog)
 		delete chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog;
 	chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog = 
-		new EnterFileNameDialog("Enter file name:", startMapEditor,
+		new EnterFileNameDialog("Enter file name:", chooseNewOrSavedMapToEditDialogTryOpenMap,
 								0.3, 0.4, 0.4, 0.2, "fonts/enterFileNameFont.otf",
 								sf::Color(255, 128, 255), sf::Color(196, 64, 196),
 								sf::Color(0, 64, 0, 128), sf::Color(64, 128, 64));
