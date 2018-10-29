@@ -469,6 +469,9 @@ class Map
 
 		void reset()
 		{
+			//erasing "future" actions
+			actions.erase(actions.begin() + lastActionIndex+1, actions.end());
+
 			actions.push_back(EditorAction(pathMap));
 			clearPathMap();
 			
