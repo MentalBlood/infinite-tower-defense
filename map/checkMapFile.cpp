@@ -1,9 +1,9 @@
-bool checkMapFile(std::string &fileName)
+bool checkMapFile(const char *fileName)
 {
 	printf("checkMapFile\n");
 	//check file existance
 	printf("chek file existance\n");
-	FILE *file = fopen(fileName.data(), "rb");
+	FILE *file = fopen(fileName, "rb");
 	if (!file) return false;
 	printf("ok\n");
 

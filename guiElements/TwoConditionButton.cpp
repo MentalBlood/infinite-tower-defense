@@ -56,8 +56,8 @@ class TwoConditionButton
 			height = windowSize.y * relativeHeight;
 			float bordersThickness = sqrt(width * height) / 64;
 
-			fitTextIntoRectangle(&text, x + 2*bordersThickness, y + 2*bordersThickness,
-								width - 4*bordersThickness, height - 8*bordersThickness);
+			fitTextIntoRectangle(&text, x + bordersThickness, y + bordersThickness,
+								width - 2*bordersThickness, height - 2*bordersThickness);
 
 			makeVertexArrayFrame(&borders, x, y, width, height, bordersThickness, bordersColor);
 			makeVertexArrayQuad(&fill, x + bordersThickness, y + bordersThickness,

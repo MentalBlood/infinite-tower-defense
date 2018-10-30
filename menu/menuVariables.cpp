@@ -37,7 +37,7 @@ void setMenuVariables()
 	menuEntries[menuSelectedEntryNumber].setFillColor(menuSelectedEntryColor);
 
 	menuEntries[0].setString("start");
-	menuFunctions[0] = nothing;
+	menuFunctions[0] = startSelectMapScreen;
 	menuEntries[1].setString("developer mode");
 	menuFunctions[1] = nothing;
 	menuEntries[2].setString("map editor");

@@ -1,6 +1,10 @@
 #include <SFML/Graphics.hpp>
 #include <math.h>
 #include <iostream>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <dirent.h>
 #include <string>
 #include <vector>
 #include <list>
@@ -21,6 +25,7 @@ std::vector<void (*)()> startFunctions;
 
 #include "guiElements/TwoConditionButton.cpp"
 #include "guiElements/EnterFileNameDialog.cpp"
+#include "guiElements/List.cpp"
 
 #include "map/mapForEditing.cpp"
 #include "map/checkMapFile.cpp"
@@ -42,6 +47,12 @@ std::vector<void (*)()> startFunctions;
 #include "chooseNewOrSavedMapToEditDialog/drawChooseNewOrSavedMapToEditDialog.cpp"
 #include "chooseNewOrSavedMapToEditDialog/chooseNewOrSavedMapToEditDialogEvents.cpp"
 #include "chooseNewOrSavedMapToEditDialog/startChooseNewOrSavedMapToEditDialog.cpp"
+
+#include "selectMapScreen/selectMapScreenVariables.cpp"
+#include "selectMapScreen/updateSelectMapScreen.cpp"
+#include "selectMapScreen/drawSelectMapScreen.cpp"
+#include "selectMapScreen/selectMapScreenEvents.cpp"
+#include "selectMapScreen/startSelectMapScreen.cpp"
 
 #include "menu/menuVariables.cpp"
 #include "menu/updateMenu.cpp"

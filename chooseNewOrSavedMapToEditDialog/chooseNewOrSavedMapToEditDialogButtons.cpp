@@ -3,11 +3,11 @@ TwoConditionButton *chooseNewOrSavedMapToEditDialogNewMapButton,
 
 void chooseNewOrSavedMapToEditDialogTryOpenMap(std::string fileName)
 {
-	if (checkMapFile(fileName))
+	if (checkMapFile(fileName.data()))
 	{
 		delete chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog;
 		chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog = NULL;
-		startMapEditor(fileName);
+		startMapEditor(fileName.data());
 	}
 }
 
