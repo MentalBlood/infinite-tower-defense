@@ -12,9 +12,11 @@ class Movement
 	public:
 		Movement(sf::Sprite *sprite, float movementX, float movementY, sf::Time time):
 			sprite(sprite), speedX(movementX / time.asSeconds()), speedY(movementY / time.asSeconds()),
-			previous(NULL), next(first)
+			previous(NULL)
 		{
+			next = first;
 			first = this;
+			next->previous = this;
 		}
 
 		void doForElapsed()

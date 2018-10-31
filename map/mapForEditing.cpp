@@ -155,6 +155,8 @@ class Map
 
 		std::vector<char> path;
 		std::vector<std::vector<char> > pathMap;
+		char startNowWhereWas,
+			 endNowWhereWas;
 
 		std::vector<EditorAction> actions;
 		int lastActionIndex;
@@ -292,22 +294,26 @@ class Map
 				actions.erase(actions.begin() + lastActionIndex+1, actions.end());
 			++lastActionIndex;
 
-			actions.push_back(EditorAction(pathMap[fromX][fromY], pathMap[toX][toY], fromX, fromY, toX, toY));
-			pathMap[toX][toY] = pathMap[fromX][fromY];
-			pathMap[fromX][fromY] = EMPTY;
-
 			//start cell was moved
-			if (pathMap[toX][toY] == BEGIN)
+			if (pathMap[fromX][fromY] == BEGIN)
 			{
+				pathMap[fromX][fromY] = startNowWhereWas;
 				x1 = toX;
 				y1 = toY;
+				startNowWhereWas = pathMap[toX][toY];
+				pathMap[toX][toY] = BEGIN;
 			}
 			//end cell was moved
 			else
 			{
+				pathMap[fromX][fromY] = endNowWhereWas;
 				x2 = toX;
 				y2 = toY;
+				endNowWhereWas = pathMap[toX][toY];
+				pathMap[toX][toY] = END;
 			}
+
+			actions.push_back(EditorAction(pathMap[fromX][fromY], pathMap[toX][toY], fromX, fromY, toX, toY));
 		}
 
 		void zoomTextures()
@@ -356,7 +362,8 @@ class Map
 			endCellTexture(NULL), rockCellTexture(NULL),
 			towerCellBordersColor(towerCellBordersColor), towerCellFillColor(towerCellFillColor),
 			cellSelectorColor(cellSelectorColor), cellSelectorPressed(false), draggingStartCell(false),
-			draggingEndCell(false), settingRocks(false), lastActionIndex(-1)
+			draggingEndCell(false), settingRocks(false), lastActionIndex(-1),
+			startNowWhereWas(EMPTY), endNowWhereWas(EMPTY)
 		{
 			mapWidth = width;
 			mapHeight = height;
@@ -373,7 +380,8 @@ class Map
 			endCellTexture(NULL), rockCellTexture(NULL),
 			towerCellBordersColor(towerCellBordersColor), towerCellFillColor(towerCellFillColor),
 			cellSelectorColor(cellSelectorColor), cellSelectorPressed(false), draggingStartCell(false),
-			draggingEndCell(false), settingRocks(false), lastActionIndex(-1)
+			draggingEndCell(false), settingRocks(false), lastActionIndex(-1),
+			startNowWhereWas(EMPTY), endNowWhereWas(EMPTY)
 		{
 			loadFile(fileName);
 		}
