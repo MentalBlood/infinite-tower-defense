@@ -5,6 +5,13 @@ void selectMapScreenResized()
 	updateSelectMapScreenVariables();
 }
 
+void selectMapScreenExit()
+{
+	delete selectMapScreenMapsList;
+	selectMapScreenMapsList = NULL;
+	startFunctions[0]();
+}
+
 void selectMapScreenKeyPressed()
 {
 	if (event.key.code == sf::Keyboard::Up)
@@ -13,6 +20,8 @@ void selectMapScreenKeyPressed()
 		selectMapScreenMapsList->selectNext();
 	else if (event.key.code == sf::Keyboard::Return)
 		selectMapScreenMapsList->selectThis();
+	else if (event.key.code == sf::Keyboard::Escape)
+		selectMapScreenExit();
 }
 
 void selectMapScreenMouseWheelScrolled()

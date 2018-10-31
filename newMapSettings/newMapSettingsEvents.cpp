@@ -8,7 +8,7 @@ void newMapSettingsResized()
 void newMapSettingsExit()
 {
 	newMapSettings.clear();
-	startFunctions[0]();
+	startFunctions[1]();
 }
 
 void newMapSettingsKeyPressed()

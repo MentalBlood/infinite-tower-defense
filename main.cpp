@@ -63,6 +63,7 @@ std::vector<void (*)()> startFunctions;
 int main(void)
 {
 	startFunctions.push_back(startMenu);
+	startFunctions.push_back(startChooseNewOrSavedMapToEditDialog);
 	startFunctions.push_back(startNewMapSettings);
 
 	//sf::ContextSettings settings;

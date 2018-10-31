@@ -8,8 +8,8 @@ int menuFontSize,
 
 float menuY1;
 
-sf::Text menuEntries[4];
-void (*menuFunctions[4])();
+std::vector<sf::Text> menuEntries;
+std::vector<void (*)()> menuFunctions;
 
 void updateMenuVariables()
 {
@@ -24,6 +24,15 @@ void updateMenuVariables()
 
 void setMenuVariables()
 {
+	if (menuEntries.size())
+	{
+		updateMenuVariables();
+		return;
+	}
+
+	menuEntries.resize(4);
+	menuFunctions.resize(4);
+
 	if (!menuFont.loadFromFile("fonts/menuFont.otf")) Closed();
 
 	updateMenuVariables();
