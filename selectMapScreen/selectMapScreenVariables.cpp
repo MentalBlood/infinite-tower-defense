@@ -2,26 +2,36 @@ List *selectMapScreenMapsList;
 
 void selectMapScreenFillMapsList()
 {
-	printf("selectMapScreenFillMapsList\n");
 	const char path[128] = "maps";
 	DIR *dir = opendir(path);
-	printf("dir opened\n");
 	if (!dir) Closed();
-	printf("dir ok\n");
 
 	struct dirent *entery;
 	struct stat fileStatus;
 	char fileName[256];
 	while ((entery = readdir(dir)) != NULL)
 	{
-		printf("while\n");
-		printf("%s\n", entery->d_name);
 		sprintf(fileName,"%s/%s", path, entery->d_name);
-		if (checkMapFile(fileName)) selectMapScreenMapsList->addItem(fileName);
+		if (checkMapFile(fileName))
+		{
+			//making user friendly name of map (without path and extension)
+			char *c = fileName,
+				 *userFriendlyMapName;
+			for (; *c; c++)
+				if (*c == '/')
+					userFriendlyMapName = (c+1);
+				else
+				if (*c == '.')
+				{
+					*c = 0;
+					break;
+				}
+
+			selectMapScreenMapsList->addItem(userFriendlyMapName, fileName);
+		}
 	}
 
 	closedir(dir);
-	printf("ok\n");
 }
 
 void startGame(std::string mapFileName)

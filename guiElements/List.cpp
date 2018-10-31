@@ -2,6 +2,7 @@ class List
 {
 	private:
 		std::vector<sf::Text> items;
+		std::vector<sf::String> itemsStringsToReturn;
 		int numberOfItemsShown,
 			selectedItemNumber,
 			firstItemShownNumber,
@@ -91,11 +92,12 @@ class List
 								width - 2*bordersThickness, height - 2*bordersThickness, fillColor);
 		}
 
-		void addItem(sf::String name)
+		void addItem(sf::String name, sf::String stringToReturn)
 		{
 			sf::Text *newItem = new sf::Text(name, itemsFont);
 			newItem->setFillColor(itemsColor);
 			items.push_back(*newItem);
+			itemsStringsToReturn.push_back(stringToReturn);
 			if ((lastItemShownNumber - firstItemShownNumber) < (numberOfItemsShown-1))
 			{
 				++lastItemShownNumber;
@@ -132,7 +134,7 @@ class List
 		}
 
 		void selectThis()
-		{ functionOnSelect(items[selectedItemNumber].getString()); }
+		{ functionOnSelect(itemsStringsToReturn[selectedItemNumber]); }
 
 		bool selectByMouse(float mouseY)
 		{
