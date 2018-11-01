@@ -10,7 +10,7 @@ void mapEditorExit()
 	delete mapEditorMap;
 	delete mapEditorFileNameDialog;
 	mapEditorFileNameDialog = NULL;
-	startFunctions[1]();
+	startFunctions[2]();
 }
 
 void mapEditorKeyPressed()
@@ -35,11 +35,11 @@ void mapEditorKeyPressed()
 		else mapEditorMap->undo();
 	}
 	else if (event.key.code == sf::Keyboard::X) mapEditorMap->print_actions();
-	else if (event.key.code == sf::Keyboard::PageUp) mapEditorMap->changeZoom(1.02, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
-	else if (event.key.code == sf::Keyboard::PageDown) mapEditorMap->changeZoom(0.98, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
-
-
-	if (event.key.code == sf::Keyboard::Escape) mapEditorExit();
+	else if (event.key.code == sf::Keyboard::PageUp)
+		mapEditorMap->changeZoom(1.02, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+	else if (event.key.code == sf::Keyboard::PageDown)
+		mapEditorMap->changeZoom(0.98, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+	else if (event.key.code == sf::Keyboard::Escape) mapEditorExit();
 }
 
 void mapEditorKeyReleased()
@@ -98,20 +98,19 @@ void mapEditorMouseMoved()
 	if (mapEditorFileNameDialog) return;
 
 	if (mapEditorMapDragging)
-	{
 		mapEditorMap->setPosition(
 				mapEditorMapDraggingMapInitialCoordinates.x + event.mouseMove.x - mapEditorMapDraggingMouseX1, 
 				mapEditorMapDraggingMapInitialCoordinates.y + event.mouseMove.y - mapEditorMapDraggingMouseY1);
-	}
 	else
-	mapEditorMap->moveCellSelectorToMouse(event.mouseMove.x, event.mouseMove.y);
+		mapEditorMap->moveCellSelectorToMouse(event.mouseMove.x, event.mouseMove.y);
 }
 
 void mapEditorMouseWheelScrolled()
 {
 	if (mapEditorFileNameDialog) return;
 	if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
-		mapEditorMap->changeZoom(1 + event.mouseWheelScroll.delta/50, event.mouseWheelScroll.x, event.mouseWheelScroll.y);
+		mapEditorMap->changeZoom(1 + event.mouseWheelScroll.delta/50,
+								event.mouseWheelScroll.x, event.mouseWheelScroll.y);
 }
 
 void setMapEditorEvents()

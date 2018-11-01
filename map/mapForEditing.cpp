@@ -113,7 +113,7 @@ class EditorAction
 		}
 };
 
-class Map
+class MapForEditing
 {
 	private:
 		int mapHeight, mapWidth,
@@ -231,19 +231,15 @@ class Map
 
 		void loadFile(const char *fileName)
 		{
-			printf("loadFile\n");
 			FILE *file = fopen(fileName, "rb");
-			printf("file opened\n");
 
 			//read start and end cells
-			printf("read start and end cells\n");
 			fscanf(file, "%d%d%d%d", &mapWidth, &mapHeight, &x1, &y1);
 			//creating path map of read size
 			createPathMap();
 			pathMap[x1][y1] = BEGIN;
 
 			//read rocks coordinates
-			printf("read rocks coordinates\n");
 			int rockX,
 				rockY;
 			while (true)
@@ -256,7 +252,6 @@ class Map
 			}
 
 			//read path
-			printf("read path\n");
 			x2 = x1;
 			y2 = y1;
 			while (!feof(file))
@@ -272,7 +267,6 @@ class Map
 			}
 			pathMap[x2][y2] = END;
 
-			printf("closing file\n");
 			fclose(file);
 		}
 
@@ -355,7 +349,7 @@ class Map
 		}
 
 	public:
-		Map(int width, int height,
+		MapForEditing(int width, int height,
 			sf::Color towerCellBordersColor, sf::Color towerCellFillColor, sf::Color cellSelectorColor):
 			x1(0), y1(0), x2(width - 1), y2(height - 1), zoom(1), cellSelectorX(0), cellSelectorY(0),
 			towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL), startCellTexture(NULL),
@@ -373,7 +367,7 @@ class Map
 			pathMap[width-1][height-1] = 3;
 		}
 
-		Map(const char *fileName,
+		MapForEditing(const char *fileName,
 			sf::Color towerCellBordersColor, sf::Color towerCellFillColor, sf::Color cellSelectorColor):
 			zoom(1), cellSelectorX(0), cellSelectorY(0),
 			towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL), startCellTexture(NULL),
@@ -386,7 +380,7 @@ class Map
 			loadFile(fileName);
 		}
 
-		~Map()
+		~MapForEditing()
 		{
 			delete towerCellTexture;
 			delete pathCellTexture;

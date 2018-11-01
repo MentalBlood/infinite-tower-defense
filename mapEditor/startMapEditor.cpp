@@ -10,7 +10,6 @@ void startMapEditor(int mapWidth, int mapHeight)
 //loading and editing saved map
 void startMapEditor(std::string fileName)
 {
-	printf("startMapEditor\n");
 	setMapEditorVariables(fileName);
 	setMapEditorEvents();
 	updateFunction = updateMapEditor;

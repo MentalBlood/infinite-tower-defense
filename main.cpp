@@ -28,7 +28,14 @@ std::vector<void (*)()> startFunctions;
 #include "guiElements/List.cpp"
 
 #include "map/mapForEditing.cpp"
+#include "map/mapForPlaying.cpp"
 #include "map/checkMapFile.cpp"
+
+#include "game/gameVariables.cpp"
+#include "game/updateGame.cpp"
+#include "game/drawGame.cpp"
+#include "game/gameEvents.cpp"
+#include "game/startGame.cpp"
 
 #include "mapEditor/mapEditorVariables.cpp"
 #include "mapEditor/updateMapEditor.cpp"
@@ -65,6 +72,7 @@ int main(void)
 	startFunctions.push_back(startMenu);
 	startFunctions.push_back(startChooseNewOrSavedMapToEditDialog);
 	startFunctions.push_back(startNewMapSettings);
+	startFunctions.push_back(startSelectMapScreen);
 
 	//sf::ContextSettings settings;
 	//settings.antialiasingLevel = 8;

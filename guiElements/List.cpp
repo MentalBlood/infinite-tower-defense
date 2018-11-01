@@ -2,7 +2,7 @@ class List
 {
 	private:
 		std::vector<sf::Text> items;
-		std::vector<sf::String> itemsStringsToReturn;
+		std::vector<std::string> itemsStringsToReturn;
 		int numberOfItemsShown,
 			selectedItemNumber,
 			firstItemShownNumber,

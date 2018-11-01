@@ -15,17 +15,16 @@ void selectMapScreenFillMapsList()
 		if (checkMapFile(fileName))
 		{
 			//making user friendly name of map (without path and extension)
-			char *c = fileName,
-				 *userFriendlyMapName;
-			for (; *c; c++)
-				if (*c == '/')
-					userFriendlyMapName = (c+1);
-				else
+			char userFriendlyMapName[128];
+			strcpy(userFriendlyMapName, entery->d_name);
+			char *c = userFriendlyMapName;
+			while (*c)
 				if (*c == '.')
 				{
 					*c = 0;
 					break;
 				}
+				else ++c;
 
 			selectMapScreenMapsList->addItem(userFriendlyMapName, fileName);
 		}
@@ -33,9 +32,6 @@ void selectMapScreenFillMapsList()
 
 	closedir(dir);
 }
-
-void startGame(std::string mapFileName)
-{}
 
 void updateSelectMapScreenVariables()
 {
