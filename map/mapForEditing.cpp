@@ -34,9 +34,10 @@ class EditorAction
 		{ mapChanges.push_back(MapChange(cellX, cellY, was, become)); }
 
 		//start or end cell moved
-		EditorAction(char movingCell, char toCell, int fromX, int fromY, int toX, int toY)
+		EditorAction(char movingCell, char toCell, int fromX, int fromY, int toX, int toY,
+					char movingCellFrom)
 		{
-			mapChanges.push_back(MapChange(fromX, fromY, movingCell, EMPTY));
+			mapChanges.push_back(MapChange(fromX, fromY, movingCell, movingCellFrom));
 			mapChanges.push_back(MapChange(toX, toY, toCell, movingCell));
 		}
 
@@ -58,48 +59,54 @@ class EditorAction
 						mapChanges.push_back(MapChange(i, j, pathMap[i][j], EMPTY));
 		}
 
-		void undo(std::vector<std::vector<char> > &pathMap, int *x1, int *y1, int *x2, int *y2)
+		void undo(	std::vector<std::vector<char> > &pathMap, int *x1, int *y1, int *x2, int *y2,
+					char *startNowWhereWas, char *endNowWhereWas)
 		{
 			if (mapChanges.size() > 1)
 			{
 				for (int i = 0; i < mapChanges.size(); i++)
 				{
-					pathMap[mapChanges[i].cellX][mapChanges[i].cellY] = mapChanges[i].was;
 					if (mapChanges[i].was == BEGIN)
 					{
 						*x1 = mapChanges[i].cellX;
 						*y1 = mapChanges[i].cellY;
+						*startNowWhereWas = mapChanges[i].become;
 					}
 					else
 					if (mapChanges[i].was == END)
 					{
 						*x2 = mapChanges[i].cellX;
 						*y2 = mapChanges[i].cellY;
+						*endNowWhereWas = mapChanges[i].become;
 					}
+					pathMap[mapChanges[i].cellX][mapChanges[i].cellY] = mapChanges[i].was;
 				}
 			}
 			else
 				pathMap[mapChanges[0].cellX][mapChanges[0].cellY] = mapChanges[0].was;
 		}
 
-		void redo(std::vector<std::vector<char> > &pathMap, int *x1, int *y1, int *x2, int *y2)
+		void redo(	std::vector<std::vector<char> > &pathMap, int *x1, int *y1, int *x2, int *y2,
+					char *startNowWhereWas, char *endNowWhereWas)
 		{
 			if (mapChanges.size() > 1)
 			{
 				for (int i = 0; i < mapChanges.size(); i++)
 				{
-					pathMap[mapChanges[i].cellX][mapChanges[i].cellY] = mapChanges[i].become;
 					if (mapChanges[i].become == BEGIN)
 					{
 						*x1 = mapChanges[i].cellX;
 						*y1 = mapChanges[i].cellY;
+						*startNowWhereWas = mapChanges[i].was;
 					}
 					else
 					if (mapChanges[i].become == END)
 					{
 						*x2 = mapChanges[i].cellX;
 						*y2 = mapChanges[i].cellY;
+						*endNowWhereWas = mapChanges[i].was;
 					}
+					pathMap[mapChanges[i].cellX][mapChanges[i].cellY] = mapChanges[i].become;
 				}
 			}
 			else
@@ -257,7 +264,6 @@ class MapForEditing
 			while (!feof(file))
 			{
 				char c = char(fgetc(file));
-				printf("%d\n", c);
 				if (c == RIGHT) ++x2;
 				else if (c == LEFT) --x2;
 				else if (c == UP) --y2;
@@ -288,10 +294,12 @@ class MapForEditing
 				actions.erase(actions.begin() + lastActionIndex+1, actions.end());
 			++lastActionIndex;
 
-			actions.push_back(EditorAction(pathMap[fromX][fromY], pathMap[toX][toY], fromX, fromY, toX, toY));
+			
 			//start cell was moved
 			if (pathMap[fromX][fromY] == BEGIN)
 			{
+				actions.push_back(EditorAction(	pathMap[fromX][fromY], pathMap[toX][toY],
+												fromX, fromY, toX, toY, startNowWhereWas));
 				pathMap[fromX][fromY] = startNowWhereWas;
 				x1 = toX;
 				y1 = toY;
@@ -301,14 +309,14 @@ class MapForEditing
 			//end cell was moved
 			else
 			{
+				actions.push_back(EditorAction(	pathMap[fromX][fromY], pathMap[toX][toY],
+												fromX, fromY, toX, toY, endNowWhereWas));
 				pathMap[fromX][fromY] = endNowWhereWas;
 				x2 = toX;
 				y2 = toY;
 				endNowWhereWas = pathMap[toX][toY];
 				pathMap[toX][toY] = END;
 			}
-
-			
 		}
 
 		void zoomTextures()
@@ -449,7 +457,7 @@ class MapForEditing
 		{
 			if (lastActionIndex == -1) return;
 
-			actions[lastActionIndex].undo(pathMap, &x1, &y1, &x2, &y2);
+			actions[lastActionIndex].undo(pathMap, &x1, &y1, &x2, &y2, &startNowWhereWas, &endNowWhereWas);
 			--lastActionIndex;
 		}
 
@@ -458,7 +466,7 @@ class MapForEditing
 			if (lastActionIndex >= int(actions.size()-1)) return;
 
 			++lastActionIndex;
-			actions[lastActionIndex].redo(pathMap, &x1, &y1, &x2, &y2);
+			actions[lastActionIndex].redo(pathMap, &x1, &y1, &x2, &y2, &startNowWhereWas, &endNowWhereWas);
 		}
 
 		void print_actions()

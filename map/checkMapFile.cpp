@@ -1,14 +1,10 @@
 bool checkMapFile(const char *fileName)
 {
-	printf("checkMapFile\n");
 	//check file existance
-	printf("chek file existance\n");
 	FILE *file = fopen(fileName, "rb");
 	if (!file) return false;
-	printf("ok\n");
 
 	//check start and end cells
-	printf("check start and end cells\n");
 	int mapWidth; fscanf(file, "%d", &mapWidth);
 	if ((mapWidth < 8) || (mapWidth > 32)) return false; //width too small or too big
 	int mapHeight; fscanf(file, "%d", &mapHeight);
@@ -20,7 +16,6 @@ bool checkMapFile(const char *fileName)
 	printf("ok\n");
 
 	//creating path map of read size
-	printf("creating path map of read size\n");
 	std::vector<std::vector<char> > pathMap;
 	pathMap.resize(mapWidth);
 	for (int i = 0; i < mapWidth; i++)
@@ -30,30 +25,24 @@ bool checkMapFile(const char *fileName)
 			pathMap[i][j] = 0;
 	}
 	pathMap[x1][y1] = BEGIN;
-	printf("ok\n");
 
 	//check rocks coordinates
-	printf("check rocks coordinates\n");
 	int rockX,
 		rockY;
 	while (true)
 	{
 		fscanf(file, "%d", &rockX);
-		printf("rockX = %d\n", rockX);
 		if (rockX == -1) break; //flag that means that all rocks coordinates read
 		if ((rockX < 0) || (rockX > mapWidth)) return false; //coordinate is out of map
 
 		fscanf(file, "%d", &rockY);
-		printf("rockY = %d\n", rockY);
 		if ((rockY < 0) || (rockY > mapHeight)) return false; //coordinate is out of map
 
 		if (pathMap[rockX][rockY]) return false; //something already written on this cell
 		pathMap[rockX][rockY] = ROCK;
 	}
-	printf("ok\n");
 
 	//check path
-	printf("check path\n");
 	int x2 = x1,
 		y2 = y1;
 	bool continueOnlyIfItIsTheLastCell = false;
@@ -63,7 +52,6 @@ bool checkMapFile(const char *fileName)
 		if (continueOnlyIfItIsTheLastCell) return false;
 
 		char c = char(fgetc(file));
-		printf("%d\n", c);
 		if (c == RIGHT) ++x2;
 		else if (c == LEFT) --x2;
 		else if (c == UP) --y2;
@@ -88,7 +76,6 @@ bool checkMapFile(const char *fileName)
 	}
 	if (pathesFromCell != 1) return false; //only one path from the end cell
 	pathMap[x2][y2] = END;
-	printf("ok\n");
 
 	fclose(file);
 	return true;
