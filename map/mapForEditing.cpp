@@ -288,6 +288,7 @@ class MapForEditing
 				actions.erase(actions.begin() + lastActionIndex+1, actions.end());
 			++lastActionIndex;
 
+			actions.push_back(EditorAction(pathMap[fromX][fromY], pathMap[toX][toY], fromX, fromY, toX, toY));
 			//start cell was moved
 			if (pathMap[fromX][fromY] == BEGIN)
 			{
@@ -307,7 +308,7 @@ class MapForEditing
 				pathMap[toX][toY] = END;
 			}
 
-			actions.push_back(EditorAction(pathMap[fromX][fromY], pathMap[toX][toY], fromX, fromY, toX, toY));
+			
 		}
 
 		void zoomTextures()
