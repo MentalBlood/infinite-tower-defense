@@ -1,6 +1,7 @@
 MapForEditing *mapEditorMap;
 
-bool mapEditorMapDragging;
+bool mapEditorMapDragging,
+	 editingNewMap;
 float mapEditorMapDraggingMouseX1,
 	  mapEditorMapDraggingMouseY1;
 sf::Vector2f mapEditorMapDraggingMapInitialCoordinates;
@@ -20,6 +21,7 @@ void updateMapEditorVariables()
 //creating new map
 void setMapEditorVariables(int mapEditorMapWidth, int mapEditorMapHeight)
 {
+	editingNewMap = true;
 	mapEditorMap = new MapForEditing(mapEditorMapWidth, mapEditorMapHeight,
 					sf::Color(150, 150, 64, 196), sf::Color(0, 0, 196, 128), sf::Color(128, 0, 196));
 	mapEditorMap->setTextures(0.9);
@@ -37,7 +39,7 @@ void setMapEditorVariables(int mapEditorMapWidth, int mapEditorMapHeight)
 //loading and editing saved map
 void setMapEditorVariables(std::string &fileName)
 {
-	printf("setMapEditorVariables\n");
+	editingNewMap = false;
 	mapEditorMap = new MapForEditing(fileName.data(), sf::Color(150, 150, 64, 196),
 									sf::Color(0, 0, 196, 128), sf::Color(128, 0, 196));
 	mapEditorMap->setTextures(0.9);

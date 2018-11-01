@@ -10,7 +10,8 @@ void mapEditorExit()
 	delete mapEditorMap;
 	delete mapEditorFileNameDialog;
 	mapEditorFileNameDialog = NULL;
-	startFunctions[2]();
+	if (editingNewMap) startFunctions[2]();
+	else startFunctions[1]();
 }
 
 void mapEditorKeyPressed()
