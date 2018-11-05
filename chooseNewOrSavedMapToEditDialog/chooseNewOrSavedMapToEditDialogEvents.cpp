@@ -7,7 +7,7 @@ void chooseNewOrSavedMapToEditDialogResized()
 
 void chooseNewOrSavedMapToEditDialogTextEntered()
 {
-	if (!chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog) return;
+	if (!chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog || chooseNewOrSavedMapToEditDialogWrongFileNameMessage) return;
 
 	if (event.text.unicode < 128)
 		chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog->processCharacter(event.text.unicode);
@@ -25,18 +25,41 @@ void chooseNewOrSavedMapToEditDialogExit()
 
 void chooseNewOrSavedMapToEditDialogKeyPressed()
 {
+	if (chooseNewOrSavedMapToEditDialogWrongFileNameMessage)
+	{
+		if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::Return)
+			chooseNewOrSavedMapToEditDialogCloseWrongFileNameMessage();
+		return;
+	}
+
+	if (chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog)
+	{
+		if (event.key.code == sf::Keyboard::Escape)
+			chooseNewOrSavedMapToEditDialogCloseSavedMapFileNameDialog();
+		return;
+	}
+
 	if (event.key.code == sf::Keyboard::Escape)
 		chooseNewOrSavedMapToEditDialogExit();
 }
 
 void chooseNewOrSavedMapToEditDialogMouseButtonPressed()
 {
+	if (event.mouseButton.button != sf::Mouse::Left) return;
+	if (chooseNewOrSavedMapToEditDialogWrongFileNameMessage)
+	{
+		chooseNewOrSavedMapToEditDialogWrongFileNameMessage->tryToPress(event.mouseButton.x, event.mouseButton.y);
+		return;
+	}
 	if (chooseNewOrSavedMapToEditDialogNewMapButton->tryToPress(event.mouseButton.x, event.mouseButton.y)) return;
 	chooseNewOrSavedMapToEditDialogSavedMapButton->tryToPress(event.mouseButton.x, event.mouseButton.y);
 }
 
 void chooseNewOrSavedMapToEditDialogMouseButtonReleased()
 {
+	if (event.mouseButton.button != sf::Mouse::Left) return;
+	if (chooseNewOrSavedMapToEditDialogWrongFileNameMessage)
+		chooseNewOrSavedMapToEditDialogWrongFileNameMessage->unpress();
 	chooseNewOrSavedMapToEditDialogNewMapButton->unpress();
 	chooseNewOrSavedMapToEditDialogSavedMapButton->unpress();
 }

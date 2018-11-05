@@ -1,9 +1,19 @@
 class EnterFileNameDialog
 {
 	private:
+		sf::String promptString;
 		void (*functionOnComplete)(std::string);
 
-		sf::String promptString;
+		float relativeX,
+			  relativeY,
+			  relativeWidth,
+			  relativeHeight;
+
+		sf::Color	promptColor,
+					enteredTextColor,
+					fillColor,
+					bordersColor;
+
 		sf::Text prompt, enteredText;
 		sf::Font font;
 
@@ -11,16 +21,7 @@ class EnterFileNameDialog
 						enteredTextFrame,
 						fill;
 
-		sf::Color	promptColor,
-					enteredTextColor,
-					fillColor,
-					bordersColor;
-
-		float relativeX,
-			  relativeY,
-			  relativeWidth,
-			  relativeHeight,
-			  bordersThickness,
+		float bordersThickness,
 			  separatorY,
 			  x, y, width, height;
 

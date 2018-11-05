@@ -1,37 +1,39 @@
 class List
 {
 	private:
-		std::vector<sf::Text> items;
-		std::vector<std::string> itemsStringsToReturn;
-		int numberOfItemsShown,
-			selectedItemNumber,
-			firstItemShownNumber,
-			lastItemShownNumber;
+		unsigned int	numberOfItemsShown,
+						firstItemShownNumber;
+		int lastItemShownNumber;
+		unsigned int selectedItemNumber;
+
+		sf::String nameString;
+
+		float relativeX,
+			  relativeY,
+			  relativeWidth,
+			  relativeHeight;
 
 		void (*functionOnSelect)(std::string);
+
+		sf::Color	itemsColor,
+					fillColor,
+					bordersColor,
+					selectorColor;
+
+		std::vector<sf::Text> items;
+		std::vector<std::string> itemsStringsToReturn;
 
 		sf::Font	nameFont,
 					itemsFont;
 
-		sf::String nameString;
 		sf::Text nameText;
-
-		sf::Color	nameColor,
-					itemsColor,
-					fillColor,
-					bordersColor,
-					selectorColor;
 
 		sf::VertexArray nameFrame,
 						itemsFrame,
 						fill;
 		sf::RectangleShape selector;
 		
-		float relativeX,
-			  relativeY,
-			  relativeWidth,
-			  relativeHeight,
-			  bordersThickness,
+		float bordersThickness,
 			  selectorBordersThickness,
 			  separatorY,
 			  itemHeight,
@@ -98,7 +100,7 @@ class List
 			newItem->setFillColor(itemsColor);
 			items.push_back(*newItem);
 			itemsStringsToReturn.push_back(stringToReturn);
-			if ((lastItemShownNumber - firstItemShownNumber) < (numberOfItemsShown-1))
+			if ((lastItemShownNumber - int(firstItemShownNumber)) < int(numberOfItemsShown-1))
 			{
 				++lastItemShownNumber;
 				updateItems();
@@ -109,7 +111,7 @@ class List
 		{
 			if (selectedItemNumber == (items.size()-1)) return;
 
-			if (selectedItemNumber == lastItemShownNumber)
+			if (int(selectedItemNumber) == lastItemShownNumber)
 			{
 				++firstItemShownNumber;
 				++lastItemShownNumber;
@@ -139,7 +141,7 @@ class List
 		bool selectByMouse(float mouseY)
 		{
 			bool mouseOnItem = true;
-			int selectedNumber;
+			unsigned int selectedNumber;
 			if (mouseY < separatorY)
 			{
 				selectedNumber = 0;
@@ -147,7 +149,7 @@ class List
 			}
 			else
 			{
-				selectedNumber = int((mouseY - separatorY) / itemHeight);
+				selectedNumber = (unsigned int)((mouseY - separatorY) / itemHeight);
 				if (selectedNumber > (lastItemShownNumber-firstItemShownNumber))
 				{
 					selectedNumber = (lastItemShownNumber-firstItemShownNumber);

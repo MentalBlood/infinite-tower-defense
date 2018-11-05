@@ -22,13 +22,15 @@ std::vector<void (*)()> startFunctions;
 
 #include "graphicsFunctions/vertexArrays.cpp"
 #include "graphicsFunctions/textFunctions.cpp"
+#include "graphicsFunctions/colorFunctions.cpp"
 
 #include "guiElements/TwoConditionButton.cpp"
 #include "guiElements/EnterFileNameDialog.cpp"
 #include "guiElements/List.cpp"
+#include "guiElements/Message.cpp"
 
-#include "map/mapForEditing.cpp"
-#include "map/mapForPlaying.cpp"
+#include "map/MapForEditing.cpp"
+#include "map/MapForPlaying.cpp"
 #include "map/checkMapFile.cpp"
 
 #include "game/gameVariables.cpp"
@@ -61,6 +63,12 @@ std::vector<void (*)()> startFunctions;
 #include "selectMapScreen/selectMapScreenEvents.cpp"
 #include "selectMapScreen/startSelectMapScreen.cpp"
 
+#include "helpScreen/helpScreenVariables.cpp"
+#include "helpScreen/updateHelpScreen.cpp"
+#include "helpScreen/drawHelpScreen.cpp"
+#include "helpScreen/helpScreenEvents.cpp"
+#include "helpScreen/startHelpScreen.cpp"
+
 #include "menu/menuVariables.cpp"
 #include "menu/updateMenu.cpp"
 #include "menu/drawMenu.cpp"
@@ -74,10 +82,8 @@ int main(void)
 	startFunctions.push_back(startNewMapSettings);
 	startFunctions.push_back(startSelectMapScreen);
 
-	//sf::ContextSettings settings;
-	//settings.antialiasingLevel = 8;
 	window.create(sf::VideoMode(800, 600), "Infinite Tower Defense");
-	window.setVerticalSyncEnabled(true);
+	window.setVerticalSyncEnabled(false);
 	window.setFramerateLimit(60);
 	setCommonEvents();
 
@@ -90,9 +96,7 @@ int main(void)
 		updateFunction();
 
 		while (window.pollEvent(event))
-		{
 			events[event.type]();
-		}
 
 		drawFunction();
 	}

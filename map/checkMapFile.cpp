@@ -5,48 +5,47 @@ bool checkMapFile(const char *fileName)
 	if (!file) return false;
 
 	//check start and end cells
-	int mapWidth; fscanf(file, "%d", &mapWidth);
+	unsigned int mapWidth; fscanf(file, "%u", &mapWidth);
 	if ((mapWidth < 8) || (mapWidth > 32)) return false; //width too small or too big
-	int mapHeight; fscanf(file, "%d", &mapHeight);
+	unsigned int mapHeight; fscanf(file, "%u", &mapHeight);
 	if ((mapHeight < 8) || (mapHeight > 32)) return false; //height too small or too big
-	int x1; fscanf(file, "%d", &x1);
-	if ((x1 < 0) || (x1 > mapWidth)) return false; //coordinate is out of map
-	int y1; fscanf(file, "%d", &y1);
-	if ((y1 < 0) || (y1 > mapHeight)) return false; //coordinate is out of map
-	printf("ok\n");
+	unsigned int x1; fscanf(file, "%u", &x1);
+	if (x1 > mapWidth) return false; //coordinate is out of map
+	unsigned int y1; fscanf(file, "%u", &y1);
+	if (y1 > mapHeight) return false; //coordinate is out of map
 
 	//creating path map of read size
 	std::vector<std::vector<char> > pathMap;
 	pathMap.resize(mapWidth);
-	for (int i = 0; i < mapWidth; i++)
+	for (unsigned int i = 0; i < mapWidth; i++)
 	{
 		pathMap[i].resize(mapHeight);
-		for (int j = 0; j < mapHeight; j++)
+		for (unsigned int j = 0; j < mapHeight; j++)
 			pathMap[i][j] = 0;
 	}
 	pathMap[x1][y1] = BEGIN;
 
 	//check rocks coordinates
-	int rockX,
+	int	rockX,
 		rockY;
 	while (true)
 	{
 		fscanf(file, "%d", &rockX);
 		if (rockX == -1) break; //flag that means that all rocks coordinates read
-		if ((rockX < 0) || (rockX > mapWidth)) return false; //coordinate is out of map
+		if ((rockX < 0) || (rockX > int(mapWidth))) return false; //coordinate is out of map
 
 		fscanf(file, "%d", &rockY);
-		if ((rockY < 0) || (rockY > mapHeight)) return false; //coordinate is out of map
+		if ((rockY < 0) || (rockY > int(mapHeight))) return false; //coordinate is out of map
 
 		if (pathMap[rockX][rockY]) return false; //something already written on this cell
 		pathMap[rockX][rockY] = ROCK;
 	}
 
 	//check path
-	int x2 = x1,
-		y2 = y1;
+	unsigned int	x2 = x1,
+					y2 = y1;
 	bool continueOnlyIfItIsTheLastCell = false;
-	int pathesFromCell;
+	unsigned int pathesFromCell = 0;
 	while (!feof(file))
 	{
 		if (continueOnlyIfItIsTheLastCell) return false;
@@ -63,11 +62,11 @@ bool checkMapFile(const char *fileName)
 		pathesFromCell = 0; //let's count them
 		if (x2) //LEFT
 			if (pathMap[x2-1][y2] && (pathMap[x2-1][y2] != ROCK)) ++pathesFromCell;
-		if (x2 < (pathMap.size()-1)) //RIGHT
+		if ((x2+1) < pathMap.size()) //RIGHT
 			if (pathMap[x2+1][y2] && (pathMap[x2+1][y2] != ROCK)) ++pathesFromCell;
 		if (y2) //UP
 			if (pathMap[x2][y2-1] && (pathMap[x2][y2-1] != ROCK)) ++pathesFromCell;
-		if (y2 < (pathMap[0].size()-1)) //DOWN
+		if ((y2+1) < pathMap[0].size()) //DOWN
 			if (pathMap[x2][y2+1] && (pathMap[x2][y2+1] != ROCK)) ++pathesFromCell;
 		if ((pathesFromCell > 2) || (!pathesFromCell))
 			continueOnlyIfItIsTheLastCell = true; //wrong number of pathes

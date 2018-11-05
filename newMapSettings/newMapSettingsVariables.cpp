@@ -26,8 +26,8 @@ sf::Font newMapSettingsFont;
 sf::Color	newMapSettingsFontColor(0, 175, 70),
 			newMapSelectedSettingColor(215, 215, 60);
 
-int newMapSettingsFontSize,
-	newMapSettingsSelectedSettingNumber = 0;
+unsigned int	newMapSettingsFontSize,
+				newMapSettingsSelectedSettingNumber = 0;
 
 float newMapSettingsY1;
 
@@ -37,17 +37,18 @@ float newMapSettingsY1;
 class Setting
 {
 	private:
-		bool type;
 		sf::String name;
+		unsigned int minValue,
+					 maxValue,
+					 currentValue;
+		bool type;
 		sf::Text text;
-		int currentValue,
-			maxValue,
-			minValue;
 		std::vector<sf::String> valuesNames;
 
 	public:
-		Setting(sf::String nameArg, sf::Font *font, sf::Color fontColor, bool type, int minValueArg, int maxValueArg):
-			name(nameArg), maxValue(maxValueArg), minValue(minValueArg), currentValue((minValueArg + maxValueArg) / 2)
+		Setting(sf::String nameArg, sf::Font *font, sf::Color fontColor, bool type,
+				unsigned int minValue, unsigned int maxValue):
+			name(nameArg), minValue(minValue), maxValue(maxValue), currentValue((minValue + maxValue) / 2), type(type)
 		{
 			text.setFont(*font);
 			text.setFillColor(fontColor);
@@ -78,22 +79,28 @@ class Setting
 
 		void refreshText()
 		{
+			printf("refreshText\n");
 			if (type == TEXT)
 				text.setString(name + sf::String("\t") + valuesNames[currentValue]);
 			else //type == INTEGER
 				text.setString(name + sf::String("\t") + sf::String(intToString(currentValue)));
+			printf("refreshed\n");
 		}
 
 		void increaseValue()
 		{
+			printf("increaseValue\n");
 			if (currentValue < maxValue) ++currentValue;
 			refreshText();
+			printf("increased\n");
 		}
 
 		void decreaseValue()
 		{
+			printf("decreaseValue\n");
 			if (currentValue > minValue) --currentValue;
 			refreshText();
+			printf("decreased\n");
 		}
 
 		int getValue()
@@ -109,7 +116,7 @@ void updateNewMapSettingsVariables()
 {
 	newMapSettingsFontSize = sqrt(windowSize.x * windowSize.y) / 16;
 	newMapSettingsY1 = float(windowSize.y) / 8;
-	for (int i = 0; i < newMapSettings.size(); i++)
+	for (unsigned int i = 0; i < newMapSettings.size(); i++)
 	{
 		newMapSettings[i].setFontSize(newMapSettingsFontSize);
 		newMapSettings[i].setPosition(float(windowSize.x) / 16, newMapSettingsY1 + i*newMapSettingsFontSize*1.5);

@@ -27,14 +27,22 @@ void gameKeyPressed()
 	else if (event.key.code == sf::Keyboard::PageDown)
 		gameMap->changeZoom(0.98, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
 	else if (event.key.code == sf::Keyboard::Escape) gameExit();
+	else if (event.key.code == sf::Keyboard::S) spawn();
 }
 
 void gameMouseWheelScrolled()
 {
 	if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
-		gameMap->changeZoom(1 + event.mouseWheelScroll.delta/50,
-								event.mouseWheelScroll.x, event.mouseWheelScroll.y);
+	{
+		float delta = 1 + event.mouseWheelScroll.delta/50;
+		gameMap->changeZoom(delta, event.mouseWheelScroll.x, event.mouseWheelScroll.y);
+		for (unsigned int i = 0; i < monsters.size(); i++)
+			monsters[i].changeScale(delta, sf::Vector2f(event.mouseWheelScroll.x, event.mouseWheelScroll.y));
+	}
 }
+
+float gameDraggingPreviousMouseX0,
+	  gameDraggingPreviousMouseY0;
 
 void gameMouseButtonPressed()
 {
@@ -43,6 +51,8 @@ void gameMouseButtonPressed()
 		gameMapDragging = true;
 		gameMapDraggingMouseX1 = event.mouseButton.x;
 		gameMapDraggingMouseY1 = event.mouseButton.y;
+		gameDraggingPreviousMouseX0 = event.mouseButton.x;
+		gameDraggingPreviousMouseY0 = event.mouseButton.y;
 		gameMapDraggingMapInitialCoordinates = gameMap->getPosition();
 	}
 }
@@ -55,9 +65,16 @@ void gameMouseButtonReleased()
 void gameMouseMoved()
 {
 	if (gameMapDragging)
+	{
 		gameMap->setPosition(
 		gameMapDraggingMapInitialCoordinates.x + event.mouseMove.x - gameMapDraggingMouseX1, 
 		gameMapDraggingMapInitialCoordinates.y + event.mouseMove.y - gameMapDraggingMouseY1);
+		for (unsigned int i = 0; i < monsters.size(); i++)
+			monsters[i].drag(sf::Vector2f(	event.mouseMove.x - gameDraggingPreviousMouseX0,
+											event.mouseMove.y - gameDraggingPreviousMouseY0));
+		gameDraggingPreviousMouseX0 = event.mouseMove.x;
+		gameDraggingPreviousMouseY0 = event.mouseMove.y;
+	}
 	else
 		gameMap->moveCellSelectorToMouse(event.mouseMove.x, event.mouseMove.y);
 }

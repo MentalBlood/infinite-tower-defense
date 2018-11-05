@@ -8,15 +8,35 @@ void mapEditorResized()
 void mapEditorExit()
 {
 	delete mapEditorMap;
-	delete mapEditorFileNameDialog;
-	mapEditorFileNameDialog = NULL;
+	if (mapEditorFileNameDialog)
+	{
+		delete mapEditorFileNameDialog;
+		mapEditorFileNameDialog = NULL;
+	}
+	if (mapEditorWrongMapMessage)
+	{
+		delete mapEditorWrongMapMessage;
+		mapEditorWrongMapMessage = NULL;
+	}
 	if (editingNewMap) startFunctions[2]();
 	else startFunctions[1]();
 }
 
 void mapEditorKeyPressed()
 {
-	if (mapEditorFileNameDialog) return;
+	if (mapEditorWrongMapMessage)
+	{
+		if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Escape)
+			mapEditorCloseWrongMapMessage();
+		return;
+	}
+
+	if (mapEditorFileNameDialog)
+	{
+		if (event.key.code == sf::Keyboard::Escape)
+			mapEditorCloseFileNameDialog();
+		return;
+	}
 
 	if (event.key.code == sf::Keyboard::Up)
 		mapEditorMap->moveCellSelector(UP);
@@ -45,7 +65,7 @@ void mapEditorKeyPressed()
 
 void mapEditorKeyReleased()
 {
-	if (mapEditorFileNameDialog) return;
+	if (mapEditorFileNameDialog || mapEditorWrongMapMessage) return;
 
 	if (event.key.code == sf::Keyboard::Space)
 		mapEditorMap->unpressCellSelector();
@@ -66,11 +86,18 @@ void mapEditorTextEntered()
 
 void mapEditorMouseButtonPressed()
 {
+	if (mapEditorWrongMapMessage)
+	{
+		if (event.mouseButton.button == sf::Mouse::Left)
+			mapEditorWrongMapMessage->tryToPress(event.mouseButton.x, event.mouseButton.y);
+		return;
+	}
+
 	if (mapEditorFileNameDialog) return;
 
 	if (event.mouseButton.button == sf::Mouse::Left)
 	{
-		for (int i = 0; i < mapEditorButtons.size(); i++)
+		for (unsigned int i = 0; i < mapEditorButtons.size(); i++)
 			if (mapEditorButtons[i].tryToPress(event.mouseButton.x, event.mouseButton.y))
 				return;
 		mapEditorMapDragging = true;
@@ -88,15 +115,21 @@ void mapEditorMouseButtonPressed()
 
 void mapEditorMouseButtonReleased()
 {
+	if (event.mouseButton.button != sf::Mouse::Left) return;
+	for (unsigned int i = 0; i < mapEditorButtons.size(); i++)
+		mapEditorButtons[i].unpress();
+	if (mapEditorWrongMapMessage)
+	{
+		mapEditorWrongMapMessage->unpress();
+		return;
+	}
 	mapEditorMapDragging = false;
 	mapEditorMap->unpressCellSelector();
-	for (int i = 0; i < mapEditorButtons.size(); i++)
-		mapEditorButtons[i].unpress();
 }
 
 void mapEditorMouseMoved()
 {
-	if (mapEditorFileNameDialog) return;
+	if (mapEditorFileNameDialog || mapEditorWrongMapMessage) return;
 
 	if (mapEditorMapDragging)
 		mapEditorMap->setPosition(
@@ -108,7 +141,7 @@ void mapEditorMouseMoved()
 
 void mapEditorMouseWheelScrolled()
 {
-	if (mapEditorFileNameDialog) return;
+	if (mapEditorFileNameDialog || mapEditorWrongMapMessage) return;
 	if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
 		mapEditorMap->changeZoom(1 + event.mouseWheelScroll.delta/50,
 								event.mouseWheelScroll.x, event.mouseWheelScroll.y);

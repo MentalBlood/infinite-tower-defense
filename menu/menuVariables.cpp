@@ -3,8 +3,8 @@ sf::Font menuFont;
 sf::Color	menuFontColor(0, 175, 70),
 			menuSelectedEntryColor(215, 215, 60);
 
-int menuFontSize,
-	menuSelectedEntryNumber = 0;
+unsigned int menuFontSize,
+			 menuSelectedEntryNumber = 0;
 
 float menuY1;
 
@@ -15,7 +15,7 @@ void updateMenuVariables()
 {
 	menuFontSize = sqrt(windowSize.x * windowSize.y) / 16;
 	menuY1 = float(windowSize.y) / 8;
-	for (int i = 0; i < 4; i++)
+	for (unsigned int i = 0; i < menuEntries.size(); i++)
 	{
 		menuEntries[i].setCharacterSize(menuFontSize);
 		menuEntries[i].setPosition(float(windowSize.x) / 16, menuY1 + i*menuFontSize*1.5);
@@ -30,14 +30,14 @@ void setMenuVariables()
 		return;
 	}
 
-	menuEntries.resize(4);
-	menuFunctions.resize(4);
+	menuEntries.resize(5);
+	menuFunctions.resize(5);
 
 	if (!menuFont.loadFromFile("fonts/menuFont.otf")) Closed();
 
 	updateMenuVariables();
 	
-	for (int i = 0; i < 4; i++)
+	for (unsigned int i = 0; i < menuEntries.size(); i++)
 	{
 		menuEntries[i].setFont(menuFont);
 		menuEntries[i].setFillColor(menuFontColor);
@@ -51,6 +51,8 @@ void setMenuVariables()
 	menuFunctions[1] = nothing;
 	menuEntries[2].setString("map editor");
 	menuFunctions[2] = startChooseNewOrSavedMapToEditDialog;
-	menuEntries[3].setString("exit");
-	menuFunctions[3] = Closed;
+	menuEntries[3].setString("help");
+	menuFunctions[3] = startHelpScreen;
+	menuEntries[4].setString("exit");
+	menuFunctions[4] = Closed;
 }

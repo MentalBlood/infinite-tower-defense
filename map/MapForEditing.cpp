@@ -16,10 +16,10 @@
 class MapChange
 {
 	public:
-		int cellX, cellY;
+		unsigned int cellX, cellY;
 		char was, become;
 
-		MapChange(int x, int y, char was, char become): cellX(x), cellY(y), was(was), become(become)
+		MapChange(unsigned int x, unsigned int y, char was, char become): cellX(x), cellY(y), was(was), become(become)
 		{}
 };
 
@@ -30,12 +30,12 @@ class EditorAction
 
 	public:
 		//just one cell changed
-		EditorAction(int cellX, int cellY, char was, char become)
+		EditorAction(unsigned int cellX, unsigned int cellY, char was, char become)
 		{ mapChanges.push_back(MapChange(cellX, cellY, was, become)); }
 
 		//start or end cell moved
-		EditorAction(char movingCell, char toCell, int fromX, int fromY, int toX, int toY,
-					char movingCellFrom)
+		EditorAction(char movingCell, char toCell, unsigned int fromX, unsigned int fromY,
+					unsigned int toX, unsigned int toY, char movingCellFrom)
 		{
 			mapChanges.push_back(MapChange(fromX, fromY, movingCell, movingCellFrom));
 			mapChanges.push_back(MapChange(toX, toY, toCell, movingCell));
@@ -44,14 +44,14 @@ class EditorAction
 		//map reseted
 		EditorAction(std::vector<std::vector<char> > &pathMap)
 		{
-			for (int i = 0; i < pathMap.size(); i++)
-				for (int j = 0; j < pathMap[i].size(); j++)
+			for (unsigned int i = 0; i < pathMap.size(); i++)
+				for (unsigned int j = 0; j < pathMap[i].size(); j++)
 					//start cell is in left upper corner by default
 					if ((!i) && (!j) && (pathMap[i][j] != BEGIN))
 						mapChanges.push_back(MapChange(i, j, pathMap[i][j], BEGIN));
 					else
 					//end cell is in right bottom corner by default
-					if ((i == (pathMap.size()-1)) && (j == (pathMap[0].size()-1)) && (pathMap[i][j] != END))
+					if ((i+1 == pathMap.size()) && (j+1 == pathMap[0].size()) && (pathMap[i][j] != END))
 						mapChanges.push_back(MapChange(i, j, pathMap[i][j], END));
 					else
 					//other cells are empty by default
@@ -59,12 +59,13 @@ class EditorAction
 						mapChanges.push_back(MapChange(i, j, pathMap[i][j], EMPTY));
 		}
 
-		void undo(	std::vector<std::vector<char> > &pathMap, int *x1, int *y1, int *x2, int *y2,
+		void undo(	std::vector<std::vector<char> > &pathMap,
+					unsigned int *x1, unsigned int *y1, unsigned int *x2, unsigned int *y2,
 					char *startNowWhereWas, char *endNowWhereWas)
 		{
 			if (mapChanges.size() > 1)
 			{
-				for (int i = 0; i < mapChanges.size(); i++)
+				for (unsigned int i = 0; i < mapChanges.size(); i++)
 				{
 					if (mapChanges[i].was == BEGIN)
 					{
@@ -86,12 +87,13 @@ class EditorAction
 				pathMap[mapChanges[0].cellX][mapChanges[0].cellY] = mapChanges[0].was;
 		}
 
-		void redo(	std::vector<std::vector<char> > &pathMap, int *x1, int *y1, int *x2, int *y2,
+		void redo(	std::vector<std::vector<char> > &pathMap,
+					unsigned int *x1, unsigned int *y1, unsigned int *x2, unsigned int *y2,
 					char *startNowWhereWas, char *endNowWhereWas)
 		{
 			if (mapChanges.size() > 1)
 			{
-				for (int i = 0; i < mapChanges.size(); i++)
+				for (unsigned int i = 0; i < mapChanges.size(); i++)
 				{
 					if (mapChanges[i].become == BEGIN)
 					{
@@ -115,7 +117,7 @@ class EditorAction
 
 		void print()
 		{
-			for (int i = 0; i < mapChanges.size(); i++)
+			for (unsigned int i = 0; i < mapChanges.size(); i++)
 				printf("(%d, %d): %d -> %d\n", mapChanges[i].cellX, mapChanges[i].cellY, mapChanges[i].was, mapChanges[i].become);
 		}
 };
@@ -123,16 +125,16 @@ class EditorAction
 class MapForEditing
 {
 	private:
-		int mapHeight, mapWidth,
-			x1, y1,
-			x2, y2;
+		unsigned int	mapWidth, mapHeight,
+						x1, y1,
+						x2, y2;
 
 		float mapPositionX,
 			  mapPositionY,
 			  zoom;
 
-		unsigned int cellTextureSize;
-		float realCellTextureSize;
+		unsigned int	cellSelectorX,
+						cellSelectorY;
 
 		sf::Texture *towerCellTexture,
 					*pathCellTexture,
@@ -141,6 +143,23 @@ class MapForEditing
 					*endCellTexture,
 					*rockCellTexture;
 
+		sf::Color	towerCellBordersColor,
+					towerCellFillColor,
+					cellSelectorColor;
+
+		bool cellSelectorPressed,
+			 draggingStartCell,
+			 draggingEndCell,
+			 settingRocks;
+
+		int lastActionIndex;
+
+		char startNowWhereWas,
+			 endNowWhereWas;
+
+		unsigned int cellTextureSize;
+		float realCellTextureSize;
+
 		sf::Sprite	towerCellSprite,
 					pathCellSprite,
 					cellSelectorSprite,
@@ -148,41 +167,26 @@ class MapForEditing
 					endCellSprite,
 					rockCellSprite;
 
-		int cellSelectorX,
-			cellSelectorY;
-
-		bool cellSelectorPressed,
-			 draggingStartCell,
-			 draggingEndCell,
-			 settingRocks;
-
-		sf::Color	towerCellBordersColor,
-					towerCellFillColor,
-					cellSelectorColor;
-
 		std::vector<char> path;
 		std::vector<std::vector<char> > pathMap;
-		char startNowWhereWas,
-			 endNowWhereWas;
 
 		std::vector<EditorAction> actions;
-		int lastActionIndex;
 
 		void createPathMap()
 		{
 			pathMap.resize(mapWidth);
-			for (int i = 0; i < mapWidth; i++)
+			for (unsigned int i = 0; i < mapWidth; i++)
 			{
 				pathMap[i].resize(mapHeight);
-				for (int j = 0; j < mapHeight; j++)
+				for (unsigned int j = 0; j < mapHeight; j++)
 					pathMap[i][j] = 0;
 			}
 		}
 
 		void clearPathMap()
 		{
-			for (int i = 0; i < pathMap.size(); i++)
-				for (int j = 0; j < pathMap[i].size(); j++)
+			for (unsigned int i = 0; i < pathMap.size(); i++)
+				for (unsigned int j = 0; j < pathMap[i].size(); j++)
 					pathMap[i][j] = 0;
 		}
 
@@ -190,10 +194,10 @@ class MapForEditing
 		{
 			path.clear();
 
-			int x = x1,
-				y = y1;
+			unsigned int	x = x1,
+							y = y1;
 
-			char lastDirection;
+			char lastDirection = -1;
 			
 			while (!((x == x2) && (y == y2)))
 			{
@@ -241,7 +245,7 @@ class MapForEditing
 			FILE *file = fopen(fileName, "rb");
 
 			//read start and end cells
-			fscanf(file, "%d%d%d%d", &mapWidth, &mapHeight, &x1, &y1);
+			fscanf(file, "%u%u%u%u", &mapWidth, &mapHeight, &x1, &y1);
 			//creating path map of read size
 			createPathMap();
 			pathMap[x1][y1] = BEGIN;
@@ -279,7 +283,7 @@ class MapForEditing
 		void changeCell(int x, int y, char newCell)
 		{
 			//erasing "future" actions
-			if (lastActionIndex != (actions.size()-1))
+			if ((unsigned int)(lastActionIndex+1) != actions.size())
 				actions.erase(actions.begin() + lastActionIndex+1, actions.end());
 			++lastActionIndex;
 
@@ -290,7 +294,7 @@ class MapForEditing
 		void moveCell(int fromX, int fromY, int toX, int toY)
 		{
 			//erasing "future" actions
-			if (lastActionIndex != (actions.size()-1))
+			if ((unsigned int)(lastActionIndex+1) != actions.size())
 				actions.erase(actions.begin() + lastActionIndex+1, actions.end());
 			++lastActionIndex;
 
@@ -358,9 +362,10 @@ class MapForEditing
 		}
 
 	public:
-		MapForEditing(int width, int height,
+		MapForEditing(unsigned int width, unsigned int height,
 			sf::Color towerCellBordersColor, sf::Color towerCellFillColor, sf::Color cellSelectorColor):
-			x1(0), y1(0), x2(width - 1), y2(height - 1), zoom(1), cellSelectorX(0), cellSelectorY(0),
+			mapWidth(width), mapHeight(height), x1(0), y1(0), x2(width - 1), y2(height - 1), zoom(1),
+			cellSelectorX(0), cellSelectorY(0),
 			towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL), startCellTexture(NULL),
 			endCellTexture(NULL), rockCellTexture(NULL),
 			towerCellBordersColor(towerCellBordersColor), towerCellFillColor(towerCellFillColor),
@@ -368,8 +373,6 @@ class MapForEditing
 			draggingEndCell(false), settingRocks(false), lastActionIndex(-1),
 			startNowWhereWas(EMPTY), endNowWhereWas(EMPTY)
 		{
-			mapWidth = width;
-			mapHeight = height;
 			createPathMap();
 
 			pathMap[0][0] = 2;
@@ -401,9 +404,9 @@ class MapForEditing
 
 		bool check()
 		{
-			for (int i = 0; i < pathMap.size(); i++)
+			for (unsigned int i = 0; i < pathMap.size(); i++)
 			{
-				for (int j = 0; j < pathMap[0].size(); j++)
+				for (unsigned int j = 0; j < pathMap[0].size(); j++)
 				{
 					if ((pathMap[i][j] == EMPTY) || (pathMap[i][j] == ROCK)) continue;
 
@@ -411,11 +414,11 @@ class MapForEditing
 
 					if (i) //LEFT
 						if (pathMap[i-1][j] && (pathMap[i-1][j] != ROCK)) ++pathesFromCell;
-					if (i < (pathMap.size()-1)) //RIGHT
+					if ((i+1) < pathMap.size()) //RIGHT
 						if (pathMap[i+1][j] && (pathMap[i+1][j] != ROCK)) ++pathesFromCell;
 					if (j) //UP
 						if (pathMap[i][j-1] && (pathMap[i][j-1] != ROCK)) ++pathesFromCell;
-					if (j < (pathMap[0].size()-1)) //DOWN
+					if ((j+1) < pathMap[0].size()) //DOWN
 						if (pathMap[i][j+1] && (pathMap[i][j+1] != ROCK)) ++pathesFromCell;
 
 
@@ -435,11 +438,11 @@ class MapForEditing
 			FILE *file = fopen(fileName, "wb");
 
 			//write width, height and start cell coordinates
-			fprintf(file, "%d %d %d %d", mapWidth, mapHeight, x1, y1);
+			fprintf(file, "%u %u %u %u", mapWidth, mapHeight, x1, y1);
 
 			//write rocks coordinates
-			for (int i = 0; i < pathMap.size(); i++)
-				for (int j = 0; j < pathMap[0].size(); j++)
+			for (unsigned int i = 0; i < pathMap.size(); i++)
+				for (unsigned int j = 0; j < pathMap[0].size(); j++)
 					if (pathMap[i][j] == ROCK)
 						fprintf(file, " %d %d", i, j);
 			//end rocks coordinates flag
@@ -447,7 +450,7 @@ class MapForEditing
 
 			//write enemies path
 			writePath();
-			for (int i = 0; i < path.size(); i++)
+			for (unsigned int i = 0; i < path.size(); i++)
 				putc(path[i], file);
 
 			fclose(file);
@@ -471,7 +474,7 @@ class MapForEditing
 
 		void print_actions()
 		{
-			for (int i = 0; i < actions.size(); i++)
+			for (unsigned int i = 0; i < actions.size(); i++)
 			{
 				printf("\t%d\t\n", i);
 				actions[i].print();
@@ -564,7 +567,7 @@ class MapForEditing
 			rockCellSprite.setTexture(*rockCellTexture);
 
 			//6 drawing cell selector texture
-			if (!RenderTexture.create(cellTextureSize, cellTextureSize));
+			if (!RenderTexture.create(cellTextureSize, cellTextureSize)) Closed();
 
 			sf::VertexArray cellSelectorVertexArray;
 			makeVertexArrayFrame(&cellSelectorVertexArray, 0, 0, cellTextureSize, cellTextureSize,
@@ -591,11 +594,8 @@ class MapForEditing
 		{
 			if ((delta < 1.0) && (zoom < (0.1 / delta))) return;
 
-			float correctionDelta = realCellTextureSize * (delta - 1),
-				  realMapWidth = mapWidth * realCellTextureSize,
-				  realMapHeight = mapHeight * realCellTextureSize;
-			mapPositionX -= mapWidth * correctionDelta * ((mouseX - mapPositionX) / realMapWidth);
-			mapPositionY -= mapHeight * correctionDelta * ((mouseY - mapPositionY) / realMapHeight);
+			mapPositionX += (1 - delta) * (mouseX - mapPositionX);
+			mapPositionY += (1 - delta) * (mouseY - mapPositionY);
 
 			zoom *= delta;
 			zoomTextures();
@@ -693,10 +693,10 @@ class MapForEditing
 			int selectedCellX = int((x - mapPositionX) / realCellTextureSize),
 				selectedCellY = int((y - mapPositionY) / realCellTextureSize);
 
-			if ((selectedCellX == cellSelectorX) && (selectedCellY == cellSelectorY)) return true;
+			if ((selectedCellX == int(cellSelectorX)) && (selectedCellY == int(cellSelectorY))) return true;
 
-			if ((selectedCellX < 0) || (selectedCellX >= mapWidth) ||
-				(selectedCellY < 0) || (selectedCellY >= mapHeight)) return false;
+			if ((selectedCellX < 0) || (selectedCellX >= int(mapWidth)) ||
+				(selectedCellY < 0) || (selectedCellY >= int(mapHeight))) return false;
 
 			if (settingRocks)
 			{
@@ -755,10 +755,10 @@ class MapForEditing
 			float cellSpriteX = mapPositionX, 
 				  cellSpriteY = mapPositionY;
 
-			for (int i = 0; i < pathMap.size(); i++, cellSpriteX += realCellTextureSize)
+			for (unsigned int i = 0; i < pathMap.size(); i++, cellSpriteX += realCellTextureSize)
 			{
 				if (((cellSpriteX + realCellTextureSize) < 0) || (cellSpriteX > windowSize.x)) continue;
-				for (int j = 0; j < pathMap[i].size(); j++, cellSpriteY += realCellTextureSize)
+				for (unsigned int j = 0; j < pathMap[i].size(); j++, cellSpriteY += realCellTextureSize)
 				{
 					if (((cellSpriteY + realCellTextureSize) < 0) || (cellSpriteY > windowSize.y)) continue;
 					if (pathMap[i][j] == PATH)

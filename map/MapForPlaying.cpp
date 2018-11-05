@@ -1,16 +1,10 @@
 class MapForPlaying
 {
 	private:
-		int mapHeight, mapWidth,
-			x1, y1,
-			x2, y2;
+		float zoom;
 
-		float mapPositionX,
-			  mapPositionY,
-			  zoom;
-
-		unsigned int cellTextureSize;
-		float realCellTextureSize;
+		unsigned int	cellSelectorX,
+						cellSelectorY;
 
 		sf::Texture *towerCellTexture,
 					*pathCellTexture,
@@ -19,6 +13,22 @@ class MapForPlaying
 					*endCellTexture,
 					*rockCellTexture;
 
+		sf::Color	towerCellBordersColor,
+					towerCellFillColor,
+					cellSelectorColor;
+
+		bool cellSelectorPressed;
+
+		unsigned int	mapWidth, mapHeight,
+						x1, y1,
+						x2, y2;
+
+		float mapPositionX,
+			  mapPositionY;
+
+		unsigned int cellTextureSize;
+		float realCellTextureSize;
+
 		sf::Sprite	towerCellSprite,
 					pathCellSprite,
 					cellSelectorSprite,
@@ -26,24 +36,16 @@ class MapForPlaying
 					endCellSprite,
 					rockCellSprite;
 
-		int cellSelectorX,
-			cellSelectorY;
-		bool cellSelectorPressed;
-
-		sf::Color	towerCellBordersColor,
-					towerCellFillColor,
-					cellSelectorColor;
-
 		std::vector<char> path;
 		std::vector<std::vector<char> > pathMap;
 
 		void createPathMap()
 		{
 			pathMap.resize(mapWidth);
-			for (int i = 0; i < mapWidth; i++)
+			for (unsigned int i = 0; i < mapWidth; i++)
 			{
 				pathMap[i].resize(mapHeight);
-				for (int j = 0; j < mapHeight; j++)
+				for (unsigned int j = 0; j < mapHeight; j++)
 					pathMap[i][j] = 0;
 			}
 		}
@@ -51,7 +53,6 @@ class MapForPlaying
 		void loadFile(const char *fileName)
 		{
 			FILE *file = fopen(fileName, "rb");
-			printf("fileName = %s, file = %d\n", fileName, file);
 
 			//read start and end cells
 			fscanf(file, "%d%d%d%d", &mapWidth, &mapHeight, &x1, &y1);
@@ -192,7 +193,7 @@ class MapForPlaying
 			rockCellSprite.setTexture(*rockCellTexture);
 
 			//6 drawing cell selector texture
-			if (!RenderTexture.create(cellTextureSize, cellTextureSize));
+			if (!RenderTexture.create(cellTextureSize, cellTextureSize)) Closed();
 
 			sf::VertexArray cellSelectorVertexArray;
 			makeVertexArrayFrame(&cellSelectorVertexArray, 0, 0, cellTextureSize, cellTextureSize,
@@ -215,28 +216,41 @@ class MapForPlaying
 			mapPositionY = y;
 		}
 
-		void changeZoom(float delta, float mouseX, float mouseY)
+		sf::Vector2f changeZoom(float delta, float mouseX, float mouseY)
 		{
-			if ((delta < 1.0) && (zoom < (0.1 / delta))) return;
+			if ((delta < 1.0) && (zoom < (0.1 / delta))) return sf::Vector2f(0, 0);
 
-			float correctionDelta = realCellTextureSize * (delta - 1),
-				  realMapWidth = mapWidth * realCellTextureSize,
-				  realMapHeight = mapHeight * realCellTextureSize;
-			mapPositionX -= mapWidth * correctionDelta * ((mouseX - mapPositionX) / realMapWidth);
-			mapPositionY -= mapHeight * correctionDelta * ((mouseY - mapPositionY) / realMapHeight);
+			sf::Vector2f shift = sf::Vector2f(	(1 - delta) * (mouseX - mapPositionX),
+												(1 - delta) * (mouseY - mapPositionY));
+			mapPositionX += (1 - delta) * (mouseX - mapPositionX);
+			mapPositionY += (1 - delta) * (mouseY - mapPositionY);
 
 			zoom *= delta;
 			zoomTextures();
+
+			return shift;
 		}
 
 		sf::Vector2f getPosition()
 		{ return sf::Vector2f(mapPositionX, mapPositionY); }
 
+		sf::Vector2f getSpawnPoint()
+		{ return sf::Vector2f(mapPositionX + realCellTextureSize * (x1 + 0.5), mapPositionY + realCellTextureSize * (y1 + 0.5)); }
+
+		float getCellTextureSize()
+		{ return cellTextureSize; }
+
+		float getScale()
+		{ return zoom; }
+
+		const std::vector<char>* getPathPointer()
+		{ return &path; }
+
+		const unsigned int* getCellSize()
+		{ return &cellTextureSize; }
+
 		void moveCellSelector(char direction)
 		{
-			int oldCellSelectorX = cellSelectorX,
-				oldCellSelectorY = cellSelectorY;
-
 			if ((direction == LEFT) && (cellSelectorX))
 				--cellSelectorX;
 			else
@@ -255,13 +269,15 @@ class MapForPlaying
 			int selectedCellX = int((x - mapPositionX) / realCellTextureSize),
 				selectedCellY = int((y - mapPositionY) / realCellTextureSize);
 
-			if ((selectedCellX == cellSelectorX) && (selectedCellY == cellSelectorY)) return true;
+			if ((selectedCellX == int(cellSelectorX)) && (selectedCellY == int(cellSelectorY))) return true;
 
-			if ((selectedCellX < 0) || (selectedCellX >= mapWidth) ||
-				(selectedCellY < 0) || (selectedCellY >= mapHeight)) return false;
+			if ((selectedCellX < 0) || (selectedCellX >= int(mapWidth)) ||
+				(selectedCellY < 0) || (selectedCellY >= int(mapHeight))) return false;
 
 			cellSelectorX = selectedCellX;
 			cellSelectorY = selectedCellY;
+
+			return true;
 		}
 
 		void draw()
@@ -269,10 +285,10 @@ class MapForPlaying
 			float cellSpriteX = mapPositionX, 
 				  cellSpriteY = mapPositionY;
 
-			for (int i = 0; i < pathMap.size(); i++, cellSpriteX += realCellTextureSize)
+			for (unsigned int i = 0; i < pathMap.size(); i++, cellSpriteX += realCellTextureSize)
 			{
 				if (((cellSpriteX + realCellTextureSize) < 0) || (cellSpriteX > windowSize.x)) continue;
-				for (int j = 0; j < pathMap[i].size(); j++, cellSpriteY += realCellTextureSize)
+				for (unsigned int j = 0; j < pathMap[i].size(); j++, cellSpriteY += realCellTextureSize)
 				{
 					if (((cellSpriteY + realCellTextureSize) < 0) || (cellSpriteY > windowSize.y)) continue;
 					if (pathMap[i][j] == PATH)

@@ -5,5 +5,7 @@ void drawChooseNewOrSavedMapToEditDialog()
 	chooseNewOrSavedMapToEditDialogSavedMapButton->draw();
 	if (chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog)
 		chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog->draw();
+	if (chooseNewOrSavedMapToEditDialogWrongFileNameMessage)
+		chooseNewOrSavedMapToEditDialogWrongFileNameMessage->draw();
 	window.display();
 }

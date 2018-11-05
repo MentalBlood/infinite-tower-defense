@@ -1,13 +1,32 @@
 TwoConditionButton *chooseNewOrSavedMapToEditDialogNewMapButton,
 				   *chooseNewOrSavedMapToEditDialogSavedMapButton;
 
+void chooseNewOrSavedMapToEditDialogCloseWrongFileNameMessage()
+{
+	delete chooseNewOrSavedMapToEditDialogWrongFileNameMessage;
+	chooseNewOrSavedMapToEditDialogWrongFileNameMessage = NULL;
+}
+
+void chooseNewOrSavedMapToEditDialogCloseSavedMapFileNameDialog()
+{
+	delete chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog;
+	chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog = NULL;
+}
+
 void chooseNewOrSavedMapToEditDialogTryOpenMap(std::string fileName)
 {
 	if (checkMapFile(fileName.data()))
 	{
-		delete chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog;
-		chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog = NULL;
+		chooseNewOrSavedMapToEditDialogCloseSavedMapFileNameDialog();
 		startMapEditor(fileName.data());
+	}
+	else
+	{
+		chooseNewOrSavedMapToEditDialogWrongFileNameMessage =
+			new Message(chooseNewOrSavedMapToEditDialogCloseWrongFileNameMessage, "wrong map file\n\ncan not load", "OK",
+						"fonts/messageFont.otf",
+						0.3, 0.3, 0.4, 0.4,
+						sf::Color(255, 255, 255), sf::Color(255, 0, 0, 192), sf::Color(0, 0, 0));
 	}
 }
 

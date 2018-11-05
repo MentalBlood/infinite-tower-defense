@@ -7,6 +7,7 @@ float mapEditorMapDraggingMouseX1,
 sf::Vector2f mapEditorMapDraggingMapInitialCoordinates;
 
 EnterFileNameDialog *mapEditorFileNameDialog = NULL;
+Message *mapEditorWrongMapMessage = NULL;
 
 #include "mapEditorButtons.cpp"
 
@@ -16,6 +17,8 @@ void updateMapEditorVariables()
 	
 	if (mapEditorFileNameDialog)
 		mapEditorFileNameDialog->updatePositionAndSize();
+	if (mapEditorWrongMapMessage)
+		mapEditorWrongMapMessage->updatePositionAndSize();
 }
 
 //creating new map

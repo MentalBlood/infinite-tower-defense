@@ -23,7 +23,7 @@ void newMapSettingsKeyPressed()
 	else
 	if (event.key.code == sf::Keyboard::Down)
 	{
-		if (newMapSettingsSelectedSettingNumber == newMapSettings.size()-1) return;
+		if ((newMapSettingsSelectedSettingNumber+1) == newMapSettings.size()) return;
 		newMapSettings[newMapSettingsSelectedSettingNumber].unselect();
 		++newMapSettingsSelectedSettingNumber;
 		newMapSettings[newMapSettingsSelectedSettingNumber].select();
@@ -69,7 +69,7 @@ void newMapSettingsMouseMoved()
 	}
 
 	int index = int(event.mouseMove.y - newMapSettingsY1) / (1.5*newMapSettingsFontSize);
-	if (index == newMapSettingsSelectedSettingNumber) return;
+	if (index == int(newMapSettingsSelectedSettingNumber)) return;
 	newMapSettings[newMapSettingsSelectedSettingNumber].unselect();
 	newMapSettingsSelectedSettingNumber = index;
 	newMapSettings[index].select();

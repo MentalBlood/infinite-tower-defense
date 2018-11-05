@@ -28,7 +28,7 @@ class TwoConditionButton
 		void press()
 		{
 			pressed = true;
-			for (int i = 0; i < 4; i++) fill[i].color = bordersColor;
+			for (unsigned int i = 0; i < fill.getVertexCount(); i++) fill[i].color = bordersColor;
 			functionOnPress();
 		}
 
@@ -36,8 +36,8 @@ class TwoConditionButton
 		TwoConditionButton(	void (*functionOnPress)(), void (*functionOnUnpress)(), sf::String textString,
 							sf::String textFontFileName, sf::Color textColor, sf::Color fillColor, sf::Color bordersColor, 
 							float relativeX, float relativeY, float relativeWidth, float relativeHeight):
-			functionOnPress(functionOnPress), functionOnUnpress(functionOnUnpress),
-			pressed(false), textString(textString), fillColor(fillColor), bordersColor(bordersColor),
+			pressed(false), functionOnPress(functionOnPress), functionOnUnpress(functionOnUnpress),
+			textString(textString), fillColor(fillColor), bordersColor(bordersColor),
 			relativeX(relativeX), relativeY(relativeY), relativeWidth(relativeWidth), relativeHeight(relativeHeight)
 		{
 			font = new sf::Font;
@@ -68,7 +68,7 @@ class TwoConditionButton
 		{
 			if (!pressed) return;
 			pressed = false;
-			for (int i = 0; i < 4; i++) fill[i].color = fillColor;
+			for (unsigned int i = 0; i < fill.getVertexCount(); i++) fill[i].color = fillColor;
 			functionOnUnpress();
 		}
 
