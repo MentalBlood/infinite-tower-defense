@@ -9,7 +9,7 @@ float gameMapDraggingMouseX1,
 	  gameMapDraggingMouseY1;
 sf::Vector2f gameMapDraggingMapInitialCoordinates;
 
-std::vector<ModelB> monsters;
+std::vector<Monster*> monsters;
 
 #include "gameFunctions.cpp"
 

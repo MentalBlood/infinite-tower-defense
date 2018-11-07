@@ -2,11 +2,13 @@ class Monster
 {
 	protected:
 		sf::Vector2f position;
+		const float radius;
 
 	private:
-		const float radius;
-		sf::Transform transform;
-		float scale;
+		sf::Transform	transform,
+						rotationTransform;
+		float scale,
+			  currentRotatioAngle;
 
 		unsigned int currentDirectionIndex;
 		float distanceToNextDirectionLeft;
@@ -44,6 +46,7 @@ class Monster
 				}
 				float distanceExcess = distance - distanceToNextDirectionLeft;
 				distanceToNextDirectionLeft = *mapCellSize;
+				rotate((*path)[currentDirectionIndex]);
 				moveDistance(distanceExcess);
 			}
 			else
@@ -53,20 +56,22 @@ class Monster
 			}
 		}
 
+		void rotate(float angle)
+		{
+			rotationTransform.rotate(angle);
+			currentRotatioAngle += angle;
+		}
+
+		void rotate(char direction)
+		{
+			if (direction == UP) rotate(-90 - currentRotatioAngle);
+			else if (direction == DOWN) rotate(90 - currentRotatioAngle);
+			else if (direction == RIGHT) rotate(0 - currentRotatioAngle);
+			else if (direction == LEFT) rotate(180 - currentRotatioAngle);
+		}
+
 	protected:
 		std::vector<sf::VertexArray> graphicalElements;
-
-	public:
-		Monster(sf::Vector2f position, float radius, MapForPlaying *map):
-			position(position), radius(radius), scale(1), currentDirectionIndex(0),
-			distanceToNextDirectionLeft(*map->getCellSize()), path(map->getPathPointer()), mapCellSize(map->getCellSize())
-		{}
-
-		void draw()
-		{
-			for (unsigned int i = 0; i < graphicalElements.size(); i++)
-				window.draw(graphicalElements[i], transform);
-		}
 
 		void move(const sf::Vector2f &offset)
 		{
@@ -74,24 +79,36 @@ class Monster
 			position += offset*scale;
 		}
 
-		void moveInCorrectDirection()
+		void changeScale(float delta)
 		{
-			moveDistance(elapsed.asMilliseconds()/16);
+			transform.scale(sf::Vector2f(delta, delta));
+			scale *= delta;
 		}
+
+	public:
+		Monster(MapForPlaying *map):
+			position(sf::Vector2f(0, 0)), radius(*map->getCellSize() / 2.5),
+			scale(1), currentRotatioAngle(0), currentDirectionIndex(0),
+			distanceToNextDirectionLeft(*map->getCellSize()),
+			path(map->getPathPointer()), mapCellSize(map->getCellSize())
+		{
+			rotate((*path)[0]);
+		}
+
+		void draw()
+		{
+			sf::Transform sumTransform = transform * rotationTransform;
+			for (unsigned int i = 0; i < graphicalElements.size(); i++)
+				window.draw(graphicalElements[i], sumTransform);
+		}
+
+		void moveInCorrectDirection()
+		{ moveDistance(elapsed.asMilliseconds()/16); }
 
 		void drag(const sf::Vector2f &offset)
 		{
 			transform.translate(offset / scale);
 			position += sf::Vector2f(offset);
-		}
-
-		void rotate(float angle)
-		{ transform.rotate(angle, sf::Vector2f(0, 0)); }
-
-		void changeScale(float delta)
-		{
-			transform.scale(sf::Vector2f(delta, delta));
-			scale *= delta;
 		}
 
 		void changeScale(float delta, const sf::Vector2f &center)
@@ -104,6 +121,8 @@ class Monster
 			transform.scale(sf::Vector2f(delta, delta));
 			scale *= delta;
 		}
+
+		virtual void animate() =0;
 
 		sf::Vector2f getPosition()
 		{ return position; }
