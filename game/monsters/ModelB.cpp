@@ -45,7 +45,7 @@ class ModelB : public Monster
 				graphicalElements[0][i].position = rotation.transformPoint(graphicalElements[0][i-1].position);
 			graphicalElements[0][numberOfVertexes+1].position = graphicalElements[0][1].position;
 
-			graphicalElements[0][0].color = sf::Color(backgroundMinColor.r, backgroundMinColor.g, backgroundMaxColor.b);
+			graphicalElements[0][0].color = sf::Color(backgroundMinColor.r, backgroundMinColor.g, backgroundMaxColor.b, 128);
 			for (unsigned int i = 1; i < (numberOfVertexes+2); i++)
 			{
 				graphicalElements[0][i].color = graphicalElements[0][i-1].color;

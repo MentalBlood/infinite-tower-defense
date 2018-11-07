@@ -5,4 +5,6 @@ void updateGame()
 		monsters[i].animate();
 		monsters[i].moveInCorrectDirection();
 	}
+
+	processTimers();
 }

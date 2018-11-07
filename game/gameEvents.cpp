@@ -28,6 +28,7 @@ void gameKeyPressed()
 		gameMap->changeZoom(0.98, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
 	else if (event.key.code == sf::Keyboard::Escape) gameExit();
 	else if (event.key.code == sf::Keyboard::S) spawn();
+	else if (event.key.code == sf::Keyboard::W) spawnWave(1, 8, 1);
 }
 
 void gameMouseWheelScrolled()

@@ -33,7 +33,6 @@ class Monster
 
 		void moveDistance(float distance)
 		{
-			printf("move distance %f\n", distance);
 			if (distanceToNextDirectionLeft < distance)
 			{
 				moveDistanceInCurrentDirection(distanceToNextDirectionLeft);
@@ -77,8 +76,6 @@ class Monster
 
 		void moveInCorrectDirection()
 		{
-			float elapsedMilliseconds = elapsed.asMilliseconds();
-			printf("elapsed %f milliseconds, move distance is %f\n", elapsedMilliseconds, elapsedMilliseconds/16);
 			moveDistance(elapsed.asMilliseconds()/16);
 		}
 
