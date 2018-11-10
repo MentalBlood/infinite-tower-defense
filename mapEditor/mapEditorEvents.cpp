@@ -18,8 +18,8 @@ void mapEditorExit()
 		delete mapEditorWrongMapMessage;
 		mapEditorWrongMapMessage = NULL;
 	}
-	if (editingNewMap) startFunctions[2]();
-	else startFunctions[1]();
+	if (editingNewMap) startNewMapSettings();
+	else startChooseNewOrSavedMapToEditDialog();
 }
 
 void mapEditorKeyPressed()

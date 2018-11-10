@@ -14,7 +14,19 @@ void gameExit()
 	delete currentSecondsToNextWaveText;
 	delete currentWaveNumberText;
 	delete baseHealthText;
-	startFunctions[3]();
+	startSelectMapScreen();
+}
+
+void gameOver()
+{
+	delete gameMap;
+	gameMap = NULL;
+	deleteTimers();
+	monsters.clear();
+	delete currentSecondsToNextWaveText;
+	delete currentWaveNumberText;
+	delete baseHealthText;
+	startGameOverScreen();
 }
 
 void gameKeyPressed()

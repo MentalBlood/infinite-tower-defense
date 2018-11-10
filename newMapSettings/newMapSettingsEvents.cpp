@@ -8,7 +8,7 @@ void newMapSettingsResized()
 void newMapSettingsExit()
 {
 	newMapSettings.clear();
-	startFunctions[1]();
+	startChooseNewOrSavedMapToEditDialog();
 }
 
 void newMapSettingsKeyPressed()

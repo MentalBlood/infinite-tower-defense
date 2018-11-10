@@ -17,7 +17,13 @@ sf::Time elapsed;
 void (*updateFunction)(),
 	 (*drawFunction)();
 
-std::vector<void (*)()> startFunctions;
+void startMenu();
+void startSelectMapScreen();
+void startGame();
+void startGameOverScreen();
+void startChooseNewOrSavedMapToEditDialog();
+void startNewMapSettings();
+void startMapEditor();
 
 #include "events.cpp"
 
@@ -46,6 +52,12 @@ std::vector<void (*)()> startFunctions;
 #include "newMapSettings/drawNewMapSettings.cpp"
 #include "newMapSettings/newMapSettingsEvents.cpp"
 #include "newMapSettings/startNewMapSettings.cpp"
+
+#include "gameOverScreen/gameOverScreenVariables.cpp"
+#include "gameOverScreen/updateGameOverScreen.cpp"
+#include "gameOverScreen/drawGameOverScreen.cpp"
+#include "gameOverScreen/gameOverScreenEvents.cpp"
+#include "gameOverScreen/startGameOverScreen.cpp"
 
 #include "game/gameVariables.cpp"
 #include "game/updateGame.cpp"
@@ -79,11 +91,6 @@ std::vector<void (*)()> startFunctions;
 
 int main(void)
 {
-	startFunctions.push_back(startMenu);
-	startFunctions.push_back(startChooseNewOrSavedMapToEditDialog);
-	startFunctions.push_back(startNewMapSettings);
-	startFunctions.push_back(startSelectMapScreen);
-
 	window.create(sf::VideoMode(800, 600), "Infinite Tower Defense");
 	window.setVerticalSyncEnabled(false);
 	window.setFramerateLimit(60);

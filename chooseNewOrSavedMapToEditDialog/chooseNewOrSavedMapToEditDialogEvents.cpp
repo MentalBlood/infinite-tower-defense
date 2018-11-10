@@ -20,7 +20,7 @@ void chooseNewOrSavedMapToEditDialogExit()
 		delete chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog;
 		chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog = NULL;
 	}
-	startFunctions[0]();
+	startMenu();
 }
 
 void chooseNewOrSavedMapToEditDialogKeyPressed()

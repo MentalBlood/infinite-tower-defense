@@ -36,9 +36,9 @@ void spawnNextWave(char monsterType)
 	++currentWaveNumber;
 	updateCurrentWaveNumberText();
 	nextWaveNumberOfMonsters += 1;
-	nextWaveSecondsBetweenSpawns /= 1.1;
+	nextWaveSecondsBetweenSpawns /= 1.3;
 
-	Timer *timer = new Timer(nextWaveSecondsBetweenSpawns * nextWaveNumberOfMonsters + delayBetweenWaves, spawnNextWave, (monsterType+1) % 2);
+	Timer *timer = new Timer(nextWaveSecondsBetweenSpawns * (nextWaveNumberOfMonsters-1) + delayBetweenWaves, spawnNextWave, (monsterType+1) % 2);
 	currentSecondsToNextWave = timer->getTimeLeftPointer();
 }
 
@@ -47,14 +47,23 @@ void startWaving()
 	currentWaveNumber = 0;
 	nextWaveNumberOfMonsters = 1;
 	nextWaveSecondsBetweenSpawns = 1.5;
-	delayBetweenWaves = 2;
+	delayBetweenWaves = 1;
 	spawnNextWave(TYPE_A);
 }
 
+void gameOver();
+
 void updateBaseHealthText();
 
-void damageTheBase(unsigned int damage)
+bool damageTheBase(unsigned int damage)
 {
+	if (damage >= gameBaseHealth)
+	{
+		gameOver();
+		return true;
+	}
 	gameBaseHealth -= damage;
 	updateBaseHealthText();
+
+	return false;
 }

@@ -9,7 +9,7 @@ void selectMapScreenExit()
 {
 	delete selectMapScreenMapsList;
 	selectMapScreenMapsList = NULL;
-	startFunctions[0]();
+	startMenu();
 }
 
 void selectMapScreenKeyPressed()

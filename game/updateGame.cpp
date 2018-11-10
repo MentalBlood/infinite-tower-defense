@@ -4,7 +4,7 @@ void updateGame()
 	{
 		if ((*i)->isCame())
 		{
-			damageTheBase((*i)->damage);
+			if (damageTheBase((*i)->damage)) return;
 			delete *i;
 			monsters.erase(i);
 			i--;

@@ -114,7 +114,7 @@ class Monster
 		}
 
 		void moveInCorrectDirection()
-		{ moveDistance(elapsed.asMilliseconds()/8); }
+		{ moveDistance(elapsed.asMilliseconds()/2); }
 
 		void drag(const sf::Vector2f &offset)
 		{
