@@ -50,3 +50,11 @@ void startWaving()
 	delayBetweenWaves = 2;
 	spawnNextWave(TYPE_A);
 }
+
+void updateBaseHealthText();
+
+void damageTheBase(unsigned int damage)
+{
+	gameBaseHealth -= damage;
+	updateBaseHealthText();
+}

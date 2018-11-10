@@ -1,3 +1,5 @@
+void damageTheBase(unsigned int);
+
 class Monster
 {
 	protected:
@@ -16,9 +18,12 @@ class Monster
 		const std::vector<char> *path;
 		const unsigned int *mapCellSize;
 
+		unsigned int damage;
+
 		void functionAtArrive()
 		{
 			changeScale(0.3);
+			damageTheBase(damage);
 		}
 
 		void moveDistanceInCurrentDirection(float distance)
@@ -86,11 +91,12 @@ class Monster
 		}
 
 	public:
-		Monster(MapForPlaying *map):
+		Monster(MapForPlaying *map, unsigned int damage):
 			position(sf::Vector2f(0, 0)), radius(*map->getCellSize() / 2.5),
 			scale(1), currentRotatioAngle(0), currentDirectionIndex(0),
 			distanceToNextDirectionLeft(*map->getCellSize()),
-			path(map->getPathPointer()), mapCellSize(map->getCellSize())
+			path(map->getPathPointer()), mapCellSize(map->getCellSize()),
+			damage(damage)
 		{
 			rotate((*path)[0]);
 		}

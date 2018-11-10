@@ -41,8 +41,8 @@ void updateCurrentWaveNumberText()
 void updateBaseHealthText()
 {
 	baseHealthText->setString("base health: " + sf::String(intToString(gameBaseHealth)));
-	baseHealthText->setColor(sf::Color(	255 * (1 - 100.0 / gameBaseHealth),
-										255 * 100.0 / gameBaseHealth, 0, 192));
+	baseHealthText->setColor(sf::Color(	255 * (1 - float(gameBaseHealth) / 100.0),
+										255 * float(gameBaseHealth) / 100.0, 0, 192));
 }
 
 void drawGameInfo()

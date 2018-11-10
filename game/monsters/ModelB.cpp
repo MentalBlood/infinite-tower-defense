@@ -10,7 +10,7 @@ class ModelB : public Monster
 		ModelB(	unsigned int numberOfVertexes,
 				sf::Color backgroundMinColor, sf::Color backgroundMaxColor,
 				sf::Color linesMinColor, sf::Color linesMaxColor, MapForPlaying *map):
-			Monster(map), numberOfVertexes(numberOfVertexes),
+			Monster(map, 10), numberOfVertexes(numberOfVertexes),
 			backgroundMinColor(backgroundMinColor), backgroundMaxColor(backgroundMaxColor),
 			linesMinColor(linesMinColor), linesMaxColor(linesMaxColor)
 		{

@@ -8,7 +8,7 @@ class ModelA : public Monster
 
 	public:
 		ModelA(unsigned int numberOfVertexes, float initialMouthAngle, MapForPlaying *map):
-			Monster(map), initialMouthAngle(initialMouthAngle), currentMouthAngle(initialMouthAngle),
+			Monster(map, 5), initialMouthAngle(initialMouthAngle), currentMouthAngle(initialMouthAngle),
 			numberOfVertexes(numberOfVertexes), closingMouth(true)
 		{
 			graphicalElements.resize(1);
