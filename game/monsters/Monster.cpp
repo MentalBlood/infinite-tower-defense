@@ -1,4 +1,6 @@
-void damageTheBase(unsigned int);
+class Monster;
+
+void monsterCome(Monster*);
 
 class Monster
 {
@@ -18,12 +20,11 @@ class Monster
 		const std::vector<char> *path;
 		const unsigned int *mapCellSize;
 
-		unsigned int damage;
+		bool came;
 
 		void functionAtArrive()
 		{
-			changeScale(0.3);
-			damageTheBase(damage);
+			came = true;
 		}
 
 		void moveDistanceInCurrentDirection(float distance)
@@ -91,15 +92,20 @@ class Monster
 		}
 
 	public:
+		const unsigned int damage;
+
 		Monster(MapForPlaying *map, unsigned int damage):
 			position(sf::Vector2f(0, 0)), radius(*map->getCellSize() / 2.5),
 			scale(1), currentRotatioAngle(0), currentDirectionIndex(0),
 			distanceToNextDirectionLeft(*map->getCellSize()),
 			path(map->getPathPointer()), mapCellSize(map->getCellSize()),
-			damage(damage)
+			came(false), damage(damage)
 		{
 			rotate((*path)[0]);
 		}
+
+		virtual ~Monster()
+		{}
 
 		void draw()
 		{
@@ -108,7 +114,7 @@ class Monster
 		}
 
 		void moveInCorrectDirection()
-		{ moveDistance(elapsed.asMilliseconds()/16); }
+		{ moveDistance(elapsed.asMilliseconds()/8); }
 
 		void drag(const sf::Vector2f &offset)
 		{
@@ -134,4 +140,7 @@ class Monster
 
 		float getScale()
 		{ return scale; }
+
+		bool isCame()
+		{ return came; }
 };

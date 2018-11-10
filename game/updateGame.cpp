@@ -1,9 +1,17 @@
 void updateGame()
 {
-	for (unsigned int i = 0; i < monsters.size(); i++)
+	for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
 	{
-		monsters[i]->animate();
-		monsters[i]->moveInCorrectDirection();
+		if ((*i)->isCame())
+		{
+			damageTheBase((*i)->damage);
+			delete *i;
+			monsters.erase(i);
+			i--;
+			continue;
+		}
+		(*i)->animate();
+		(*i)->moveInCorrectDirection();
 	}
 
 	processTimers();

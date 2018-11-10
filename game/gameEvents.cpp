@@ -43,8 +43,8 @@ void gameMouseWheelScrolled()
 	{
 		float delta = 1 + event.mouseWheelScroll.delta/50;
 		gameMap->changeZoom(delta, event.mouseWheelScroll.x, event.mouseWheelScroll.y);
-		for (unsigned int i = 0; i < monsters.size(); i++)
-			monsters[i]->changeScale(delta, sf::Vector2f(event.mouseWheelScroll.x, event.mouseWheelScroll.y));
+		for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
+			(*i)->changeScale(delta, sf::Vector2f(event.mouseWheelScroll.x, event.mouseWheelScroll.y));
 	}
 }
 
@@ -76,8 +76,8 @@ void gameMouseMoved()
 		gameMap->setPosition(
 		gameMapDraggingMapInitialCoordinates.x + event.mouseMove.x - gameMapDraggingMouseX1, 
 		gameMapDraggingMapInitialCoordinates.y + event.mouseMove.y - gameMapDraggingMouseY1);
-		for (unsigned int i = 0; i < monsters.size(); i++)
-			monsters[i]->drag(sf::Vector2f(	event.mouseMove.x - gameDraggingPreviousMouseX0,
+		for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
+			(*i)->drag(sf::Vector2f(	event.mouseMove.x - gameDraggingPreviousMouseX0,
 											event.mouseMove.y - gameDraggingPreviousMouseY0));
 		gameDraggingPreviousMouseX0 = event.mouseMove.x;
 		gameDraggingPreviousMouseY0 = event.mouseMove.y;

@@ -10,7 +10,7 @@ unsigned int gameBaseHealth;
 #include "monsters/Monster.cpp"
 #include "monsters/ModelA.cpp"
 #include "monsters/ModelB.cpp"
-std::vector<Monster*> monsters;
+std::list<Monster*> monsters;
 
 #include "gameFunctions.cpp"
 #include "gameInfo.cpp"

@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <dirent.h>
 #include <string>
+#include <algorithm>
 #include <vector>
 #include <list>
 
