@@ -39,12 +39,10 @@ void updateSelectMapScreenVariables()
 
 void setSelectMapScreenVariables()
 {
-	printf("setSelectMapScreenVariables\n");
 	selectMapScreenMapsList = new List(	"Select map to play on:", startGame,
 										"fonts/selectMapScreenFont.otf", "fonts/selectMapScreenFont.otf",
 										0, 0, 1, 1, 4,
 										sf::Color(0, 175, 70), sf::Color(215, 215, 215),
 										sf::Color(128, 128, 128, 64), sf::Color(0, 0, 0), sf::Color(0, 175, 60));
 	selectMapScreenFillMapsList();
-	printf("seted\n");
 }

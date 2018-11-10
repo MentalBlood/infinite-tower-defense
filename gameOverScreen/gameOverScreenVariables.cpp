@@ -17,7 +17,7 @@ void setGameOverScreenVariables()
 	gameOverScreenMessage = new Message(gameOverScreenExit, "game over",
 										"fuck you",
 										"fonts/messageFont.otf",
-										0, 0, 1, 1,
+										0, 0, 1, 1, 4,
 										sf::Color(0, 0, 0), sf::Color(192, 64, 64),
 										sf::Color(64, 0, 0));
 }

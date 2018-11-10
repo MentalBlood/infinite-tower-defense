@@ -23,7 +23,8 @@ class TwoConditionButton
 			  relativeY,
 			  relativeWidth,
 			  relativeHeight,
-			  x, y, width, height;
+			  x, y, width, height,
+			  relativeTextIndent;
 
 		void press()
 		{
@@ -35,10 +36,12 @@ class TwoConditionButton
 	public:
 		TwoConditionButton(	void (*functionOnPress)(), void (*functionOnUnpress)(), sf::String textString,
 							sf::String textFontFileName, sf::Color textColor, sf::Color fillColor, sf::Color bordersColor, 
-							float relativeX, float relativeY, float relativeWidth, float relativeHeight):
+							float relativeX, float relativeY, float relativeWidth, float relativeHeight,
+							float relativeTextIndent):
 			pressed(false), functionOnPress(functionOnPress), functionOnUnpress(functionOnUnpress),
 			textString(textString), fillColor(fillColor), bordersColor(bordersColor),
-			relativeX(relativeX), relativeY(relativeY), relativeWidth(relativeWidth), relativeHeight(relativeHeight)
+			relativeX(relativeX), relativeY(relativeY), relativeWidth(relativeWidth), relativeHeight(relativeHeight),
+			relativeTextIndent(relativeTextIndent)
 		{
 			font = new sf::Font;
 			if (!font->loadFromFile(textFontFileName)) Closed();
@@ -56,12 +59,13 @@ class TwoConditionButton
 			height = windowSize.y * relativeHeight;
 			float bordersThickness = sqrt(width * height) / 64;
 
-			fitTextIntoRectangle(&text, x + bordersThickness, y + bordersThickness,
-								width - 2*bordersThickness, height - 2*bordersThickness);
+			fitTextIntoRectangle(&text, x + bordersThickness * relativeTextIndent, y + bordersThickness * relativeTextIndent,
+								width - 2 * bordersThickness * relativeTextIndent,
+								height - 2 * bordersThickness * relativeTextIndent);
 
 			makeVertexArrayFrame(&borders, x, y, width, height, bordersThickness, bordersColor);
 			makeVertexArrayQuad(&fill, x + bordersThickness, y + bordersThickness,
-								width - 2*bordersThickness, height - 2*bordersThickness, fillColor);
+								width - 2 * bordersThickness, height - 2 * bordersThickness, fillColor);
 		}
 
 		void unpress()

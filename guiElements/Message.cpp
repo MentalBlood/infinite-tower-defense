@@ -8,7 +8,8 @@ class Message
 		float relativeX,
 			  relativeY,
 			  relativeWidth,
-			  relativeHeight;
+			  relativeHeight,
+			  relativeTextIndent;
 
 		sf::Color	textColor,
 					fillColor,
@@ -27,10 +28,11 @@ class Message
 
 	public:
 		Message(void (*functionOnUnpress)(), sf::String textString, sf::String buttonTextString, sf::String fontFileName,
-				float relativeX, float relativeY, float relativeWidth, float relativeHeight,
+				float relativeX, float relativeY, float relativeWidth, float relativeHeight, float relativeTextIndent,
 				sf::Color textColor, sf::Color fillColor, sf::Color bordersColor):
 			functionOnUnpress(functionOnUnpress), textString(textString),
 			relativeX(relativeX), relativeY(relativeY), relativeWidth(relativeWidth), relativeHeight(relativeHeight),
+			relativeTextIndent(relativeTextIndent),
 			textColor(textColor), fillColor(fillColor), bordersColor(bordersColor)
 		{
 			if (!font.loadFromFile(fontFileName)) Closed();
@@ -41,7 +43,7 @@ class Message
 				button = new TwoConditionButton(nothing, functionOnUnpress, buttonTextString, fontFileName,
 												textColor, fillColor, bordersColor,
 												relativeX + relativeWidth/4, relativeY + relativeHeight*3/4,
-												relativeWidth/2, relativeHeight/8);
+												relativeWidth/2, relativeHeight/8, relativeTextIndent);
 			else button = NULL;
 			updatePositionAndSize();
 		}
