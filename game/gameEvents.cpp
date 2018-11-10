@@ -13,6 +13,7 @@ void gameExit()
 	monsters.clear();
 	delete currentSecondsToNextWaveText;
 	delete currentWaveNumberText;
+	delete baseHealthText;
 	startFunctions[3]();
 }
 

@@ -27,13 +27,19 @@ class Text
 		void updatePositionAndSize()
 		{
 			text.setPosition(sf::Vector2f(windowSize.x * relativeX, windowSize.y * relativeY));
-			text.setCharacterSize(sqrt(windowSize.x * windowSize.y) * relativeSize);
+			text.setCharacterSize(minf(windowSize.x * relativeSize, windowSize.y * relativeSize));
 		}
 
 		void setString(sf::String newString)
 		{
 			string = newString;
 			text.setString(string);
+		}
+
+		void setColor(sf::Color newColor)
+		{
+			color = newColor;
+			text.setFillColor(color);
 		}
 
 		void draw()

@@ -4,6 +4,6 @@ void drawGame()
 	gameMap->draw();
 	for (unsigned int i = 0; i < monsters.size(); i++)
 		monsters[i]->draw();
-	drawGameWaveInfo();
+	drawGameInfo();
 	window.display();
 }

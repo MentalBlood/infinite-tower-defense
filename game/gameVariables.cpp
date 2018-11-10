@@ -5,17 +5,19 @@ float gameMapDraggingMouseX1,
 	  gameMapDraggingMouseY1;
 sf::Vector2f gameMapDraggingMapInitialCoordinates;
 
+unsigned int gameBaseHealth;
+
 #include "monsters/Monster.cpp"
 #include "monsters/ModelA.cpp"
 #include "monsters/ModelB.cpp"
 std::vector<Monster*> monsters;
 
 #include "gameFunctions.cpp"
-#include "gameWaveInfo.cpp"
+#include "gameInfo.cpp"
 
 void updateGameVariables()
 {
-	updateGameWaveInfoVariables();
+	updateGameInfoVariables();
 }
 
 void setGameVariables(const char *gameMapFileName)
@@ -27,7 +29,10 @@ void setGameVariables(const char *gameMapFileName)
 	gameMapDragging = false;
 
 	windowSize = window.getSize();
-	setGameWaveInfoVariables();
+	setGameInfoVariables();
+
+	gameBaseHealth = 100;
+	updateBaseHealthText();
 
 	startWaving();
 }
