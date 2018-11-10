@@ -71,7 +71,7 @@ class ModelB : public Monster
 			sf::Transform	rotation,
 							inverseRotation,
 							*currentTransformation;
-			float rotationAngle = 360.0/2048.0 * elapsed.asMilliseconds();
+			float rotationAngle = 360.0/2048.0 * elapsed.asMilliseconds() * (rand() % 2 + 1);
 			rotation.rotate(rotationAngle);
 			inverseRotation.rotate(-rotationAngle);
 

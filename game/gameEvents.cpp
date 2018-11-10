@@ -9,6 +9,10 @@ void gameExit()
 {
 	delete gameMap;
 	gameMap = NULL;
+	deleteTimers();
+	monsters.clear();
+	delete currentSecondsToNextWaveText;
+	delete currentWaveNumberText;
 	startFunctions[3]();
 }
 
@@ -27,8 +31,9 @@ void gameKeyPressed()
 	else if (event.key.code == sf::Keyboard::PageDown)
 		gameMap->changeZoom(0.98, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
 	else if (event.key.code == sf::Keyboard::Escape) gameExit();
-	else if (event.key.code == sf::Keyboard::S) spawn();
-	else if (event.key.code == sf::Keyboard::W) spawnWave(1, 8, 1);
+	else if (event.key.code == sf::Keyboard::S) spawn(TYPE_A);
+	else if (event.key.code == sf::Keyboard::W) spawnWave(1, TYPE_B, 8, 1);
+	else if (event.key.code == sf::Keyboard::C) startWaving();
 }
 
 void gameMouseWheelScrolled()

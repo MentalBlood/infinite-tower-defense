@@ -40,6 +40,8 @@ class EnterFileNameDialog
 			enteredText.setFont(font);
 			enteredText.setString("unnamed.tdm");
 			enteredText.setFillColor(enteredTextColor);
+
+			updatePositionAndSize();
 		}
 
 		void updateEnteredTextSize()

@@ -1,7 +1,8 @@
 class Timer
 {
 	private:
-		void (*function)();
+		void (*function)(char);
+		char argument;
 		float secondsToWait;
 
 		Timer *previous, *next;
@@ -9,8 +10,9 @@ class Timer
 	public:
 		static Timer *first;
 
-		Timer(float secondsToWait, void (*function)()):
-			function(function), secondsToWait(secondsToWait), previous(NULL), next(first)
+		Timer(float secondsToWaitArg, void (*function)(char), char argument):
+			function(function), argument(argument), secondsToWait(secondsToWaitArg),
+			previous(NULL), next(first)
 		{
 			if (first) first->previous = this;
 			first = this;
@@ -44,7 +46,7 @@ class Timer
 				next->previous = previous;
 
 			//call function
-			function();
+			function(argument);
 
 			//process next timer
 			if (next) next->tickChain();
@@ -52,6 +54,17 @@ class Timer
 			//delete self
 			delete this;
 		}
+
+		void deleteChain()
+		{
+			if (!next) return;
+			if (next->next)
+				next->deleteChain();
+			delete next;
+		}
+
+		float* getTimeLeftPointer()
+		{ return &secondsToWait; }
 };
 
 Timer *Timer::first = NULL;
@@ -60,4 +73,11 @@ void processTimers()
 {
 	if (!Timer::first) return;
 	Timer::first->tickChain();
+}
+
+void deleteTimers()
+{
+	Timer::first->deleteChain();
+	delete Timer::first;
+	Timer::first = NULL;
 }

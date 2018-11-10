@@ -97,9 +97,8 @@ class Monster
 
 		void draw()
 		{
-			sf::Transform sumTransform = transform * rotationTransform;
 			for (unsigned int i = 0; i < graphicalElements.size(); i++)
-				window.draw(graphicalElements[i], sumTransform);
+				window.draw(graphicalElements[i], transform * rotationTransform);
 		}
 
 		void moveInCorrectDirection()

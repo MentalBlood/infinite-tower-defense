@@ -7,4 +7,5 @@ void updateGame()
 	}
 
 	processTimers();
+	updateCurrentSecondsToNextWaveText();
 }

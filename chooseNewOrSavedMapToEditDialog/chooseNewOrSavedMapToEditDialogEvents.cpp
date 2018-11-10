@@ -7,9 +7,9 @@ void chooseNewOrSavedMapToEditDialogResized()
 
 void chooseNewOrSavedMapToEditDialogTextEntered()
 {
-	if (!chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog || chooseNewOrSavedMapToEditDialogWrongFileNameMessage) return;
+	if ((!chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog) || chooseNewOrSavedMapToEditDialogWrongFileNameMessage) return;
 
-	if (event.text.unicode < 128)
+	if ((event.text.unicode < 128) && (event.key.code != 27))
 		chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog->processCharacter(event.text.unicode);
 }
 
@@ -27,7 +27,7 @@ void chooseNewOrSavedMapToEditDialogKeyPressed()
 {
 	if (chooseNewOrSavedMapToEditDialogWrongFileNameMessage)
 	{
-		if (event.key.code == sf::Keyboard::Escape || event.key.code == sf::Keyboard::Return)
+		if ((event.key.code == sf::Keyboard::Escape) || (event.key.code == 58)) //58 is Enter
 			chooseNewOrSavedMapToEditDialogCloseWrongFileNameMessage();
 		return;
 	}

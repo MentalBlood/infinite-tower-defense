@@ -28,16 +28,11 @@ std::vector<void (*)()> startFunctions;
 #include "guiElements/EnterFileNameDialog.cpp"
 #include "guiElements/List.cpp"
 #include "guiElements/Message.cpp"
+#include "guiElements/Text.cpp"
 
 #include "map/MapForEditing.cpp"
 #include "map/MapForPlaying.cpp"
 #include "map/checkMapFile.cpp"
-
-#include "game/gameVariables.cpp"
-#include "game/updateGame.cpp"
-#include "game/drawGame.cpp"
-#include "game/gameEvents.cpp"
-#include "game/startGame.cpp"
 
 #include "mapEditor/mapEditorVariables.cpp"
 #include "mapEditor/updateMapEditor.cpp"
@@ -50,6 +45,12 @@ std::vector<void (*)()> startFunctions;
 #include "newMapSettings/drawNewMapSettings.cpp"
 #include "newMapSettings/newMapSettingsEvents.cpp"
 #include "newMapSettings/startNewMapSettings.cpp"
+
+#include "game/gameVariables.cpp"
+#include "game/updateGame.cpp"
+#include "game/drawGame.cpp"
+#include "game/gameEvents.cpp"
+#include "game/startGame.cpp"
 
 #include "chooseNewOrSavedMapToEditDialog/chooseNewOrSavedMapToEditDialogVariables.cpp"
 #include "chooseNewOrSavedMapToEditDialog/updateChooseNewOrSavedMapToEditDialog.cpp"
