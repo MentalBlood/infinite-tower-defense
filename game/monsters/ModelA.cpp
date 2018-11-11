@@ -7,8 +7,9 @@ class ModelA : public Monster
 		bool closingMouth;
 
 	public:
-		ModelA(unsigned int numberOfVertexes, float initialMouthAngle, MapForPlaying *map):
-			Monster(map, 5), initialMouthAngle(initialMouthAngle), currentMouthAngle(initialMouthAngle),
+		ModelA(	unsigned int numberOfVertexes, float initialMouthAngle,
+				const float speed, unsigned int health):
+			Monster(5, speed, health), initialMouthAngle(initialMouthAngle), currentMouthAngle(initialMouthAngle),
 			numberOfVertexes(numberOfVertexes), closingMouth(true)
 		{
 			graphicalElements.resize(1);
@@ -26,9 +27,6 @@ class ModelA : public Monster
 			graphicalElements[0][1].position = mouthRotation.transformPoint(sf::Vector2f(radius, 0));
 			for (unsigned int i = 2; i <= numberOfVertexes; i++)
 				graphicalElements[0][i].position = rotation.transformPoint(graphicalElements[0][i-1].position);
-
-			move(map->getSpawnPoint());
-			changeScale(map->getScale());
 
 			//coloring points
 			graphicalElements[0][0].color = sf::Color(140, 40, 40);

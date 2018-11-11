@@ -246,8 +246,8 @@ class MapForPlaying
 		const std::vector<char>* getPathPointer()
 		{ return &path; }
 
-		const unsigned int* getCellSize()
-		{ return &cellTextureSize; }
+		unsigned int getCellSize()
+		{ return cellTextureSize; }
 
 		void moveCellSelector(char direction)
 		{

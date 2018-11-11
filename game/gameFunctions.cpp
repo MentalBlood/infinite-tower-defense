@@ -1,54 +1,61 @@
 #include "Timer.cpp"
+#include "monstersParametres.cpp"
 
 #define TYPE_A 0
 #define TYPE_B 1
 
-void spawn(char monsterType)
+void spawn(Monster *monster)
 {
-	if (monsterType == TYPE_A)
-		monsters.push_back(new ModelA(19, 60, gameMap));
-	else
-	if (monsterType == TYPE_B)
-		monsters.push_back(new ModelB(	25,
-										sf::Color(20, 20, 20, 0), sf::Color(100, 100, 100),
-										sf::Color(100, 100, 100, 0), sf::Color(180, 180, 180),
-										gameMap));
-}
-
-void spawnWave(	float timeToWait, char monsterType, unsigned int numberOfMonsters,
-				float secondsBetweenSpawns)
-{
-	for (unsigned int i = 0; i < numberOfMonsters; i++, timeToWait += secondsBetweenSpawns)
-		new Timer(timeToWait, spawn, monsterType);
+	monster->goToSpawnPoint();
+	monsters.push_back(monster);
 }
 
 unsigned int currentWaveNumber;
-unsigned int nextWaveNumberOfMonsters;
-float nextWaveSecondsBetweenSpawns,
-	  delayBetweenWaves,
+float delayBetweenWaves,
 	  *currentSecondsToNextWave;
 
 void updateCurrentWaveNumberText();
 
-void spawnNextWave(char monsterType)
+void spawnNextWave(char *monsterType)
 {
-	spawnWave(0, monsterType, nextWaveNumberOfMonsters, nextWaveSecondsBetweenSpawns);
+	float timeToWait = 0;
+	if ((*monsterType) == TYPE_A)
+		for (	unsigned int i = 0;
+				i < nextWaveNumberOfMonsters->getValue();
+				i++, timeToWait += nextWaveSecondsBetweenSpawns->getValue())
+			new Timer<Monster*>(timeToWait, spawn, new ModelA(	19, 60,
+																nextWaveMonstersSpeed->getValue(),
+																nextWaveMonstersHealth->getValue()));
+	else
+	if ((*monsterType) == TYPE_B)
+		for (	unsigned int i = 0;
+				i < nextWaveNumberOfMonsters->getValue();
+				i++, timeToWait += nextWaveSecondsBetweenSpawns->getValue())
+			new Timer<Monster*>(timeToWait, spawn,
+								new ModelB(	25, sf::Color(20, 20, 20, 0), sf::Color(100, 100, 100),
+											sf::Color(100, 100, 100, 0), sf::Color(180, 180, 180),
+											nextWaveMonstersSpeed->getValue(),
+											nextWaveMonstersHealth->getValue()));
+
+	Timer<char*> *timer = 
+		new Timer<char*>(nextWaveSecondsBetweenSpawns->getValue()
+						* (nextWaveNumberOfMonsters->getValue() - 1)
+						+	gameMap->getCellSize() * (gameMap->getPathPointer()->size() + 2.5)
+							/ nextWaveMonstersSpeed->getValue() / 1000.0,
+						spawnNextWave, new char((*monsterType + 1) % 2));
+	currentSecondsToNextWave = timer->getTimeLeftPointer();
+
 	++currentWaveNumber;
 	updateCurrentWaveNumberText();
-	nextWaveNumberOfMonsters += 1;
-	nextWaveSecondsBetweenSpawns /= 1.3;
-
-	Timer *timer = new Timer(nextWaveSecondsBetweenSpawns * (nextWaveNumberOfMonsters-1) + delayBetweenWaves, spawnNextWave, (monsterType+1) % 2);
-	currentSecondsToNextWave = timer->getTimeLeftPointer();
+	calculateNextWaveMonstersParametres();
 }
 
 void startWaving()
 {
 	currentWaveNumber = 0;
-	nextWaveNumberOfMonsters = 1;
-	nextWaveSecondsBetweenSpawns = 1.5;
 	delayBetweenWaves = 1;
-	spawnNextWave(TYPE_A);
+	loadMonstersParameters();
+	spawnNextWave(new char(TYPE_A));
 }
 
 void gameOver();

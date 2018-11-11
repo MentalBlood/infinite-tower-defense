@@ -9,8 +9,9 @@ class ModelB : public Monster
 	public:
 		ModelB(	unsigned int numberOfVertexes,
 				sf::Color backgroundMinColor, sf::Color backgroundMaxColor,
-				sf::Color linesMinColor, sf::Color linesMaxColor, MapForPlaying *map):
-			Monster(map, 10), numberOfVertexes(numberOfVertexes),
+				sf::Color linesMinColor, sf::Color linesMaxColor,
+				const float speed, unsigned int health):
+			Monster(10, speed, health), numberOfVertexes(numberOfVertexes),
 			backgroundMinColor(backgroundMinColor), backgroundMaxColor(backgroundMaxColor),
 			linesMinColor(linesMinColor), linesMaxColor(linesMaxColor)
 		{
@@ -51,9 +52,6 @@ class ModelB : public Monster
 				graphicalElements[0][i].color = graphicalElements[0][i-1].color;
 				nextColor(graphicalElements[0][i].color, 255*6/numberOfVertexes, backgroundMinColor, backgroundMaxColor);
 			}
-
-			move(map->getSpawnPoint());
-			changeScale(map->getScale());
 		}
 
 		void animate()

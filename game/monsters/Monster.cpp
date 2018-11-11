@@ -17,25 +17,23 @@ class Monster
 		unsigned int currentDirectionIndex;
 		float distanceToNextDirectionLeft;
 
-		const std::vector<char> *path;
-		const unsigned int *mapCellSize;
+		const float speed;
+		unsigned int health;
 
 		bool came;
 
 		void functionAtArrive()
-		{
-			came = true;
-		}
+		{ came = true; }
 
 		void moveDistanceInCurrentDirection(float distance)
 		{
-			if ((*path)[currentDirectionIndex] == RIGHT)
+			if ((*map->getPathPointer())[currentDirectionIndex] == RIGHT)
 				move(sf::Vector2f(distance, 0));
-			else if ((*path)[currentDirectionIndex] == LEFT)
+			else if ((*map->getPathPointer())[currentDirectionIndex] == LEFT)
 				move(sf::Vector2f(-distance, 0));
-			else if ((*path)[currentDirectionIndex] == UP)
+			else if ((*map->getPathPointer())[currentDirectionIndex] == UP)
 				move(sf::Vector2f(0, -distance));
-			else if ((*path)[currentDirectionIndex] == DOWN)
+			else if ((*map->getPathPointer())[currentDirectionIndex] == DOWN)
 				move(sf::Vector2f(0, distance));
 		}
 
@@ -45,14 +43,14 @@ class Monster
 			{
 				moveDistanceInCurrentDirection(distanceToNextDirectionLeft);
 				++currentDirectionIndex;
-				if (currentDirectionIndex == path->size())
+				if (currentDirectionIndex == map->getPathPointer()->size())
 				{
 					functionAtArrive();
 					return;
 				}
 				float distanceExcess = distance - distanceToNextDirectionLeft;
-				distanceToNextDirectionLeft = *mapCellSize;
-				rotate((*path)[currentDirectionIndex]);
+				distanceToNextDirectionLeft = map->getCellSize();
+				rotate((*map->getPathPointer())[currentDirectionIndex]);
 				moveDistance(distanceExcess);
 			}
 			else
@@ -92,16 +90,22 @@ class Monster
 		}
 
 	public:
+		static MapForPlaying *map;
 		const unsigned int damage;
 
-		Monster(MapForPlaying *map, unsigned int damage):
-			position(sf::Vector2f(0, 0)), radius(*map->getCellSize() / 2.5),
+		Monster(unsigned int damage, const float speed, unsigned int health):
+			position(sf::Vector2f(0, 0)), radius(map->getCellSize() / 2.5),
 			scale(1), currentRotatioAngle(0), currentDirectionIndex(0),
-			distanceToNextDirectionLeft(*map->getCellSize()),
-			path(map->getPathPointer()), mapCellSize(map->getCellSize()),
-			came(false), damage(damage)
+			distanceToNextDirectionLeft(map->getCellSize()),
+			speed(speed), health(health), came(false), damage(damage)
 		{
-			rotate((*path)[0]);
+			rotate((*map->getPathPointer())[0]);
+		}
+
+		void goToSpawnPoint()
+		{
+			move(map->getSpawnPoint());
+			changeScale(map->getScale());
 		}
 
 		virtual ~Monster()
@@ -114,7 +118,7 @@ class Monster
 		}
 
 		void moveInCorrectDirection()
-		{ moveDistance(elapsed.asMilliseconds()/2); }
+		{ moveDistance(elapsed.asMilliseconds() * speed); }
 
 		void drag(const sf::Vector2f &offset)
 		{
@@ -144,3 +148,5 @@ class Monster
 		bool isCame()
 		{ return came; }
 };
+
+MapForPlaying *Monster::map = NULL;

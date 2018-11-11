@@ -28,6 +28,9 @@ void setGameVariables(const char *gameMapFileName)
 	gameMap->setPosition(0, 0);
 	gameMapDragging = false;
 
+	Monster::map = gameMap;
+	loadMonstersParameters();
+
 	windowSize = window.getSize();
 	setGameInfoVariables();
 

@@ -1,16 +1,17 @@
+template<class Type>
 class Timer
 {
 	private:
-		void (*function)(char);
-		char argument;
+		void (*function)(Type);
+		Type argument;
 		float secondsToWait;
 
 		Timer *previous, *next;
 
 	public:
-		static Timer *first;
+		static Timer<Type> *first;
 
-		Timer(float secondsToWaitArg, void (*function)(char), char argument):
+		Timer(float secondsToWaitArg, void (*function)(Type), Type argument):
 			function(function), argument(argument), secondsToWait(secondsToWaitArg),
 			previous(NULL), next(first)
 		{
@@ -55,29 +56,39 @@ class Timer
 			delete this;
 		}
 
+		void deleteArgument()
+		{
+			delete argument;
+		}
+
 		void deleteChain()
 		{
 			if (!next) return;
 			if (next->next)
 				next->deleteChain();
 			delete next;
+			delete argument;
 		}
 
 		float* getTimeLeftPointer()
 		{ return &secondsToWait; }
 };
 
-Timer *Timer::first = NULL;
+template<class Type>
+Timer<Type> *Timer<Type>::first = NULL;
 
+template<class Type>
 void processTimers()
 {
-	if (!Timer::first) return;
-	Timer::first->tickChain();
+	if (!Timer<Type>::first) return;
+	Timer<Type>::first->tickChain();
 }
 
+template<class Type>
 void deleteTimers()
 {
-	Timer::first->deleteChain();
-	delete Timer::first;
-	Timer::first = NULL;
+	if (!Timer<Type>::first) return;
+	Timer<Type>::first->deleteChain();
+	delete Timer<Type>::first;
+	Timer<Type>::first = NULL;
 }

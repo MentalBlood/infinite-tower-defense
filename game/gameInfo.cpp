@@ -30,7 +30,7 @@ void updateGameInfoVariables()
 void updateCurrentSecondsToNextWaveText()
 {
 	currentSecondsToNextWaveText->setString("next wave in " + 
-											sf::String(intToString(int(*currentSecondsToNextWave))));
+											sf::String(intToString(ceil(int(*currentSecondsToNextWave)))));
 }
 
 void updateCurrentWaveNumberText()
