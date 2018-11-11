@@ -1,0 +1,14 @@
+anywhere in game:
+press ESC to return to previous screen
+
+in editor:
+
+you can use mouse to drag map
+press and hold left mouse button (when moving mouse) to drag map
+you can use arrow keys or mouse to move cell selector
+press and hold (when moving cell selector) space or right mouse button to draw path
+press and hold (when moving cell selector) R to draw rocks
+press Ctrl+Z to undo
+press Ctrl+Shift+Z to redo
+press button "RESET" to reset map
+press button "SAVE" and then enter file name to save map

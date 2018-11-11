@@ -57,7 +57,7 @@ class Message
 			float bordersThickness = sqrt(width * height) / 64;
 
 			fitTextIntoRectangle(&text, x + bordersThickness, y + bordersThickness,
-								width - 2*bordersThickness, height*3/4 - 2*bordersThickness);
+								width - 2*bordersThickness, height*3/4 - bordersThickness);
 
 			makeVertexArrayFrame(&borders, x, y, width, height, bordersThickness, bordersColor);
 			makeVertexArrayQuad(&fill, x + bordersThickness, y + bordersThickness,
