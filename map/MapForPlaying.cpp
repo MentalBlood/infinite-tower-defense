@@ -129,7 +129,7 @@ class MapForPlaying
 			realCellTextureSize = cellTextureSize * zoom;
 			sf::RenderTexture RenderTexture;
 			if (!RenderTexture.create(cellTextureSize, cellTextureSize)) Closed();
-			RenderTexture.clear(sf::Color(0, 0, 0, 0));
+			RenderTexture.clear(sf::Color(16, 32, 16));
 
 			//1.1 drawing borders
 			float cellSize = cellTextureSize * cellRelativeSize;
@@ -157,7 +157,7 @@ class MapForPlaying
 			//2 drawing path cell texture
 			if (!RenderTexture.create(cellTextureSize, cellTextureSize)) Closed();
 
-			RenderTexture.clear(sf::Color(0, 0, 0, 0));
+			RenderTexture.clear(sf::Color(16, 32, 16));
 			RenderTexture.display();
 
 			//setting texture to sprite
