@@ -43,11 +43,7 @@ class MapForPlaying
 		{
 			pathMap.resize(mapWidth);
 			for (unsigned int i = 0; i < mapWidth; i++)
-			{
 				pathMap[i].resize(mapHeight);
-				for (unsigned int j = 0; j < mapHeight; j++)
-					pathMap[i][j] = 0;
-			}
 		}
 
 		void loadFile(const char *fileName)
@@ -79,7 +75,6 @@ class MapForPlaying
 			while (!feof(file))
 			{
 				char c = char(fgetc(file));
-				printf("%d\n", c);
 				if (c == RIGHT) ++x2;
 				else if (c == LEFT) --x2;
 				else if (c == UP) --y2;

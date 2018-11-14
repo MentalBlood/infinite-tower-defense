@@ -12,12 +12,12 @@ void setGameInfoVariables()
 	currentWaveNumberText =	new Text(		"wave ",
 											"fonts/currentWaveNumberTextFont.otf",
 											sf::Color(255, 128, 128, 192),
-											0.8, 0.9, 0.05);
+											0.65, 0.9, 0.05);
 
 	baseHealthText = new Text(				"base health:",
 											"fonts/baseHealthTextFont.otf",
 											sf::Color(0, 255, 0, 192),
-											0.7, 0, 0.05);
+											0.55, 0, 0.05);
 }
 
 void updateGameInfoVariables()

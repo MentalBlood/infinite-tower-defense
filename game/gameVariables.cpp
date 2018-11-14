@@ -15,9 +15,13 @@ std::list<Monster*> monsters;
 #include "gameFunctions.cpp"
 #include "gameInfo.cpp"
 
+#include "towers/towersPanel.cpp"
+#include "towers/Tower.cpp"
+
 void updateGameVariables()
 {
 	updateGameInfoVariables();
+	updateTowersPanelPositionAndSize();
 }
 
 void setGameVariables(const char *gameMapFileName)
@@ -28,8 +32,8 @@ void setGameVariables(const char *gameMapFileName)
 	gameMap->setPosition(0, 0);
 	gameMapDragging = false;
 
-	Monster::map = gameMap;
 	loadMonstersParameters();
+	setTowersPanel();
 
 	windowSize = window.getSize();
 	setGameInfoVariables();

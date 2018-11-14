@@ -5,5 +5,6 @@ void drawGame()
 	for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
 		(*i)->draw();
 	drawGameInfo();
+	drawTowersPanel();
 	window.display();
 }

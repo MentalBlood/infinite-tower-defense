@@ -6,7 +6,8 @@ class Monster
 {
 	protected:
 		sf::Vector2f position;
-		const float radius;
+		const float radius,
+					speed;
 
 	private:
 		sf::Transform	transform,
@@ -17,7 +18,6 @@ class Monster
 		unsigned int currentDirectionIndex;
 		float distanceToNextDirectionLeft;
 
-		const float speed;
 		unsigned int health;
 
 		bool came;
@@ -27,13 +27,13 @@ class Monster
 
 		void moveDistanceInCurrentDirection(float distance)
 		{
-			if ((*map->getPathPointer())[currentDirectionIndex] == RIGHT)
+			if ((*gameMap->getPathPointer())[currentDirectionIndex] == RIGHT)
 				move(sf::Vector2f(distance, 0));
-			else if ((*map->getPathPointer())[currentDirectionIndex] == LEFT)
+			else if ((*gameMap->getPathPointer())[currentDirectionIndex] == LEFT)
 				move(sf::Vector2f(-distance, 0));
-			else if ((*map->getPathPointer())[currentDirectionIndex] == UP)
+			else if ((*gameMap->getPathPointer())[currentDirectionIndex] == UP)
 				move(sf::Vector2f(0, -distance));
-			else if ((*map->getPathPointer())[currentDirectionIndex] == DOWN)
+			else if ((*gameMap->getPathPointer())[currentDirectionIndex] == DOWN)
 				move(sf::Vector2f(0, distance));
 		}
 
@@ -43,14 +43,14 @@ class Monster
 			{
 				moveDistanceInCurrentDirection(distanceToNextDirectionLeft);
 				++currentDirectionIndex;
-				if (currentDirectionIndex == map->getPathPointer()->size())
+				if (currentDirectionIndex == gameMap->getPathPointer()->size())
 				{
 					functionAtArrive();
 					return;
 				}
 				float distanceExcess = distance - distanceToNextDirectionLeft;
-				distanceToNextDirectionLeft = map->getCellSize();
-				rotate((*map->getPathPointer())[currentDirectionIndex]);
+				distanceToNextDirectionLeft = gameMap->getCellSize();
+				rotate((*gameMap->getPathPointer())[currentDirectionIndex]);
 				moveDistance(distanceExcess);
 			}
 			else
@@ -90,22 +90,21 @@ class Monster
 		}
 
 	public:
-		static MapForPlaying *map;
 		const unsigned int damage;
 
 		Monster(unsigned int damage, const float speed, unsigned int health):
-			position(sf::Vector2f(0, 0)), radius(map->getCellSize() / 2.5),
+			position(sf::Vector2f(0, 0)), radius(gameMap->getCellSize() / 2.5), speed(speed),
 			scale(1), currentRotatioAngle(0), currentDirectionIndex(0),
-			distanceToNextDirectionLeft(map->getCellSize()),
-			speed(speed), health(health), came(false), damage(damage)
+			distanceToNextDirectionLeft(gameMap->getCellSize()),
+			health(health), came(false), damage(damage)
 		{
-			rotate((*map->getPathPointer())[0]);
+			rotate((*gameMap->getPathPointer())[0]);
 		}
 
 		void goToSpawnPoint()
 		{
-			move(map->getSpawnPoint());
-			changeScale(map->getScale());
+			move(gameMap->getSpawnPoint());
+			changeScale(gameMap->getScale());
 		}
 
 		virtual ~Monster()
@@ -148,5 +147,3 @@ class Monster
 		bool isCame()
 		{ return came; }
 };
-
-MapForPlaying *Monster::map = NULL;

@@ -27,12 +27,12 @@ void makeVertexArrayFrame(sf::VertexArray *vertexArrayPointer, float x, float y,
 
 void makeVertexArrayQuad(sf::VertexArray *vertexArrayPointer, float x, float y, float width, float height, sf::Color color)
 {
-	vertexArrayPointer->setPrimitiveType(sf::Quads);
+	vertexArrayPointer->setPrimitiveType(sf::TriangleStrip);
 	vertexArrayPointer->resize(4);
 	for (int i = 0; i < 4; i++) (*vertexArrayPointer)[i].color = color;
 
 	(*vertexArrayPointer)[0].position = sf::Vector2f(x, y);
 	(*vertexArrayPointer)[1].position = sf::Vector2f(x + width, y);
-	(*vertexArrayPointer)[2].position = sf::Vector2f(x + width, y + height);
-	(*vertexArrayPointer)[3].position = sf::Vector2f(x, y + height);
+	(*vertexArrayPointer)[2].position = sf::Vector2f(x, y + height);
+	(*vertexArrayPointer)[3].position = sf::Vector2f(x + width, y + height);
 }
