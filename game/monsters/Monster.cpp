@@ -119,21 +119,27 @@ class Monster
 		void moveInCorrectDirection()
 		{ moveDistance(elapsed.asMilliseconds() * speed); }
 
-		void drag(const sf::Vector2f &offset)
+		void drag()
+		{
+			transform.translate(gameDragOffset / scale);
+			position += sf::Vector2f(gameDragOffset);
+		}
+
+		void drag(const sf::Vector2f & offset)
 		{
 			transform.translate(offset / scale);
 			position += sf::Vector2f(offset);
 		}
 
-		void changeScale(float delta, const sf::Vector2f &center)
+		void changeScale()
 		{
-			if ((delta < 1.0) && (scale < (0.1 / delta))) return;
+			if ((gameScaleDelta < 1.0) && (scale < (0.1 / gameScaleDelta))) return;
 
-			sf::Vector2f shift = (delta - 1) * (position - center);
+			sf::Vector2f shift = (gameScaleDelta - 1) * (position - gameScaleCenter);
 			drag(shift);
 
-			transform.scale(sf::Vector2f(delta, delta));
-			scale *= delta;
+			transform.scale(sf::Vector2f(gameScaleDelta, gameScaleDelta));
+			scale *= gameScaleDelta;
 		}
 
 		virtual void animate() =0;

@@ -1,11 +1,15 @@
-MapForPlaying *gameMap = NULL;
-
 bool gameMapDragging;
 float gameMapDraggingMouseX1,
-	  gameMapDraggingMouseY1;
-sf::Vector2f gameMapDraggingMapInitialCoordinates;
+	  gameMapDraggingMouseY1,
+	  gameScaleDelta;
+sf::Vector2f	gameMapDraggingMapInitialCoordinates,
+				gameDragOffset,
+				gameScaleCenter;
 
 unsigned int gameBaseHealth;
+
+#include "../map/MapForPlaying.cpp"
+MapForPlaying *gameMap;
 
 #include "monsters/Monster.cpp"
 #include "monsters/ModelA.cpp"
@@ -16,7 +20,7 @@ std::list<Monster*> monsters;
 #include "gameInfo.cpp"
 
 #include "towers/towersPanel.cpp"
-#include "towers/Tower.cpp"
+std::list<Tower*> towers;
 
 void updateGameVariables()
 {
@@ -34,6 +38,7 @@ void setGameVariables(const char *gameMapFileName)
 
 	loadMonstersParameters();
 	setTowersPanel();
+	addingTower = NULL;
 
 	windowSize = window.getSize();
 	setGameInfoVariables();

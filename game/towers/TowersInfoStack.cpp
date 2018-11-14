@@ -7,7 +7,8 @@ class TowersInfoStack
 			  relativeY,
 			  relativeWidth,
 			  relativeHeight,
-			  relativeIndent;
+			  relativeIndent,
+			  x, height;
 
 	public:
 		TowersInfoStack(const char *towersTexturesDir, const char *towersCharacteristicsDir,
@@ -15,7 +16,8 @@ class TowersInfoStack
 						float relativeX, float relativeY, float relativeWidth, float relativeHeight,
 						float relativeIndent):
 		relativeX(relativeX), relativeY(relativeY),
-		relativeWidth(relativeWidth), relativeHeight(relativeHeight), relativeIndent(relativeIndent)
+		relativeWidth(relativeWidth), relativeHeight(relativeHeight), relativeIndent(relativeIndent),
+		x(windowSize.x * relativeX)
 		{
 			towersInfo.resize(count);
 			char	textureFileName[32],
@@ -44,6 +46,8 @@ class TowersInfoStack
 
 		void updatePositionAndSize()
 		{
+			x = windowSize.x * relativeX;
+			height = windowSize.y * relativeHeight;
 			float currentTowerInfoRelativeX = relativeX,
 				  currentTowerInfoRelativeY = relativeY,
 				  currentTowerInfoRelativeWidth = relativeWidth,
@@ -61,5 +65,12 @@ class TowersInfoStack
 		{
 			for (unsigned int i = 0; i < towersInfo.size(); i++)
 				towersInfo[i]->draw();
+		}
+
+		bool click(float mouseX, float mouseY)
+		{
+			if (mouseX < x) return false;
+			towersInfo[int(mouseY / height * towersInfo.size())]->click();
+			return true;
 		}
 };

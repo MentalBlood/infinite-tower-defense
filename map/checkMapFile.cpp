@@ -1,3 +1,18 @@
+#define UP 1
+#define RIGHT 2
+#define LEFT 3
+#define DOWN 4
+
+#define EMPTY 0
+#define PATH 1
+#define BEGIN 2
+#define END 3
+#define ROCK 4
+
+#define CHANGE_CELL 0
+#define MOVE_BEGIN 1
+#define MOVE_END 2
+
 bool checkMapFile(const char *fileName)
 {
 	//check file existance

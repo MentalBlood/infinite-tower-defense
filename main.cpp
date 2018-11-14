@@ -37,8 +37,6 @@ void startMapEditor();
 #include "guiElements/Message.cpp"
 #include "guiElements/Text.cpp"
 
-#include "map/MapForEditing.cpp"
-#include "map/MapForPlaying.cpp"
 #include "map/checkMapFile.cpp"
 
 #include "mapEditor/mapEditorVariables.cpp"

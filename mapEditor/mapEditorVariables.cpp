@@ -1,3 +1,4 @@
+#include "../map/MapForEditing.cpp"
 MapForEditing *mapEditorMap;
 
 bool mapEditorMapDragging,

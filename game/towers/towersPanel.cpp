@@ -7,6 +7,8 @@ float towersPanelRelativeX = 0.8,
 std::vector<sf::VertexArray> towersPanelGraphicsElements;
 
 #include "TowerSpecification.cpp"
+#include "Tower.cpp"
+Tower *addingTower;
 #include "TowerInfo.cpp"
 #include "TowersInfoStack.cpp"
 TowersInfoStack *towersInfoStack;

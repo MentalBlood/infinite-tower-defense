@@ -211,26 +211,25 @@ class MapForPlaying
 			mapPositionY = y;
 		}
 
-		sf::Vector2f changeZoom(float delta, float mouseX, float mouseY)
+		void changeZoom()
 		{
-			if ((delta < 1.0) && (zoom < (0.1 / delta))) return sf::Vector2f(0, 0);
+			if ((gameScaleDelta < 1.0) && (zoom < (0.1 / gameScaleDelta))) return;
 
-			sf::Vector2f shift = sf::Vector2f(	(1 - delta) * (mouseX - mapPositionX),
-												(1 - delta) * (mouseY - mapPositionY));
-			mapPositionX += (1 - delta) * (mouseX - mapPositionX);
-			mapPositionY += (1 - delta) * (mouseY - mapPositionY);
+			mapPositionX += (1 - gameScaleDelta) * (gameScaleCenter.x - mapPositionX);
+			mapPositionY += (1 - gameScaleDelta) * (gameScaleCenter.y - mapPositionY);
 
-			zoom *= delta;
+			zoom *= gameScaleDelta;
 			zoomTextures();
-
-			return shift;
 		}
 
 		sf::Vector2f getPosition()
 		{ return sf::Vector2f(mapPositionX, mapPositionY); }
 
 		sf::Vector2f getSpawnPoint()
-		{ return sf::Vector2f(mapPositionX + realCellTextureSize * (x1 + 0.5), mapPositionY + realCellTextureSize * (y1 + 0.5)); }
+		{
+			return sf::Vector2f(mapPositionX + realCellTextureSize * (x1 + 0.5),
+								mapPositionY + realCellTextureSize * (y1 + 0.5));
+		}
 
 		float getCellTextureSize()
 		{ return cellTextureSize; }
@@ -243,6 +242,15 @@ class MapForPlaying
 
 		unsigned int getCellSize()
 		{ return cellTextureSize; }
+
+		sf::Vector2f getSelectorPosition()
+		{
+			return sf::Vector2f(mapPositionX + realCellTextureSize * cellSelectorX,
+								mapPositionY + realCellTextureSize * cellSelectorY);
+		}
+
+		bool selectorOnCellWhichFitsForTower()
+		{ return !pathMap[cellSelectorX][cellSelectorY]; }
 
 		void moveCellSelector(char direction)
 		{
@@ -312,7 +320,10 @@ class MapForPlaying
 
 			endCellSprite.setPosition(x2*realCellTextureSize + mapPositionX, y2*realCellTextureSize + mapPositionY);
 			window.draw(endCellSprite);
+		}
 
+		void drawCellSelector()
+		{
 			cellSelectorSprite.setPosition(cellSelectorX * realCellTextureSize + mapPositionX,
 											cellSelectorY * realCellTextureSize + mapPositionY);
 			window.draw(cellSelectorSprite);

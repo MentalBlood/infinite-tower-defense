@@ -31,6 +31,29 @@ void gameOver()
 	startGameOverScreen();
 }
 
+#define SCALE_DOWN 0
+#define SCALE_UP 1
+
+void changeScale(bool up)
+{
+	if (up)
+		gameScaleDelta = 1.02;
+	else
+		gameScaleDelta = 0.98;
+	gameScaleCenter.x = event.mouseWheelScroll.x;
+	gameScaleCenter.y = event.mouseWheelScroll.y;
+	gameMap->changeZoom();
+	for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
+		(*i)->changeScale();
+	for (std::list<Tower*>::iterator i = towers.begin(); i != towers.end(); i++)
+		(*i)->changeScale();
+	if (addingTower)
+	{
+		addingTower->refreshScale();
+		addingTower->goToCellSelector();
+	}
+}
+
 void gameKeyPressed()
 {
 	if (event.key.code == sf::Keyboard::Up)
@@ -42,9 +65,9 @@ void gameKeyPressed()
 	else if (event.key.code == sf::Keyboard::Left)
 		gameMap->moveCellSelector(LEFT);
 	else if (event.key.code == sf::Keyboard::PageUp)
-		gameMap->changeZoom(1.02, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+		changeScale(SCALE_UP);
 	else if (event.key.code == sf::Keyboard::PageDown)
-		gameMap->changeZoom(0.98, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
+		changeScale(SCALE_DOWN);
 	else if (event.key.code == sf::Keyboard::Escape) gameExit();
 }
 
@@ -52,10 +75,10 @@ void gameMouseWheelScrolled()
 {
 	if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
 	{
-		float delta = 1 + event.mouseWheelScroll.delta/50;
-		gameMap->changeZoom(delta, event.mouseWheelScroll.x, event.mouseWheelScroll.y);
-		for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
-			(*i)->changeScale(delta, sf::Vector2f(event.mouseWheelScroll.x, event.mouseWheelScroll.y));
+		if (event.mouseWheelScroll.delta > 0)
+			changeScale(SCALE_UP);
+		else
+			changeScale(SCALE_DOWN);
 	}
 }
 
@@ -66,12 +89,22 @@ void gameMouseButtonPressed()
 {
 	if (event.mouseButton.button == sf::Mouse::Left)
 	{
+		if (towersInfoStack->click(event.mouseButton.x, event.mouseButton.y)) return;
 		gameMapDragging = true;
 		gameMapDraggingMouseX1 = event.mouseButton.x;
 		gameMapDraggingMouseY1 = event.mouseButton.y;
 		gameDraggingPreviousMouseX0 = event.mouseButton.x;
 		gameDraggingPreviousMouseY0 = event.mouseButton.y;
 		gameMapDraggingMapInitialCoordinates = gameMap->getPosition();
+	}
+	else
+	if (event.mouseButton.button == sf::Mouse::Right)
+	{
+		if (gameMap->selectorOnCellWhichFitsForTower())
+			towers.push_back(addingTower);
+		else
+			delete addingTower;
+		addingTower = NULL;
 	}
 }
 
@@ -87,14 +120,18 @@ void gameMouseMoved()
 		gameMap->setPosition(
 		gameMapDraggingMapInitialCoordinates.x + event.mouseMove.x - gameMapDraggingMouseX1, 
 		gameMapDraggingMapInitialCoordinates.y + event.mouseMove.y - gameMapDraggingMouseY1);
+		gameDragOffset.x = event.mouseMove.x - gameDraggingPreviousMouseX0;
+		gameDragOffset.y = event.mouseMove.y - gameDraggingPreviousMouseY0;
 		for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
-			(*i)->drag(sf::Vector2f(	event.mouseMove.x - gameDraggingPreviousMouseX0,
-											event.mouseMove.y - gameDraggingPreviousMouseY0));
+			(*i)->drag();
+		for (std::list<Tower*>::iterator i = towers.begin(); i != towers.end(); i++)
+			(*i)->drag();
 		gameDraggingPreviousMouseX0 = event.mouseMove.x;
 		gameDraggingPreviousMouseY0 = event.mouseMove.y;
 	}
 	else
 		gameMap->moveCellSelectorToMouse(event.mouseMove.x, event.mouseMove.y);
+	if (addingTower) addingTower->goToCellSelector();
 }
 
 void setGameEvents()

@@ -87,4 +87,7 @@ class TowerInfo
 			window.draw(text);
 			window.draw(towerPreviewSprite);
 		}
+
+		void click()
+		{ addingTower = new Tower(specification); }
 };
