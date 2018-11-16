@@ -1,7 +1,7 @@
 #include "Timer.cpp"
 #include "monstersParametres.cpp"
 
-#define TYPE_A 0
+#define	TYPE_A 0
 #define TYPE_B 1
 
 void spawn(Monster *monster)
@@ -41,7 +41,7 @@ void spawnNextWave(char *monsterType)
 		new Timer<char*>(nextWaveSecondsBetweenSpawns->getValue()
 						* (nextWaveNumberOfMonsters->getValue() - 1)
 						+	gameMap->getCellSize() * (gameMap->getPathPointer()->size() + 2.5)
-							/ nextWaveMonstersSpeed->getValue() / 1000.0,
+							/ nextWaveMonstersSpeed->getValue() / 1000.0 + delayBetweenWaves,
 						spawnNextWave, new char((*monsterType + 1) % 2));
 	currentSecondsToNextWave = timer->getTimeLeftPointer();
 
@@ -53,7 +53,7 @@ void spawnNextWave(char *monsterType)
 void startWaving()
 {
 	currentWaveNumber = 0;
-	delayBetweenWaves = 1;
+	delayBetweenWaves = 0;
 	loadMonstersParameters();
 	spawnNextWave(new char(TYPE_A));
 }

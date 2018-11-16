@@ -36,17 +36,17 @@ Parameter<float>		*nextWaveSecondsBetweenSpawns,
 
 void loadMonstersParameters()
 {
-	/*FILE *file = fopen("monstersParametres.txt", "wb");
+	FILE *file = fopen("monstersParametres.txt", "wb");
 	if (!file) Closed();
 
-	Parameter<unsigned int>::write(file, 1, 1, 1);
+	Parameter<unsigned int>::write(file, 100, 1, 1);
 	Parameter<float>::write(file, 1, 0.5, 0.5);
-	Parameter<float>::write(file, 0.15, -0.01, 1.5);
-	Parameter<float>::write(file, 5, -1, 1.5);
+	Parameter<float>::write(file, 0.1, 0, 1.05);
+	Parameter<float>::write(file, 5, 0, 1);
 
-	fclose(file);*/
+	fclose(file);
 
-	FILE *file = fopen("monstersParametres.txt", "rb");
+	file = fopen("monstersParametres.txt", "rb");
 	if (!file) Closed();
 
 	nextWaveNumberOfMonsters = new Parameter<unsigned int>(file);

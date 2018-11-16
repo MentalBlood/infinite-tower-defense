@@ -22,6 +22,8 @@ std::list<Monster*> monsters;
 #include "towers/towersPanel.cpp"
 std::list<Tower*> towers;
 
+#include "shooting.cpp"
+
 void updateGameVariables()
 {
 	updateGameInfoVariables();

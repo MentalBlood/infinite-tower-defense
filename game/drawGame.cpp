@@ -13,6 +13,9 @@ void drawGame()
 	for (std::list<Tower*>::iterator i = towers.begin(); i != towers.end(); i++)
 		(*i)->draw();
 
+	for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
+		(*i)->draw();
+
 	gameMap->drawCellSelector();
 	if (addingTower) addingTower->draw();
 	

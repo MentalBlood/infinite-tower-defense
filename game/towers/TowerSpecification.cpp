@@ -1,12 +1,15 @@
 class TowerSpecification
 {
 	private:
+		char shotType;
 		sf::Texture texture;
 		unsigned int damage;
 		float range;
+		float shotsDelay;
 		
 	public:
-		TowerSpecification(char *textureFileName, char *characteristicsFileName)
+		TowerSpecification(char *textureFileName, char *characteristicsFileName, char shotType):
+		shotType(shotType)
 		{
 			if (!texture.loadFromFile(textureFileName)) Closed();
 
@@ -14,6 +17,7 @@ class TowerSpecification
 			if (!characteristicsFile) Closed();
 			fscanf(characteristicsFile, "%u", &damage);
 			fscanf(characteristicsFile, "%f", &range);
+			fscanf(characteristicsFile, "%f", &shotsDelay);
 			fclose(characteristicsFile);
 		}
 
@@ -25,4 +29,10 @@ class TowerSpecification
 
 		float getRange()
 		{ return range; }
+
+		float getShotsDelay()
+		{ return shotsDelay; }
+
+		char getShotType()
+		{ return shotType; }
 };

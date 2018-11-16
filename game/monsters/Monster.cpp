@@ -18,9 +18,10 @@ class Monster
 		unsigned int currentDirectionIndex;
 		float distanceToNextDirectionLeft;
 
-		unsigned int health;
+		float health;
 
-		bool came;
+		bool came,
+			 dead;
 
 		void functionAtArrive()
 		{ came = true; }
@@ -92,11 +93,11 @@ class Monster
 	public:
 		const unsigned int damage;
 
-		Monster(unsigned int damage, const float speed, unsigned int health):
+		Monster(unsigned int damage, const float speed, float health):
 			position(sf::Vector2f(0, 0)), radius(gameMap->getCellSize() / 2.5), speed(speed),
 			scale(1), currentRotatioAngle(0), currentDirectionIndex(0),
 			distanceToNextDirectionLeft(gameMap->getCellSize()),
-			health(health), came(false), damage(damage)
+			health(health), came(false), dead(false), damage(damage)
 		{
 			rotate((*gameMap->getPathPointer())[0]);
 		}
@@ -135,16 +136,22 @@ class Monster
 		{
 			if ((gameScaleDelta < 1.0) && (scale < (0.1 / gameScaleDelta))) return;
 
-			sf::Vector2f shift = (gameScaleDelta - 1) * (position - gameScaleCenter);
-			drag(shift);
+			drag((gameScaleDelta - 1) * (position - gameScaleCenter));
 
 			transform.scale(sf::Vector2f(gameScaleDelta, gameScaleDelta));
 			scale *= gameScaleDelta;
 		}
 
+		void sufferDamage(float damage)
+		{
+			if (dead) return;
+			if (damage >= health) dead = true;
+			else health -= damage;
+		}
+
 		virtual void animate() =0;
 
-		sf::Vector2f getPosition()
+		const sf::Vector2f & getPosition()
 		{ return position; }
 
 		float getScale()
@@ -152,4 +159,13 @@ class Monster
 
 		bool isCame()
 		{ return came; }
+
+		bool isDead()
+		{ return dead; }
+
+		float getHealth()
+		{ return health; }
+
+		void die()
+		{ dead = true; }
 };

@@ -5,29 +5,31 @@ void gameResized()
 	updateGameVariables();
 }
 
-void gameExit()
+void gameClear()
 {
 	delete gameMap;
 	gameMap = NULL;
 	deleteTimers<Monster*>();
 	deleteTimers<char*>();
 	monsters.clear();
+	towers.clear();
+	shots.clear();
+	delete addingTower;
+	addingTower = NULL;
 	delete currentSecondsToNextWaveText;
 	delete currentWaveNumberText;
 	delete baseHealthText;
+}
+
+void gameExit()
+{
+	gameClear();
 	startSelectMapScreen();
 }
 
 void gameOver()
 {
-	delete gameMap;
-	gameMap = NULL;
-	deleteTimers<Monster*>();
-	deleteTimers<char*>();
-	monsters.clear();
-	delete currentSecondsToNextWaveText;
-	delete currentWaveNumberText;
-	delete baseHealthText;
+	gameClear();
 	startGameOverScreen();
 }
 
@@ -46,6 +48,8 @@ void changeScale(bool up)
 	for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
 		(*i)->changeScale();
 	for (std::list<Tower*>::iterator i = towers.begin(); i != towers.end(); i++)
+		(*i)->changeScale();
+	for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
 		(*i)->changeScale();
 	if (addingTower)
 	{
@@ -101,7 +105,10 @@ void gameMouseButtonPressed()
 	if (event.mouseButton.button == sf::Mouse::Right)
 	{
 		if (gameMap->selectorOnCellWhichFitsForTower())
+		{
 			towers.push_back(addingTower);
+			tryToShoot(addingTower);
+		}
 		else
 			delete addingTower;
 		addingTower = NULL;
@@ -125,6 +132,8 @@ void gameMouseMoved()
 		for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
 			(*i)->drag();
 		for (std::list<Tower*>::iterator i = towers.begin(); i != towers.end(); i++)
+			(*i)->drag();
+		for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
 			(*i)->drag();
 		gameDraggingPreviousMouseX0 = event.mouseMove.x;
 		gameDraggingPreviousMouseY0 = event.mouseMove.y;

@@ -231,17 +231,14 @@ class MapForPlaying
 								mapPositionY + realCellTextureSize * (y1 + 0.5));
 		}
 
-		float getCellTextureSize()
-		{ return cellTextureSize; }
-
 		float getScale()
 		{ return zoom; }
 
 		const std::vector<char>* getPathPointer()
 		{ return &path; }
 
-		unsigned int getCellSize()
-		{ return cellTextureSize; }
+		float getCellSize()
+		{ return float(cellTextureSize); }
 
 		sf::Vector2f getSelectorPosition()
 		{
