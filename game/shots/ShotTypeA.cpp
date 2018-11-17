@@ -13,9 +13,9 @@ class ShotTypeA : public Shot
 
 			graphicalElements[0].resize(3);
 
-			graphicalElements[0][0].position = sf::Vector2f(gameMap->getCellSize()/4, 0);
-			graphicalElements[0][1].position = sf::Vector2f(-gameMap->getCellSize()/4, gameMap->getCellSize()/8);
-			graphicalElements[0][2].position = sf::Vector2f(-gameMap->getCellSize()/4, -gameMap->getCellSize()/8);
+			graphicalElements[0][0].position = sf::Vector2f(radius, 0);
+			graphicalElements[0][1].position = sf::Vector2f(-radius, radius/2);
+			graphicalElements[0][2].position = sf::Vector2f(-radius, -radius/2);
 
 			graphicalElements[0][0].color = sf::Color(maxColor.r, minColor.g, minColor.b);
 			graphicalElements[0][1].color = sf::Color(minColor.r, maxColor.g, minColor.b);
@@ -24,6 +24,7 @@ class ShotTypeA : public Shot
 
 		void animate()
 		{
-			
+			for (unsigned int i = 0; i < 3; i++)
+				nextColor(graphicalElements[0][i].color, elapsed.asMilliseconds()*(rand()%2), minColor, maxColor);
 		}
 };

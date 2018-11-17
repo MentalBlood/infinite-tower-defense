@@ -12,7 +12,7 @@ void tryToShoot(Tower *tower)
 																			tower->getRangeSquare())
 		{
 			if (tower->getShotType() == TYPE_A)
-				shots.push_back(new ShotTypeA(tower, (*i), sf::Color(30, 130, 30), sf::Color(130, 150, 130)));
+				shots.push_back(new ShotTypeA(tower, (*i), sf::Color(130, 30, 30), sf::Color(150, 130, 130)));
 			new Timer<Tower*>(tower->getShotsDelay(), tryToShoot, tower);
 			return;
 		}

@@ -166,6 +166,9 @@ class Monster
 		float getHealth()
 		{ return health; }
 
+		float getRadius()
+		{ return radius; }
+
 		void die()
 		{ dead = true; }
 };

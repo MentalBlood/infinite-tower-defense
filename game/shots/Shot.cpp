@@ -4,12 +4,25 @@ class Shot
 		sf::Transform	transform,
 						rotationTransform;
 		sf::Vector2f position;
+
 		bool finished;
+
+		Tower *tower;
+		Monster *monster;
+
+		float scale,
+			  currentRotatioAngle;
 
 		void drag(const sf::Vector2f & offset)
 		{
 			transform.translate(offset / scale);
 			position += sf::Vector2f(offset);
+		}
+
+		void move(const sf::Vector2f &offset)
+		{
+			transform.translate(offset);
+			position += offset*scale;
 		}
 
 		void changeScale(float delta)
@@ -18,24 +31,33 @@ class Shot
 			scale *= delta;
 		}
 
-	protected:
-		Tower *tower;
-		Monster *monster;
-
-		std::vector<sf::VertexArray> graphicalElements;
-
-		float scale,
-			  currentRotatioAngle;
-
-		void move(const sf::Vector2f &offset)
+		void rotate(float angle)
 		{
-			transform.translate(offset);
-			position += offset*scale;
+			rotationTransform.rotate(angle);
+			currentRotatioAngle += angle;
 		}
+
+		void rotateInDirection(float angle)
+		{
+			rotate(angle - currentRotatioAngle);
+		}
+
+		void rotateToMonster()
+		{
+			sf::Vector2f distanceVector = monster->getPosition() - position;
+			float angle = 180.0 / M_PI * atan(distanceVector.y / distanceVector.x);
+			if (distanceVector.x < 0) angle += 180;
+			rotateInDirection(angle);
+		}
+
+	protected:
+		std::vector<sf::VertexArray> graphicalElements;
+		float radius;
 
 	public:
 		Shot(Tower *tower, Monster *monster):
-		finished(false), tower(tower), monster(monster), scale(1), currentRotatioAngle(0)
+		finished(false), tower(tower), monster(monster), scale(1), currentRotatioAngle(0),
+		radius(gameMap->getCellSize()/4)
 		{
 			changeScale(monster->getScale());
 			drag(tower->getPosition());
@@ -55,13 +77,16 @@ class Shot
 			sf::Vector2f distanceVector = monster->getPosition() - position;
 			float distanceLength = sqrt(distanceVector.x * distanceVector.x
 										+ distanceVector.y * distanceVector.y);
-			if (distanceLength <= (gameMap->getCellSize() / 8.0 * scale))
+			if (distanceLength <= (monster->getRadius() + radius) * scale)
 			{
 				monster->sufferDamage(tower->getDamage());
 				finished = true;
 			}
 			else
-				move(distanceVector / distanceLength * float(512 * elapsed.asSeconds()));
+			{
+				rotateToMonster();
+				move(distanceVector / distanceLength * float(128 * elapsed.asSeconds()));
+			}
 		}
 
 		void changeScale()
@@ -74,7 +99,7 @@ class Shot
 			scale *= gameScaleDelta;
 		}
 
-		bool monsterDead()
+		bool isFinished()
 		{
 			return (monster->isCame() || monster->isDead() || finished);
 		}

@@ -104,6 +104,7 @@ void gameMouseButtonPressed()
 	else
 	if (event.mouseButton.button == sf::Mouse::Right)
 	{
+		if (!addingTower) return;
 		if (gameMap->selectorOnCellWhichFitsForTower())
 		{
 			towers.push_back(addingTower);

@@ -7,7 +7,7 @@ void updateGame()
 	}
 	for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
 	{
-		if ((*i)->monsterDead())
+		if ((*i)->isFinished())
 		{
 			delete *i;
 			shots.erase(i);
