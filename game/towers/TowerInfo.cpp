@@ -35,7 +35,7 @@ class TowerInfo
 
 		void refreshText()
 		{
-			sprintf(textString, "damage: %u\nrange: %.1f",
+			sprintf(textString, "damage: %.1f\nrange: %.1f",
 					specification->getDamage(),
 					specification->getRange());
 			text.setString(sf::String(textString));

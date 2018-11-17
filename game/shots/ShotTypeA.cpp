@@ -18,8 +18,8 @@ class ShotTypeA : public Shot
 			graphicalElements[0][2].position = sf::Vector2f(-radius, -radius/2);
 
 			graphicalElements[0][0].color = sf::Color(maxColor.r, minColor.g, minColor.b);
-			graphicalElements[0][1].color = sf::Color(minColor.r, maxColor.g, minColor.b);
-			graphicalElements[0][2].color = sf::Color(minColor.r, minColor.g, maxColor.b);
+			graphicalElements[0][1].color = sf::Color(minColor.r, maxColor.g, minColor.b, 155);
+			graphicalElements[0][2].color = sf::Color(minColor.r, minColor.g, maxColor.b, 155);
 		}
 
 		void animate()

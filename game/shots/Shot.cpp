@@ -9,6 +9,7 @@ class Shot
 
 		Tower *tower;
 		Monster *monster;
+		sf::Vector2f lastMonsterPosition;
 
 		float scale,
 			  currentRotatioAngle;
@@ -56,11 +57,12 @@ class Shot
 
 	public:
 		Shot(Tower *tower, Monster *monster):
-		finished(false), tower(tower), monster(monster), scale(1), currentRotatioAngle(0),
-		radius(gameMap->getCellSize()/4)
+		finished(false), tower(tower), monster(monster), lastMonsterPosition(monster->getPosition()),
+		scale(1), currentRotatioAngle(0), radius(gameMap->getCellSize()/8)
 		{
 			changeScale(monster->getScale());
 			drag(tower->getPosition());
+			rotateToMonster();
 		}
 
 		virtual ~Shot()
@@ -74,9 +76,24 @@ class Shot
 
 		void move()
 		{
-			sf::Vector2f distanceVector = monster->getPosition() - position;
+			if (monster)
+			{
+				if (monster->isDead() || monster->isCame())
+					monster = NULL;
+				else
+					lastMonsterPosition = monster->getPosition();
+			}
+			sf::Vector2f distanceVector = lastMonsterPosition - position;
 			float distanceLength = sqrt(distanceVector.x * distanceVector.x
 										+ distanceVector.y * distanceVector.y);
+			if (!monster)
+			{
+				move(distanceVector / distanceLength * float(256 * elapsed.asSeconds()));
+				if (distanceLength <= (gameMap->getCellSize() / 8 * scale))
+					finished = true;
+				return;
+			}
+
 			if (distanceLength <= (monster->getRadius() + radius) * scale)
 			{
 				monster->sufferDamage(tower->getDamage());
@@ -85,7 +102,7 @@ class Shot
 			else
 			{
 				rotateToMonster();
-				move(distanceVector / distanceLength * float(128 * elapsed.asSeconds()));
+				move(distanceVector / distanceLength * float(256 * elapsed.asSeconds()));
 			}
 		}
 
@@ -100,9 +117,7 @@ class Shot
 		}
 
 		bool isFinished()
-		{
-			return (monster->isCame() || monster->isDead() || finished);
-		}
+		{ return finished; }
 
 		void draw()
 		{
