@@ -41,21 +41,33 @@ void changeScale(bool up)
 	if (up)
 		gameScaleDelta = 1.02;
 	else
+	{
 		gameScaleDelta = 0.98;
+		if ((gameScale * gameScaleDelta) < 0.1)
+			return;
+	}
 	gameScaleCenter.x = event.mouseWheelScroll.x;
 	gameScaleCenter.y = event.mouseWheelScroll.y;
 	gameMap->changeZoom();
 	for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
-		(*i)->changeScale();
+		(*i)->updateScale();
 	for (std::list<Tower*>::iterator i = towers.begin(); i != towers.end(); i++)
 		(*i)->changeScale();
 	for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
-		(*i)->changeScale();
+		(*i)->updateScale();
 	if (addingTower)
 	{
 		addingTower->refreshScale();
 		addingTower->goToCellSelector();
 	}
+}
+
+void changeBool(bool *something)
+{
+	if (*something == true)
+		*something = false;
+	else
+		*something = true;
 }
 
 void gameKeyPressed()
@@ -72,6 +84,10 @@ void gameKeyPressed()
 		changeScale(SCALE_UP);
 	else if (event.key.code == sf::Keyboard::PageDown)
 		changeScale(SCALE_DOWN);
+	else if (event.key.code == sf::Keyboard::M)
+		changeBool(&monstersMoving);
+	else if (event.key.code == sf::Keyboard::S)
+		changeBool(&shotsFlying);
 	else if (event.key.code == sf::Keyboard::Escape) gameExit();
 }
 
@@ -108,6 +124,7 @@ void gameMouseButtonPressed()
 		if (gameMap->selectorOnCellWhichFitsForTower())
 		{
 			towers.push_back(addingTower);
+			gameMap->setTowerOnCell();
 			tryToShoot(addingTower);
 		}
 		else
@@ -131,11 +148,11 @@ void gameMouseMoved()
 		gameDragOffset.x = event.mouseMove.x - gameDraggingPreviousMouseX0;
 		gameDragOffset.y = event.mouseMove.y - gameDraggingPreviousMouseY0;
 		for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
-			(*i)->drag();
+			(*i)->updatePosition();
 		for (std::list<Tower*>::iterator i = towers.begin(); i != towers.end(); i++)
 			(*i)->drag();
 		for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
-			(*i)->drag();
+			(*i)->updatePosition();
 		gameDraggingPreviousMouseX0 = event.mouseMove.x;
 		gameDraggingPreviousMouseY0 = event.mouseMove.y;
 	}

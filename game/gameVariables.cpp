@@ -1,7 +1,10 @@
-bool gameMapDragging;
+bool gameMapDragging,
+	 monstersMoving,
+	 shotsFlying;
 float gameMapDraggingMouseX1,
 	  gameMapDraggingMouseY1,
-	  gameScaleDelta;
+	  gameScaleDelta,
+	  gameScale;
 sf::Vector2f	gameMapDraggingMapInitialCoordinates,
 				gameDragOffset,
 				gameScaleCenter;
@@ -10,6 +13,8 @@ unsigned int gameBaseHealth;
 
 #include "../map/MapForPlaying.cpp"
 MapForPlaying *gameMap;
+
+#include "GraphicalEntity.cpp"
 
 #include "monsters/Monster.cpp"
 #include "monsters/ModelA.cpp"
@@ -36,7 +41,10 @@ void setGameVariables(const char *gameMapFileName)
 								sf::Color(0, 0, 196, 128), sf::Color(128, 0, 196));
 	gameMap->setTextures(0.9);
 	gameMap->setPosition(0, 0);
+	gameScale = 1;
 	gameMapDragging = false;
+	monstersMoving = false;
+	shotsFlying = true;
 
 	loadMonstersParameters();
 	setTowersPanel();

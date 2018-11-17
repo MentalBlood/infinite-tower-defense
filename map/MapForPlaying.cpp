@@ -249,6 +249,9 @@ class MapForPlaying
 		bool selectorOnCellWhichFitsForTower()
 		{ return !pathMap[cellSelectorX][cellSelectorY]; }
 
+		void setTowerOnCell()
+		{ pathMap[cellSelectorX][cellSelectorY] = -1; }
+
 		void moveCellSelector(char direction)
 		{
 			if ((direction == LEFT) && (cellSelectorX))

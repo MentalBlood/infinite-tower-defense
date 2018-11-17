@@ -11,9 +11,9 @@ class ModelB : public Monster
 				sf::Color backgroundMinColor, sf::Color backgroundMaxColor,
 				sf::Color linesMinColor, sf::Color linesMaxColor,
 				const float speed, unsigned int health):
-			Monster(10, speed, health), numberOfVertexes(numberOfVertexes),
-			backgroundMinColor(backgroundMinColor), backgroundMaxColor(backgroundMaxColor),
-			linesMinColor(linesMinColor), linesMaxColor(linesMaxColor)
+		Monster(10, speed, health), numberOfVertexes(numberOfVertexes),
+		backgroundMinColor(backgroundMinColor), backgroundMaxColor(backgroundMaxColor),
+		linesMinColor(linesMinColor), linesMaxColor(linesMaxColor)
 		{
 			graphicalElements.resize(2);
 			graphicalElements[1].setPrimitiveType(sf::LineStrip);
@@ -58,11 +58,11 @@ class ModelB : public Monster
 		{
 			//change colors
 			for (unsigned int i = 0; i < numberOfVertexes; i++)
-				nextColor(graphicalElements[1][i].color, elapsed.asMilliseconds()*(rand()%2), linesMinColor, linesMaxColor);
+				nextColor(graphicalElements[1][i].color, elapsed.asMilliseconds()*(rand()%2 + 1), linesMinColor, linesMaxColor);
 			graphicalElements[1][numberOfVertexes].color = graphicalElements[1][0].color;
 
 			for (unsigned int i = 0; i < (numberOfVertexes+1); i++)
-				nextColor(graphicalElements[0][i].color, elapsed.asMilliseconds()*(rand()%2), backgroundMinColor, backgroundMaxColor);
+				nextColor(graphicalElements[0][i].color, elapsed.asMilliseconds()*(rand()%2 + 1), backgroundMinColor, backgroundMaxColor);
 			graphicalElements[0][numberOfVertexes+1].color = graphicalElements[0][1].color;
 
 			//move vertexes

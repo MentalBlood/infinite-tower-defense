@@ -39,9 +39,9 @@ void loadMonstersParameters()
 	FILE *file = fopen("monstersParametres.txt", "wb");
 	if (!file) Closed();
 
-	Parameter<unsigned int>::write(file, 100, 1, 1);
-	Parameter<float>::write(file, 0.8, 0.5, 0.5);
-	Parameter<float>::write(file, 0.06, 0, 1.05);
+	Parameter<unsigned int>::write(file, 64, 1, 1);
+	Parameter<float>::write(file, 0.4, 0.5, 0.5);
+	Parameter<float>::write(file, 0.09, 0, 1.05);
 	Parameter<float>::write(file, 5, 0, 1);
 
 	fclose(file);

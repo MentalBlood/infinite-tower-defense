@@ -1,129 +1,93 @@
-class Shot
+class Shot : public GraphicalEntity
 {
 	private:
-		sf::Transform	transform,
-						rotationTransform;
-		sf::Vector2f position;
-
 		bool finished;
 
 		Tower *tower;
 		Monster *monster;
 		sf::Vector2f lastMonsterPosition;
 
-		float scale,
-			  currentRotatioAngle;
-
-		void drag(const sf::Vector2f & offset)
-		{
-			transform.translate(offset / scale);
-			position += sf::Vector2f(offset);
-		}
-
-		void move(const sf::Vector2f &offset)
-		{
-			transform.translate(offset);
-			position += offset*scale;
-		}
-
-		void changeScale(float delta)
-		{
-			transform.scale(sf::Vector2f(delta, delta));
-			scale *= delta;
-		}
-
-		void rotate(float angle)
-		{
-			rotationTransform.rotate(angle);
-			currentRotatioAngle += angle;
-		}
-
-		void rotateInDirection(float angle)
-		{
-			rotate(angle - currentRotatioAngle);
-		}
-
-		void rotateToMonster()
-		{
-			sf::Vector2f distanceVector = monster->getPosition() - position;
-			float angle = 180.0 / M_PI * atan(distanceVector.y / distanceVector.x);
-			if (distanceVector.x < 0) angle += 180;
-			rotateInDirection(angle);
-		}
-
-	protected:
-		std::vector<sf::VertexArray> graphicalElements;
-		float radius;
+		float distanceLeft;
 
 	public:
 		Shot(Tower *tower, Monster *monster):
+		GraphicalEntity(tower->getPosition(), gameMap->getCellSize()/8, monster->getScale(), 0),
 		finished(false), tower(tower), monster(monster), lastMonsterPosition(monster->getPosition()),
-		scale(1), currentRotatioAngle(0), radius(gameMap->getCellSize()/8)
+		distanceLeft(tower->getRange())
 		{
-			changeScale(monster->getScale());
-			drag(tower->getPosition());
-			rotateToMonster();
+			rotateToPoint(lastMonsterPosition);
 		}
 
 		virtual ~Shot()
 		{}
 
-		void drag()
+		void updatePosition()
 		{
-			transform.translate(gameDragOffset / scale);
-			position += sf::Vector2f(gameDragOffset);
+			drag(gameDragOffset);
+			if (!monster)
+				lastMonsterPosition += sf::Vector2f(gameDragOffset);
 		}
 
-		void move()
+		void refreshLastMonsterPosition()
 		{
-			if (monster)
-			{
-				if (monster->isDead() || monster->isCame())
-					monster = NULL;
-				else
-					lastMonsterPosition = monster->getPosition();
-			}
-			sf::Vector2f distanceVector = lastMonsterPosition - position;
+			if (!monster) return;
+			lastMonsterPosition = monster->getPosition();
+			rotateToPoint(lastMonsterPosition);
+		}
+
+		void checkMonsterExistance()
+		{
+			if (!monster) return;
+			if (monster->isDead() || monster->isCame())
+				monster = NULL;
+		}
+
+		void moveCorrectly()
+		{
+			sf::Vector2f distanceVector = getDistanceVector(lastMonsterPosition);
 			float distanceLength = sqrt(distanceVector.x * distanceVector.x
 										+ distanceVector.y * distanceVector.y);
+			sf::Vector2f unitDistanceVector = distanceVector / distanceLength;
+			float maxDistanceToMove = 256 * elapsed.asSeconds();
+			if (maxDistanceToMove > (distanceLeft * scale))
+			{
+				maxDistanceToMove = distanceLeft * scale;
+				finished = true;
+			}
 			if (!monster)
 			{
-				move(distanceVector / distanceLength * float(256 * elapsed.asSeconds()));
-				if (distanceLength <= (gameMap->getCellSize() / 8 * scale))
+				if ((distanceLength - maxDistanceToMove) <= (radius * scale))
+				{
+					move(unitDistanceVector * radius);
 					finished = true;
+				}
+				else
+				{
+					move(unitDistanceVector * maxDistanceToMove);
+					distanceLeft -= maxDistanceToMove;
+				}
 				return;
 			}
 
-			if (distanceLength <= (monster->getRadius() + radius) * scale)
+			float minDistance = monster->getRadius() + radius;
+			if ((distanceLength - maxDistanceToMove) <= (minDistance * scale))
 			{
+				move(unitDistanceVector * minDistance);
 				monster->sufferDamage(tower->getDamage());
 				finished = true;
 			}
 			else
 			{
-				rotateToMonster();
-				move(distanceVector / distanceLength * float(256 * elapsed.asSeconds()));
+				move(unitDistanceVector * maxDistanceToMove);
+				distanceLeft -= maxDistanceToMove;
 			}
 		}
 
-		void changeScale()
-		{
-			if ((gameScaleDelta < 1.0) && (scale < (0.1 / gameScaleDelta))) return;
-
-			drag((gameScaleDelta - 1) * (position - gameScaleCenter));
-
-			transform.scale(sf::Vector2f(gameScaleDelta, gameScaleDelta));
-			scale *= gameScaleDelta;
-		}
+		void updateScale()
+		{ lastMonsterPosition += changeScale(gameScaleDelta, gameScaleCenter); }
 
 		bool isFinished()
 		{ return finished; }
-
-		void draw()
-		{
-			for (unsigned int i = 0; i < graphicalElements.size(); i++)
-				window.draw(graphicalElements[i], transform * rotationTransform);
-		}
 
 		virtual void animate() =0;
 };

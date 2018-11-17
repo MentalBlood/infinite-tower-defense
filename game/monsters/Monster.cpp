@@ -1,20 +1,10 @@
-class Monster;
-
-void monsterCome(Monster*);
-
-class Monster
+class Monster : public GraphicalEntity
 {
 	protected:
 		sf::Vector2f position;
-		const float radius,
-					speed;
+		float speed;
 
 	private:
-		sf::Transform	transform,
-						rotationTransform;
-		float scale,
-			  currentRotatioAngle;
-
 		unsigned int currentDirectionIndex;
 		float distanceToNextDirectionLeft;
 
@@ -61,86 +51,42 @@ class Monster
 			}
 		}
 
-		void rotate(float angle)
-		{
-			rotationTransform.rotate(angle);
-			currentRotatioAngle += angle;
-		}
-
 		void rotate(char direction)
 		{
-			if (direction == UP) rotate(-90 - currentRotatioAngle);
-			else if (direction == DOWN) rotate(90 - currentRotatioAngle);
-			else if (direction == RIGHT) rotate(0 - currentRotatioAngle);
-			else if (direction == LEFT) rotate(180 - currentRotatioAngle);
-		}
-
-	protected:
-		std::vector<sf::VertexArray> graphicalElements;
-
-		void move(const sf::Vector2f &offset)
-		{
-			transform.translate(offset);
-			position += offset*scale;
-		}
-
-		void changeScale(float delta)
-		{
-			transform.scale(sf::Vector2f(delta, delta));
-			scale *= delta;
+			if (direction == UP) rotateInDirection(-90);
+			else if (direction == DOWN) rotateInDirection(90);
+			else if (direction == RIGHT) rotateInDirection(0);
+			else if (direction == LEFT) rotateInDirection(180);
 		}
 
 	public:
 		const unsigned int damage;
 
 		Monster(unsigned int damage, const float speed, float health):
-			position(sf::Vector2f(0, 0)), radius(gameMap->getCellSize() / 2.5), speed(speed),
-			scale(1), currentRotatioAngle(0), currentDirectionIndex(0),
-			distanceToNextDirectionLeft(gameMap->getCellSize()),
-			health(health), came(false), dead(false), damage(damage)
+		GraphicalEntity(sf::Vector2f(0, 0), gameMap->getCellSize() / 2.5, 1, 0),
+		speed(speed), currentDirectionIndex(0), distanceToNextDirectionLeft(gameMap->getCellSize()),
+		health(health), came(false), dead(false), damage(damage)
 		{
 			rotate((*gameMap->getPathPointer())[0]);
 		}
 
 		void goToSpawnPoint()
 		{
-			move(gameMap->getSpawnPoint());
 			changeScale(gameMap->getScale());
+			drag(gameMap->getSpawnPoint());
 		}
 
 		virtual ~Monster()
 		{}
 
-		void draw()
-		{
-			for (unsigned int i = 0; i < graphicalElements.size(); i++)
-				window.draw(graphicalElements[i], transform * rotationTransform);
-		}
-
 		void moveInCorrectDirection()
 		{ moveDistance(elapsed.asMilliseconds() * speed); }
 
-		void drag()
-		{
-			transform.translate(gameDragOffset / scale);
-			position += sf::Vector2f(gameDragOffset);
-		}
+		void updatePosition()
+		{ drag(gameDragOffset); }
 
-		void drag(const sf::Vector2f & offset)
-		{
-			transform.translate(offset / scale);
-			position += sf::Vector2f(offset);
-		}
-
-		void changeScale()
-		{
-			if ((gameScaleDelta < 1.0) && (scale < (0.1 / gameScaleDelta))) return;
-
-			drag((gameScaleDelta - 1) * (position - gameScaleCenter));
-
-			transform.scale(sf::Vector2f(gameScaleDelta, gameScaleDelta));
-			scale *= gameScaleDelta;
-		}
+		void updateScale()
+		{ changeScale(gameScaleDelta, gameScaleCenter); }
 
 		void sufferDamage(float damage)
 		{
@@ -151,12 +97,6 @@ class Monster
 
 		virtual void animate() =0;
 
-		const sf::Vector2f & getPosition()
-		{ return position; }
-
-		float getScale()
-		{ return scale; }
-
 		bool isCame()
 		{ return came; }
 
@@ -165,10 +105,4 @@ class Monster
 
 		float getHealth()
 		{ return health; }
-
-		float getRadius()
-		{ return radius; }
-
-		void die()
-		{ dead = true; }
 };

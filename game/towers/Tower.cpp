@@ -55,4 +55,7 @@ class Tower
 
 		float getDamage()
 		{ return specification->getDamage(); }
+
+		float getRange()
+		{ return specification->getRange(); }
 };

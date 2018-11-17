@@ -25,6 +25,6 @@ class ShotTypeA : public Shot
 		void animate()
 		{
 			for (unsigned int i = 0; i < 3; i++)
-				nextColor(graphicalElements[0][i].color, elapsed.asMilliseconds()*(rand()%2), minColor, maxColor);
+				nextColor(graphicalElements[0][i].color, elapsed.asMilliseconds()*(rand()%5 + 5), minColor, maxColor);
 		}
 };
