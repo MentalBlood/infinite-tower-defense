@@ -11,6 +11,7 @@ void gameClear()
 	gameMap = NULL;
 	deleteTimers<Monster*>();
 	deleteTimers<char*>();
+	deleteTimers<Tower*>();
 	monsters.clear();
 	towers.clear();
 	shots.clear();
@@ -88,6 +89,8 @@ void gameKeyPressed()
 		changeBool(&monstersMoving);
 	else if (event.key.code == sf::Keyboard::S)
 		changeBool(&shotsFlying);
+	else if (event.key.code == sf::Keyboard::N)
+		abandonTimers<char*>();
 	else if (event.key.code == sf::Keyboard::Escape) gameExit();
 }
 

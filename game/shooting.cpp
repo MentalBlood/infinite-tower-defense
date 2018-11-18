@@ -1,5 +1,7 @@
 #include "shots/Shot.cpp"
 #include "shots/ShotTypeA.cpp"
+#include "shots/ShotTypeB.cpp"
+#include "shots/ShotTypeC.cpp"
 std::list<Shot*> shots;
 
 void tryToShoot(Tower *tower)
@@ -11,7 +13,12 @@ void tryToShoot(Tower *tower)
 		if ((vectorDistance.x * vectorDistance.x + vectorDistance.y * vectorDistance.y) <= tower->getRangeSquare())
 		{
 			if (tower->getShotType() == TYPE_A)
-				shots.push_back(new ShotTypeA(tower, (*i), sf::Color(130, 30, 30), sf::Color(255, 130, 130)));
+				shots.push_back(new ShotTypeA(tower, (*i), sf::Color(30, 130, 30), sf::Color(130, 255, 130)));
+			else
+			if (tower->getShotType() == TYPE_B)
+				shots.push_back(new ShotTypeB(tower, (*i), sf::Color::Blue, 16));
+			if (tower->getShotType() == TYPE_C)
+				shots.push_back(new ShotTypeC(tower, (*i), sf::Color(180, 0, 0), sf::Color(255, 40, 40)));
 			new Timer<Tower*>(tower->getShotsDelay(), tryToShoot, tower);
 			return;
 		}

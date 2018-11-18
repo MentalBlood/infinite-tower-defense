@@ -10,8 +10,8 @@ class Shot : public GraphicalEntity
 		float distanceLeft;
 
 	public:
-		Shot(Tower *tower, Monster *monster):
-		GraphicalEntity(tower->getPosition(), gameMap->getCellSize()/8, monster->getScale(), 0),
+		Shot(Tower *tower, Monster *monster, float relativeRadius):
+		GraphicalEntity(tower->getPosition(), gameMap->getCellSize() * relativeRadius, monster->getScale(), 0),
 		finished(false), tower(tower), monster(monster), lastMonsterPosition(monster->getPosition()),
 		distanceLeft(tower->getRange())
 		{

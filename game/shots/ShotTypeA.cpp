@@ -6,7 +6,7 @@ class ShotTypeA : public Shot
 
 	public:
 		ShotTypeA(Tower *tower, Monster *monster, sf::Color minColor, sf::Color maxColor):
-		Shot(tower, monster), minColor(minColor), maxColor(maxColor)
+		Shot(tower, monster, 0.25), minColor(minColor), maxColor(maxColor)
 		{
 			graphicalElements.resize(1);
 			graphicalElements[0].setPrimitiveType(sf::Triangles);

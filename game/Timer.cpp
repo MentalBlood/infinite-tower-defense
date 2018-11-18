@@ -70,6 +70,12 @@ class Timer
 			delete argument;
 		}
 
+		void abandonChain()
+		{
+			secondsToWait = 0;
+			if (next) next->abandonChain();
+		}
+
 		float* getTimeLeftPointer()
 		{ return &secondsToWait; }
 };
@@ -91,4 +97,11 @@ void deleteTimers()
 	Timer<Type>::first->deleteChain();
 	delete Timer<Type>::first;
 	Timer<Type>::first = NULL;
+}
+
+template<class Type>
+void abandonTimers()
+{
+	if (!Timer<Type>::first) return;
+	Timer<Type>::first->abandonChain();
 }

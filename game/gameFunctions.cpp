@@ -3,6 +3,7 @@
 
 #define	TYPE_A 0
 #define TYPE_B 1
+#define TYPE_C 2
 
 void spawn(Monster *monster)
 {

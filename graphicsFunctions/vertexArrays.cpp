@@ -36,3 +36,39 @@ void makeVertexArrayQuad(sf::VertexArray *vertexArrayPointer, float x, float y, 
 	(*vertexArrayPointer)[2].position = sf::Vector2f(x, y + height);
 	(*vertexArrayPointer)[3].position = sf::Vector2f(x + width, y + height);
 }
+
+void makeVertexArrayRing(sf::VertexArray *vertexArrayPointer, float x, float y,
+						float internalRadius, float thickness,
+						unsigned int numberOfVertexes, sf::Color internalColor, sf::Color externalColor)
+{
+	sf::Transform rotation;
+	rotation.rotate(360.0 / numberOfVertexes, x, y);
+
+	vertexArrayPointer->setPrimitiveType(sf::TriangleStrip);
+	vertexArrayPointer->resize((numberOfVertexes + 1) * 2);
+
+	(*vertexArrayPointer)[0].position = sf::Vector2f(x + internalRadius, y);
+	(*vertexArrayPointer)[0].color = internalColor;
+	(*vertexArrayPointer)[1].position = sf::Vector2f(x + internalRadius + thickness, y);
+	(*vertexArrayPointer)[1].color = externalColor;
+
+	for (unsigned int i = 2; i < (numberOfVertexes + 1) * 2; i += 2)
+	{
+		(*vertexArrayPointer)[i].position = rotation.transformPoint((*vertexArrayPointer)[i-2].position);
+		(*vertexArrayPointer)[i].color = internalColor;
+		(*vertexArrayPointer)[i+1].position = rotation.transformPoint((*vertexArrayPointer)[i-1].position);
+		(*vertexArrayPointer)[i+1].color = externalColor;
+	}
+}
+
+void makeVertexArraysHalo(std::vector<sf::VertexArray> & graphicalElements, float x, float y,
+						float internalRadius, float internalThickness, float externalThickness,
+						unsigned int numberOfVertexes, sf::Color color)
+{
+	graphicalElements.resize(2);
+
+	makeVertexArrayRing(&graphicalElements[0], x, y, internalRadius, internalThickness,
+						numberOfVertexes, sf::Color::Transparent, color);
+	makeVertexArrayRing(&graphicalElements[1], x, y, internalRadius + internalThickness,
+						externalThickness, numberOfVertexes, color, sf::Color::Transparent);
+}
