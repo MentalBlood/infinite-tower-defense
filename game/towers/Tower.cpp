@@ -41,6 +41,15 @@ class Tower
 		void draw()
 		{ window.draw(sprite); }
 
+		bool havePoint(const sf::Vector2f & point)
+		{
+			sf::Vector2f position = sprite.getPosition();
+			return	((point.x < (position.x + gameMap->getRealCellSize()/2)) &&
+					(point.x > (position.x - gameMap->getRealCellSize()/2)) &&
+					(point.y < (position.y + gameMap->getRealCellSize()/2)) &&
+					(point.y > (position.y - gameMap->getRealCellSize()/2)));
+		}
+
 		const sf::Vector2f & getPosition()
 		{ return sprite.getPosition(); }
 

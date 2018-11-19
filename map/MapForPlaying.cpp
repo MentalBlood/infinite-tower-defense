@@ -240,17 +240,29 @@ class MapForPlaying
 		float getCellSize()
 		{ return float(cellTextureSize); }
 
+		float getRealCellSize()
+		{ return realCellTextureSize; }
+
 		sf::Vector2f getSelectorPosition()
 		{
 			return sf::Vector2f(mapPositionX + realCellTextureSize * cellSelectorX,
 								mapPositionY + realCellTextureSize * cellSelectorY);
 		}
 
+		sf::Vector2f getSelectorCenteredPosition()
+		{ return getSelectorPosition() + sf::Vector2f(realCellTextureSize/2, realCellTextureSize/2); }
+
 		bool selectorOnCellWhichFitsForTower()
 		{ return !pathMap[cellSelectorX][cellSelectorY]; }
 
+		bool selectorOnTower()
+		{ return (pathMap[cellSelectorX][cellSelectorY] == -1); }
+
 		void setTowerOnCell()
 		{ pathMap[cellSelectorX][cellSelectorY] = -1; }
+
+		void removeTower()
+		{ pathMap[cellSelectorX][cellSelectorY] = 0; }
 
 		void moveCellSelector(char direction)
 		{

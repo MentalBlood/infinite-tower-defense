@@ -73,6 +73,22 @@ void changeBool(bool *something)
 		*something = true;
 }
 
+void tryToDeleteTower()
+{
+	if (!gameMap->selectorOnTower()) return;
+	sf::Vector2f cellSelectorPosition = gameMap->getSelectorCenteredPosition();
+	for (std::list<Tower*>::iterator i = towers.begin(); i != towers.end(); i++)
+		if ((*i)->havePoint(cellSelectorPosition))
+		{
+			money += (*i)->getCost() / 2;
+			delete (*i);
+			towers.erase(i);
+			gameMap->removeTower();
+			updateMoneyText();
+			return;
+		}
+}
+
 void gameKeyPressed()
 {
 	if (event.key.code == sf::Keyboard::Up)
@@ -91,6 +107,8 @@ void gameKeyPressed()
 		changeBool(&pause);
 	else if (event.key.code == sf::Keyboard::N)
 		abandonTimers<char*>();
+	else if (event.key.code == sf::Keyboard::Delete)
+		tryToDeleteTower();
 	else if (event.key.code == sf::Keyboard::Escape) gameExit();
 }
 
