@@ -16,6 +16,8 @@ void drawGame()
 	gameMap->drawCellSelector();
 	if (addingTower) addingTower->draw();
 
+	drawSplinters();
+
 	drawGameInfo();
 	drawTowersPanel();
 	

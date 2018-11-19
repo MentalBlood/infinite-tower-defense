@@ -88,10 +88,16 @@ class Monster : public GraphicalEntity
 		void updateScale()
 		{ changeScale(gameScaleDelta, gameScaleCenter); }
 
+		void die()
+		{
+			collapse();
+			dead = true;
+		}
+
 		void sufferDamage(float damage)
 		{
 			if (dead) return;
-			if (damage >= health) dead = true;
+			if (damage >= health) die();
 			else health -= damage;
 		}
 

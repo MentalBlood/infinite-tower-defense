@@ -15,10 +15,10 @@ void chooseNewOrSavedMapToEditDialogCloseSavedMapFileNameDialog()
 
 void chooseNewOrSavedMapToEditDialogTryOpenMap(std::string fileName)
 {
-	if (checkMapFile(fileName.data()))
+	if (checkMapFile(("maps/" + fileName).data()))
 	{
 		chooseNewOrSavedMapToEditDialogCloseSavedMapFileNameDialog();
-		startMapEditor(fileName.data());
+		startMapEditor(("maps/" + fileName).data());
 	}
 	else
 	{

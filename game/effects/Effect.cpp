@@ -1,4 +1,0 @@
-class Effect : public GraphicalEntity
-{
-
-};

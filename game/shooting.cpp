@@ -18,7 +18,7 @@ void tryToShoot(Tower *tower)
 			if (tower->getShotType() == TYPE_B)
 				shots.push_back(new ShotTypeB(tower, (*i), sf::Color::Blue, 16));
 			if (tower->getShotType() == TYPE_C)
-				shots.push_back(new ShotTypeC(tower, (*i), sf::Color(180, 0, 0), sf::Color(255, 40, 40)));
+				shots.push_back(new ShotTypeC(tower, (*i), sf::Color::Red));
 			new Timer<Tower*>(tower->getShotsDelay(), tryToShoot, tower);
 			return;
 		}

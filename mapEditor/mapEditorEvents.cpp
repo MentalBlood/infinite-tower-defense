@@ -115,6 +115,7 @@ void mapEditorMouseButtonPressed()
 
 void mapEditorMouseButtonReleased()
 {
+	mapEditorMap->unpressCellSelector();
 	if (event.mouseButton.button != sf::Mouse::Left) return;
 	for (unsigned int i = 0; i < mapEditorButtons.size(); i++)
 		mapEditorButtons[i].unpress();
@@ -124,7 +125,6 @@ void mapEditorMouseButtonReleased()
 		return;
 	}
 	mapEditorMapDragging = false;
-	mapEditorMap->unpressCellSelector();
 }
 
 void mapEditorMouseMoved()

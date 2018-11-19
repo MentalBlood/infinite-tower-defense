@@ -1,33 +1,31 @@
 void updateGame()
 {
-	if (monstersMoving)
-		for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
-		{
-			(*i)->animate();
-			(*i)->moveInCorrectDirection();
-		}
-	//shots flying & monsters dying
-	if (shotsFlying)
+	if (pause) return;
+	for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
 	{
-		for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
-		{
-			(*i)->checkMonsterExistance();
-			(*i)->refreshLastMonsterPosition();
-		}
-		for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
-		{
-			(*i)->checkMonsterExistance();
-			(*i)->moveCorrectly();
-			(*i)->animate();
+		(*i)->animate();
+		(*i)->moveInCorrectDirection();
+	}
+	//shots flying & monsters dying
+	for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
+	{
+		(*i)->checkMonsterExistance();
+		(*i)->refreshLastMonsterPosition();
+	}
+	for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
+	{
+		(*i)->checkMonsterExistance();
+		(*i)->moveCorrectly();
+		(*i)->animate();
 
-			if ((*i)->isFinished())
-			{
-				delete *i;
-				shots.erase(i);
-				i--;
-			}
+		if ((*i)->isFinished())
+		{
+			delete *i;
+			shots.erase(i);
+			i--;
 		}
 	}
+
 	//corpses are removed
 	for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
 	{
@@ -47,13 +45,11 @@ void updateGame()
 		}
 	}
 
-	if (shotsFlying)
-		processTimers<Tower*>(); //towers shooting
+	processTimers<Tower*>(); //towers shooting
 
-	if (monstersMoving)
-	{
-		processTimers<Monster*>(); //monsters spawning
-		processTimers<char*>(); //waves starting
-		updateCurrentSecondsToNextWaveText();
-	}
+	processTimers<Monster*>(); //monsters spawning
+	processTimers<char*>(); //waves starting
+	updateCurrentSecondsToNextWaveText();
+
+	moveSplinters(); //splinters moving
 }

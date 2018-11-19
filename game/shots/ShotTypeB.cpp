@@ -7,7 +7,8 @@ class ShotTypeB : public Shot
 					unsigned int numberOfVertexes):
 		Shot(tower, monster, 0.2)
 		{
-			makeVertexArraysHalo(graphicalElements, 0, 0, 0, radius, radius,
+			graphicalElements = new std::vector<sf::VertexArray>;
+			makeVertexArraysHalo(*graphicalElements, 0, 0, 0, radius, radius,
 								numberOfVertexes, color);
 		}
 

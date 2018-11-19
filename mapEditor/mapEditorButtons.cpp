@@ -2,7 +2,7 @@ void mapEditorResetButtonPress()
 { mapEditorMap->reset(); }
 
 void mapEditorSaveMap(std::string fileName)
-{ mapEditorMap->save(fileName.data()); }
+{ mapEditorMap->save(("maps/" + fileName).data()); }
 
 void mapEditorCloseWrongMapMessage()
 {

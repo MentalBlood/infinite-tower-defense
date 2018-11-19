@@ -1,3 +1,10 @@
+float getVectorAngle(const sf::Vector2f & vector)
+{
+	float angle = 180.0 / M_PI * atan(vector.y / vector.x);
+	if (vector.x < 0) angle += 180;
+	return angle;
+}
+
 class GraphicalEntity
 {
 	private:
@@ -9,7 +16,7 @@ class GraphicalEntity
 	protected:
 		float radius,
 			  scale;
-		std::vector<sf::VertexArray> graphicalElements;
+		std::vector<sf::VertexArray> *graphicalElements;
 
 		void rotate(float angle)
 		{
@@ -25,10 +32,7 @@ class GraphicalEntity
 
 		void rotateToPoint(sf::Vector2f point)
 		{
-			sf::Vector2f distanceVector = point - position;
-			float angle = 180.0 / M_PI * atan(distanceVector.y / distanceVector.x);
-			if (distanceVector.x < 0) angle += 180;
-			rotateInDirection(angle);
+			rotateInDirection(getVectorAngle(point - position));
 		}
 
 		void drag(const sf::Vector2f & offset)
@@ -61,11 +65,18 @@ class GraphicalEntity
 	public:
 		GraphicalEntity(sf::Vector2f initialPosition, float radius, float initialScale,
 						float initialRotationAngle):
-		position(sf::Vector2f(0, 0)), rotationAngle(0), radius(radius), scale(1)
+		position(sf::Vector2f(0, 0)), rotationAngle(0), radius(radius), scale(1),
+		graphicalElements(NULL)
 		{
 			if (initialScale != 1) changeScale(initialScale);
 			if (initialPosition != sf::Vector2f(0, 0)) drag(initialPosition);
 			if (initialRotationAngle != 0) rotate(initialRotationAngle);
+		}
+
+		void setGraphicalElements(std::vector<sf::VertexArray> *newGraphicalElements)
+		{
+			if (graphicalElements) delete graphicalElements;
+			graphicalElements = newGraphicalElements;
 		}
 
 		virtual ~GraphicalEntity()
@@ -74,8 +85,8 @@ class GraphicalEntity
 		void draw()
 		{
 			sf::Transform totalTransform = transform * rotationTransform;
-			for (unsigned int i = 0; i < graphicalElements.size(); i++)
-				window.draw(graphicalElements[i], totalTransform);
+			for (unsigned int i = 0; i < graphicalElements->size(); i++)
+				window.draw((*graphicalElements)[i], totalTransform);
 		}
 
 		sf::Vector2f getDistanceVector(sf::Vector2f & point)
@@ -91,6 +102,9 @@ class GraphicalEntity
 
 		float getScale()
 		{ return scale; }
+
+		void completeSplinter(std::vector<sf::VertexArray> *);
+		void collapse();
 
 		virtual void animate() =0;
 };

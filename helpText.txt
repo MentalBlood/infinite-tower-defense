@@ -12,3 +12,7 @@ press Ctrl+Z to undo
 press Ctrl+Shift+Z to redo
 press button "RESET" to reset map
 press button "SAVE" and then enter file name to save map
+
+in game:
+press Space to set pause on/off
+press N to launch next wave immediately

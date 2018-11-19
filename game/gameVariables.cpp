@@ -1,6 +1,5 @@
 bool gameMapDragging,
-	 monstersMoving,
-	 shotsFlying;
+	 pause;
 float gameMapDraggingMouseX1,
 	  gameMapDraggingMouseY1,
 	  gameScaleDelta,
@@ -15,6 +14,8 @@ unsigned int gameBaseHealth;
 MapForPlaying *gameMap;
 
 #include "GraphicalEntity.cpp"
+#include "effects/Splinter.cpp"
+#include "effects/collapse.cpp"
 
 #include "monsters/Monster.cpp"
 #include "monsters/ModelA.cpp"
@@ -43,8 +44,7 @@ void setGameVariables(const char *gameMapFileName)
 	gameMap->setPosition(0, 0);
 	gameScale = 1;
 	gameMapDragging = false;
-	monstersMoving = false;
-	shotsFlying = true;
+	pause = true;
 
 	loadMonstersParameters();
 	setTowersPanel();

@@ -12,6 +12,7 @@ void gameClear()
 	deleteTimers<Monster*>();
 	deleteTimers<char*>();
 	deleteTimers<Tower*>();
+	deleteSplinters();
 	monsters.clear();
 	towers.clear();
 	shots.clear();
@@ -56,6 +57,7 @@ void changeScale(bool up)
 		(*i)->changeScale();
 	for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
 		(*i)->updateScale();
+	scaleSplinters();
 	if (addingTower)
 	{
 		addingTower->refreshScale();
@@ -85,10 +87,8 @@ void gameKeyPressed()
 		changeScale(SCALE_UP);
 	else if (event.key.code == sf::Keyboard::PageDown)
 		changeScale(SCALE_DOWN);
-	else if (event.key.code == sf::Keyboard::M)
-		changeBool(&monstersMoving);
-	else if (event.key.code == sf::Keyboard::S)
-		changeBool(&shotsFlying);
+	else if (event.key.code == sf::Keyboard::Space)
+		changeBool(&pause);
 	else if (event.key.code == sf::Keyboard::N)
 		abandonTimers<char*>();
 	else if (event.key.code == sf::Keyboard::Escape) gameExit();
@@ -156,6 +156,7 @@ void gameMouseMoved()
 			(*i)->drag();
 		for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
 			(*i)->updatePosition();
+		dragSplinters();
 		gameDraggingPreviousMouseX0 = event.mouseMove.x;
 		gameDraggingPreviousMouseY0 = event.mouseMove.y;
 	}
