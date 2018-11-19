@@ -27,6 +27,7 @@ void updateGame()
 	}
 
 	//corpses are removed
+	bool gotSomeMoney = false;
 	for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
 	{
 		if ((*i)->isCame())
@@ -41,9 +42,13 @@ void updateGame()
 		{
 			delete *i;
 			monsters.erase(i);
+			money += (*i)->getDamage() * (*i)->getSpeed() * (*i)->getInitialHealth();
+			gotSomeMoney = true;
 			i--;
 		}
 	}
+	if (gotSomeMoney)
+		updateMoneyText();
 
 	processTimers<Tower*>(); //towers shooting
 

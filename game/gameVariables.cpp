@@ -8,7 +8,8 @@ sf::Vector2f	gameMapDraggingMapInitialCoordinates,
 				gameDragOffset,
 				gameScaleCenter;
 
-unsigned int gameBaseHealth;
+unsigned int gameBaseHealth,
+			 money;
 
 #include "../map/MapForPlaying.cpp"
 MapForPlaying *gameMap;
@@ -55,6 +56,8 @@ void setGameVariables(const char *gameMapFileName)
 
 	gameBaseHealth = 100;
 	updateBaseHealthText();
+	money = 350;
+	updateMoneyText();
 
 	startWaving();
 }

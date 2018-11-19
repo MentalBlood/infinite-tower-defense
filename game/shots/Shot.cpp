@@ -48,7 +48,7 @@ class Shot : public GraphicalEntity
 			float distanceLength = sqrt(distanceVector.x * distanceVector.x
 										+ distanceVector.y * distanceVector.y);
 			sf::Vector2f unitDistanceVector = distanceVector / distanceLength;
-			float maxDistanceToMove = 256 * elapsed.asSeconds();
+			float maxDistanceToMove = tower->getShellsSpeed() * elapsed.asSeconds();
 			if (maxDistanceToMove > (distanceLeft * scale))
 			{
 				maxDistanceToMove = distanceLeft * scale;

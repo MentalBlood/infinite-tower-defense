@@ -14,7 +14,7 @@ void helpScreenExit()
 
 void setHelpScreenVariables()
 {
-	char *helpTextData = (char*)malloc(sizeof(char)*512);
+	char *helpTextData = (char*)malloc(sizeof(char)*1024);
 	FILE *file = fopen("helpText.txt", "rb");
 	if (!file) Closed();
 	char *c = helpTextData;

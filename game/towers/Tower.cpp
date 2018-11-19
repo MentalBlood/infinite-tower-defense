@@ -58,4 +58,10 @@ class Tower
 
 		float getRange()
 		{ return specification->getRange(); }
+
+		float getShellsSpeed()
+		{ return specification->getShellsSpeed(); }
+
+		unsigned int getCost()
+		{ return specification->getCost(); }
 };

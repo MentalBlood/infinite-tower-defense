@@ -1,6 +1,7 @@
 Text *currentSecondsToNextWaveText,
 	 *currentWaveNumberText,
-	 *baseHealthText;
+	 *baseHealthText,
+	 *moneyText;
 
 void setGameInfoVariables()
 {
@@ -18,6 +19,11 @@ void setGameInfoVariables()
 											"fonts/baseHealthTextFont.otf",
 											sf::Color(0, 255, 0, 192),
 											0.55, 0, 0.05);
+
+	moneyText = new Text(					"money:",
+											"fonts/baseHealthTextFont.otf",
+											sf::Color(255, 255, 0, 192),
+											0.05, 0, 0.05);
 }
 
 void updateGameInfoVariables()
@@ -25,6 +31,7 @@ void updateGameInfoVariables()
 	currentSecondsToNextWaveText->updatePositionAndSize();
 	currentWaveNumberText->updatePositionAndSize();
 	baseHealthText->updatePositionAndSize();
+	moneyText->updatePositionAndSize();
 }
 
 void updateCurrentSecondsToNextWaveText()
@@ -45,9 +52,15 @@ void updateBaseHealthText()
 										255 * float(gameBaseHealth) / 100.0, 0, 192));
 }
 
+void updateMoneyText()
+{
+	moneyText->setString("money: " + sf::String(intToString(int(money))));
+}
+
 void drawGameInfo()
 {
 	currentSecondsToNextWaveText->draw();
 	currentWaveNumberText->draw();
 	baseHealthText->draw();
+	moneyText->draw();
 }

@@ -8,6 +8,7 @@ class Monster : public GraphicalEntity
 		unsigned int currentDirectionIndex;
 		float distanceToNextDirectionLeft;
 
+		const float initialHealth;
 		float health;
 
 		bool came,
@@ -62,10 +63,10 @@ class Monster : public GraphicalEntity
 	public:
 		const unsigned int damage;
 
-		Monster(unsigned int damage, const float speed, float health):
+		Monster(unsigned int damage, const float speed, float healthArg):
 		GraphicalEntity(sf::Vector2f(0, 0), gameMap->getCellSize() / 2.5, 1, 0),
 		speed(speed), currentDirectionIndex(0), distanceToNextDirectionLeft(gameMap->getCellSize()),
-		health(health), came(false), dead(false), damage(damage)
+		initialHealth(healthArg), health(healthArg), came(false), dead(false), damage(damage)
 		{
 			rotate((*gameMap->getPathPointer())[0]);
 		}
@@ -109,6 +110,15 @@ class Monster : public GraphicalEntity
 		bool isDead()
 		{ return dead; }
 
+		float getInitialHealth()
+		{ return initialHealth; }
+
 		float getHealth()
 		{ return health; }
+
+		unsigned int getDamage()
+		{ return damage; }
+
+		float getSpeed()
+		{ return speed; }
 };

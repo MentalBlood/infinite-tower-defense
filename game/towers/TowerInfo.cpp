@@ -14,7 +14,7 @@ class TowerInfo
 		sf::VertexArray borders, fill;
 
 		sf::Font font;
-		char textString[64];
+		char textString[128];
 		sf::Text text;
 
 	public:
@@ -35,12 +35,15 @@ class TowerInfo
 
 		void refreshText()
 		{
-			sprintf(textString, "damage: %.1f\nrange: %.1f",
+			sprintf(textString, "damage: %.1f\n\nrange: %.1f\n\nshots/sec: %.2f\n\nshells speed: %.0f\n\n\nCOST: %u",
 					specification->getDamage(),
-					specification->getRange());
+					specification->getRange(),
+					1.0 / specification->getShotsDelay(),
+					specification->getShellsSpeed(),
+					specification->getCost());
 			text.setString(sf::String(textString));
-			fitTextIntoRectangle(&text, x + width/2, y + 2*bordersThickness,
-										width/2 - bordersThickness, height - 2*bordersThickness);
+			fitTextIntoRectangle(&text, x + width/3, y + 2*bordersThickness,
+										width/3*2 - bordersThickness, height - 2*bordersThickness);
 		}
 
 		void updatePositionAndSize()
@@ -60,7 +63,7 @@ class TowerInfo
 
 			
 			float towerPreviewSpriteRealSize = minf(height - 4*bordersThickness, 
-													(width - 2*bordersThickness)/2	);
+													(width - 2*bordersThickness)/3	);
 			towerPreviewSprite.setPosition(	x + 2*bordersThickness, 
 											y + height/2 - towerPreviewSpriteRealSize/2);
 			towerPreviewSprite.setScale(towerPreviewSpriteRealSize
@@ -89,5 +92,10 @@ class TowerInfo
 		}
 
 		void click()
-		{ addingTower = new Tower(specification); }
+		{
+			if (money < specification->getCost()) return;
+			money -= specification->getCost();
+			updateMoneyText();
+			addingTower = new Tower(specification);
+		}
 };

@@ -131,7 +131,11 @@ void gameMouseButtonPressed()
 			tryToShoot(addingTower);
 		}
 		else
+		{
+			money += addingTower->getCost();
+			updateMoneyText();
 			delete addingTower;
+		}
 		addingTower = NULL;
 	}
 }
