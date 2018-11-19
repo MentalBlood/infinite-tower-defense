@@ -76,7 +76,7 @@ class List
 			bordersThickness = sqrt(width * height) / 64;
 
 			separatorY = y + height/8; //between name and elements
-			itemHeight = (height - separatorY) / numberOfItemsShown;
+			itemHeight = (height - separatorY - bordersThickness) / numberOfItemsShown;
 
 			fitTextIntoRectangle(&nameText, x + bordersThickness, y + bordersThickness,
 								width - 2*bordersThickness, separatorY - y - 2*bordersThickness);
@@ -117,8 +117,9 @@ class List
 				++lastItemShownNumber;
 				updateItems();
 			}
+			else
+				selector.move(0, itemHeight);
 			++selectedItemNumber;
-			selector.move(0, itemHeight);
 		}
 
 		void selectPrevious()
@@ -131,8 +132,9 @@ class List
 				--lastItemShownNumber;
 				updateItems();
 			}
+			else
+				selector.move(0, -itemHeight);
 			--selectedItemNumber;
-			selector.move(0, -itemHeight);
 		}
 
 		void selectThis()
