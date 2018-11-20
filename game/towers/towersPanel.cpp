@@ -24,7 +24,7 @@ void updateTowersPanelPositionAndSize()
 
 void setTowersPanel()
 {
-	towersInfoStack = new TowersInfoStack(	"textures/towers", "towersSpecifications", 3,
+	towersInfoStack = new TowersInfoStack(	"textures/towers", "towersSpecifications", 5,
 											towersPanelRelativeX, towersPanelRelativeY,
 											towersPanelRelativeWidth, towersPanelRelativeHeight,
 											towersPanelRelativeIndent);

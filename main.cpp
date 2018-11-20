@@ -38,6 +38,7 @@ void startMapEditor();
 #include "guiElements/Text.cpp"
 
 #include "map/checkMapFile.cpp"
+#include "map/Map.cpp"
 
 #include "mapEditor/mapEditorVariables.cpp"
 #include "mapEditor/updateMapEditor.cpp"

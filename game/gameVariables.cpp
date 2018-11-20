@@ -42,7 +42,9 @@ void setGameVariables(const char *gameMapFileName)
 	gameMap = new MapForPlaying(gameMapFileName, sf::Color(150, 150, 64, 196),
 								sf::Color(0, 0, 196, 128), sf::Color(128, 0, 196));
 	gameMap->setTextures(0.9);
-	gameMap->setPosition(0, 0);
+	//gameMap->setPosition(0, 0);
+	gameMap->fitInRectangle(sf::Vector2f(0, 0),
+							sf::Vector2f(towersPanelRelativeX, 1));
 	gameScale = 1;
 	gameMapDragging = false;
 	pause = true;

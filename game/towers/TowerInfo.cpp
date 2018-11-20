@@ -18,6 +18,8 @@ class TowerInfo
 		sf::Text text;
 
 	public:
+		static float relativeSeparatorPosition;
+
 		TowerInfo(	TowerSpecification *specification,
 					float relativeX, float relativeY, float relativeWidth, float relativeHeight):
 		specification(specification), towerPreviewSprite(sf::Sprite(specification->getTexture())),
@@ -35,15 +37,16 @@ class TowerInfo
 
 		void refreshText()
 		{
-			sprintf(textString, "damage: %.1f\n\nrange: %.1f\n\nshots/sec: %.2f\n\nshells speed: %.0f\n\n\nCOST: %u",
+			sprintf(textString, "damage: %.1f\nrange: %.1f\nshots/sec: %.2f\nshells speed: %.0f\n\nCOST: %u",
 					specification->getDamage(),
 					specification->getRange(),
 					1.0 / specification->getShotsDelay(),
 					specification->getShellsSpeed(),
 					specification->getCost());
 			text.setString(sf::String(textString));
-			fitTextIntoRectangle(&text, x + width/3, y + 2*bordersThickness,
-										width/3*2 - bordersThickness, height - 2*bordersThickness);
+			fitTextIntoRectangle(&text, x + width*relativeSeparatorPosition, y + 2*bordersThickness,
+										width * (1 - relativeSeparatorPosition) - bordersThickness,
+										height - 2*bordersThickness);
 		}
 
 		void updatePositionAndSize()
@@ -63,7 +66,7 @@ class TowerInfo
 
 			
 			float towerPreviewSpriteRealSize = minf(height - 4*bordersThickness, 
-													(width - 2*bordersThickness)/3	);
+													(width - 2*bordersThickness) * relativeSeparatorPosition);
 			towerPreviewSprite.setPosition(	x + 2*bordersThickness, 
 											y + height/2 - towerPreviewSpriteRealSize/2);
 			towerPreviewSprite.setScale(towerPreviewSpriteRealSize
@@ -99,3 +102,5 @@ class TowerInfo
 			addingTower = new Tower(specification);
 		}
 };
+
+float TowerInfo::relativeSeparatorPosition = 0.25;
