@@ -17,8 +17,9 @@ in game:
 press Space to set pause on/off
 press N to launch next wave immediately
 press R to show/hide selected tower range circle
+you can add towers using mouse:
+press left mouse button on tower info in towers panel
+move mouse so selector is on cell which fits for tower setting
+press right mouse button to set tower
 you can add towers using only keyboard buttons:
-press number buttons to enter number of tower to add (default is 0)
-press A to start positioning new tower with entered number (after this entered number will be reseted to 0)
-press arrow buttons to select position of new tower
-press S to add tower on selected cell
+press number buttons to add tower with this number (in list)

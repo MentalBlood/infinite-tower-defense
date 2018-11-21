@@ -159,8 +159,8 @@ class List
 				}
 			}
 
-			selectedItemNumber = selectedNumber;
-			selector.setPosition(x + bordersThickness, separatorY + itemHeight * selectedItemNumber);
+			selectedItemNumber = selectedNumber + firstItemShownNumber;
+			selector.setPosition(x + bordersThickness, separatorY + itemHeight * selectedNumber);
 			return mouseOnItem;
 		}
 

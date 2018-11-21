@@ -45,14 +45,14 @@ void chooseNewOrSavedMapToEditDialogKeyPressed()
 
 void chooseNewOrSavedMapToEditDialogMouseButtonPressed()
 {
-	if (event.mouseButton.button != sf::Mouse::Left) return;
 	if (chooseNewOrSavedMapToEditDialogWrongFileNameMessage)
-	{
 		chooseNewOrSavedMapToEditDialogWrongFileNameMessage->tryToPress(event.mouseButton.x, event.mouseButton.y);
-		return;
+	if (event.mouseButton.button != sf::Mouse::Left || chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog) return;
+	else
+	{
+		if (chooseNewOrSavedMapToEditDialogNewMapButton->tryToPress(event.mouseButton.x, event.mouseButton.y)) return;
+		chooseNewOrSavedMapToEditDialogSavedMapButton->tryToPress(event.mouseButton.x, event.mouseButton.y);
 	}
-	if (chooseNewOrSavedMapToEditDialogNewMapButton->tryToPress(event.mouseButton.x, event.mouseButton.y)) return;
-	chooseNewOrSavedMapToEditDialogSavedMapButton->tryToPress(event.mouseButton.x, event.mouseButton.y);
 }
 
 void chooseNewOrSavedMapToEditDialogMouseButtonReleased()

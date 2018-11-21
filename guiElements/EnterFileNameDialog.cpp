@@ -38,7 +38,7 @@ class EnterFileNameDialog
 			prompt.setString(promptString);
 			prompt.setFillColor(promptColor);
 			enteredText.setFont(font);
-			enteredText.setString("unnamed.tdm");
+			enteredText.setString("");
 			enteredText.setFillColor(enteredTextColor);
 
 			updatePositionAndSize();

@@ -38,7 +38,7 @@ void chooseNewOrSavedMapToEditDialogSavedMapButtonPress()
 		new EnterFileNameDialog("Enter file name:", chooseNewOrSavedMapToEditDialogTryOpenMap,
 								0.3, 0.4, 0.4, 0.2, "fonts/enterFileNameFont.otf",
 								sf::Color(255, 128, 255), sf::Color(196, 64, 196),
-								sf::Color(0, 64, 0, 192), sf::Color(64, 128, 64));
+								sf::Color(0, 64, 0), sf::Color(64, 128, 64));
 	chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog->updatePositionAndSize();
 }
 

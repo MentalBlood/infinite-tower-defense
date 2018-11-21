@@ -122,12 +122,14 @@ void moveCellSelector(char direction)
 
 void gameKeyPressed()
 {
-	if ((event.key.code <= 35) && (event.key.code >= 26))
+	if ((event.key.code <= 35) && (event.key.code >= 27))
 	{
-		if (towerToAddNumber > 0) towerToAddNumber *= 10;
-		towerToAddNumber += event.key.code - 26;
+		towersInfoStack->click(event.key.code - 26 - 1);
+		tryToSetAddingTower();
+		return;
 	}
-	else if (event.key.code == sf::Keyboard::Up)
+
+	if (event.key.code == sf::Keyboard::Up)
 		moveCellSelector(UP);
 	else if (event.key.code == sf::Keyboard::Down)
 		moveCellSelector(DOWN);
@@ -145,11 +147,6 @@ void gameKeyPressed()
 		abandonTimers<char*>();
 	else if (event.key.code == sf::Keyboard::R)
 		tryToShowHideTowerRangeRadius();
-	else if (event.key.code == sf::Keyboard::A)
-	{
-		towersInfoStack->click(towerToAddNumber);
-		towerToAddNumber = 0;
-	}
 	else if (event.key.code == sf::Keyboard::S)
 		tryToSetAddingTower();
 	else if (event.key.code == sf::Keyboard::Delete)

@@ -111,6 +111,9 @@ class Tower
 		float getShellsSpeed()
 		{ return specification->getShellsSpeed(); }
 
+		bool areShotsHoming()
+		{ return specification->areShotsHoming(); }
+
 		unsigned int getCost()
 		{ return specification->getCost(); }
 };

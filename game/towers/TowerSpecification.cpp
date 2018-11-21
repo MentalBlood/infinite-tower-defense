@@ -7,6 +7,7 @@ class TowerSpecification
 			  range,
 			  shotsDelay,
 			  shellsSpeed;
+		bool homingShots;
 		unsigned int cost;
 		
 	public:
@@ -21,6 +22,12 @@ class TowerSpecification
 			fscanf(characteristicsFile, "%f", &range);
 			fscanf(characteristicsFile, "%f", &shotsDelay);
 			fscanf(characteristicsFile, "%f", &shellsSpeed);
+			int homingShotsTemp;
+			fscanf(characteristicsFile, "%d", &homingShotsTemp);
+			if (homingShotsTemp)
+				homingShots = true;
+			else
+				homingShots = false;
 			fscanf(characteristicsFile, "%u", &cost);
 			fclose(characteristicsFile);
 		}
@@ -42,6 +49,9 @@ class TowerSpecification
 
 		unsigned int getCost()
 		{ return cost; }
+
+		bool areShotsHoming()
+		{ return homingShots; }
 
 		char getShotType()
 		{ return shotType; }

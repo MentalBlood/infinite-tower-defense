@@ -1,19 +1,28 @@
+float vectorLength(const sf::Vector2f & vector)
+{ return sqrt(vector.x * vector.x + vector.y * vector.y); }
+
 class Shot : public GraphicalEntity
 {
 	private:
-		bool finished;
+		bool	finished,
+				homing;
 
-		Tower *tower;
 		Monster *monster;
-		sf::Vector2f lastMonsterPosition;
+		sf::Vector2f	initialMonsterPosition,
+						lastMonsterPosition;
 
-		float distanceLeft;
+		float distanceLeft,
+			  speed,
+			  damage,
+			  monsterRadius;
 
 	public:
 		Shot(Tower *tower, Monster *monster, float relativeRadius):
 		GraphicalEntity(tower->getPosition(), gameMap->getCellSize() * relativeRadius, monster->getScale(), 0),
-		finished(false), tower(tower), monster(monster), lastMonsterPosition(monster->getPosition()),
-		distanceLeft(tower->getRange())
+		finished(false), homing(tower->areShotsHoming()), monster(monster),
+		initialMonsterPosition(monster->getPosition()), lastMonsterPosition(monster->getPosition()),
+		distanceLeft(tower->getRange()), speed(tower->getShellsSpeed()), damage(tower->getDamage()),
+		monsterRadius(monster->getRadius())
 		{
 			rotateToPoint(lastMonsterPosition);
 		}
@@ -24,6 +33,8 @@ class Shot : public GraphicalEntity
 		void updatePosition()
 		{
 			drag(gameDragOffset);
+			if (!homing)
+				initialMonsterPosition += sf::Vector2f(gameDragOffset);
 			if (!monster)
 				lastMonsterPosition += sf::Vector2f(gameDragOffset);
 		}
@@ -32,7 +43,7 @@ class Shot : public GraphicalEntity
 		{
 			if (!monster) return;
 			lastMonsterPosition = monster->getPosition();
-			rotateToPoint(lastMonsterPosition);
+			if (homing) rotateToPoint(lastMonsterPosition);
 		}
 
 		void checkMonsterExistance()
@@ -44,21 +55,37 @@ class Shot : public GraphicalEntity
 
 		void moveCorrectly()
 		{
-			sf::Vector2f distanceVector = getDistanceVector(lastMonsterPosition);
-			float distanceLength = sqrt(distanceVector.x * distanceVector.x
-										+ distanceVector.y * distanceVector.y);
-			sf::Vector2f unitDistanceVector = distanceVector / distanceLength;
-			float maxDistanceToMove = tower->getShellsSpeed() * elapsed.asSeconds();
-			if (maxDistanceToMove > (distanceLeft * scale))
+			if (homing)
 			{
-				maxDistanceToMove = distanceLeft * scale;
-				finished = true;
-			}
-			if (!monster)
-			{
-				if ((distanceLength - maxDistanceToMove) <= (radius * scale))
+				sf::Vector2f distanceVector = getDistanceVector(lastMonsterPosition);
+				float distanceLength = vectorLength(distanceVector);
+				sf::Vector2f unitDistanceVector = distanceVector / distanceLength;
+				float maxDistanceToMove = speed * elapsed.asSeconds();
+				if (maxDistanceToMove > (distanceLeft * scale))
 				{
-					move(unitDistanceVector * radius);
+					maxDistanceToMove = distanceLeft * scale;
+					finished = true;
+				}
+				if (!monster)
+				{
+					if ((distanceLength - maxDistanceToMove) <= (radius * scale))
+					{
+						move(unitDistanceVector * radius);
+						finished = true;
+					}
+					else
+					{
+						move(unitDistanceVector * maxDistanceToMove);
+						distanceLeft -= maxDistanceToMove;
+					}
+					return;
+				}
+
+				float minDistance = monsterRadius + radius;
+				if ((distanceLength - maxDistanceToMove) <= (minDistance * scale))
+				{
+					move(unitDistanceVector * minDistance);
+					monster->sufferDamage(damage);
 					finished = true;
 				}
 				else
@@ -66,25 +93,59 @@ class Shot : public GraphicalEntity
 					move(unitDistanceVector * maxDistanceToMove);
 					distanceLeft -= maxDistanceToMove;
 				}
-				return;
 			}
+			/*else //not homing
+			{
+				sf::Vector2f distanceVector = getDistanceVector(initialMonsterPosition);
+				float distanceLength = vectorLength(distanceVector);
+				sf::Vector2f unitDistanceVector = distanceVector / distanceLength;
+				float maxDistanceToMove = speed * elapsed.asSeconds();
+				if (maxDistanceToMove > (distanceLeft * scale))
+				{
+					maxDistanceToMove = distanceLeft * scale;
+					finished = true;
+				}
+				if (!monster)
+				{
+					if ((distanceLength - maxDistanceToMove) <= (radius * scale))
+					{
+						move(unitDistanceVector * radius);
+						finished = true;
+					}
+					else
+					{
+						move(unitDistanceVector * maxDistanceToMove);
+						distanceLeft -= maxDistanceToMove;
+					}
+					return;
+				}
 
-			float minDistance = monster->getRadius() + radius;
-			if ((distanceLength - maxDistanceToMove) <= (minDistance * scale))
-			{
-				move(unitDistanceVector * minDistance);
-				monster->sufferDamage(tower->getDamage());
-				finished = true;
-			}
-			else
-			{
-				move(unitDistanceVector * maxDistanceToMove);
-				distanceLeft -= maxDistanceToMove;
-			}
+				sf::Vector2f arrowHeadNow = position + unitDistanceVector * radius;
+				sf::Vector2f arrowHeadAfterMovement = arrowHeadNow
+													+ unitDistanceVector * maxDistanceToMove;
+				float minDistance = monsterRadius + radius;
+				if ((vectorLength(getDistanceVector(lastMonsterPosition)))
+					<= (minDistance * scale))
+				{
+					move(unitDistanceVector * minDistance);
+					monster->sufferDamage(damage);
+					finished = true;
+				}
+				else
+				{
+					move(unitDistanceVector * maxDistanceToMove);
+					distanceLeft -= maxDistanceToMove;
+				}
+			}*/
 		}
 
 		void updateScale()
-		{ lastMonsterPosition += changeScale(gameScaleDelta, gameScaleCenter); }
+		{
+			sf::Vector2f shift = changeScale(gameScaleDelta, gameScaleCenter);
+			lastMonsterPosition += shift;
+			if (!homing)
+				initialMonsterPosition += shift;
+		}
 
 		bool isFinished()
 		{ return finished; }
