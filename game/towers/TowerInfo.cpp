@@ -44,9 +44,9 @@ class TowerInfo
 					specification->getShellsSpeed(),
 					specification->getCost());
 			text.setString(sf::String(textString));
-			fitTextIntoRectangle(&text, x + width*relativeSeparatorPosition, y + 2*bordersThickness,
+			fitTextIntoRectangle(&text, x + width * relativeSeparatorPosition, y + 2*bordersThickness,
 										width * (1 - relativeSeparatorPosition) - bordersThickness,
-										height - 2*bordersThickness);
+										height - 2 * bordersThickness);
 		}
 
 		void updatePositionAndSize()
@@ -60,15 +60,15 @@ class TowerInfo
 			makeVertexArrayFrame(&borders, x, y, width, height, bordersThickness,
 								sf::Color(32, 128, 32, 192));
 			makeVertexArrayQuad(&fill, x + bordersThickness, y + bordersThickness,
-								width - 2*bordersThickness, height - 2*bordersThickness,
+								width - 2 * bordersThickness, height - 2 * bordersThickness,
 								sf::Color(sf::Color(192, 192, 192)));
 			refreshText();
 
 			
-			float towerPreviewSpriteRealSize = minf(height - 4*bordersThickness, 
-													(width - 2*bordersThickness) * relativeSeparatorPosition);
-			towerPreviewSprite.setPosition(	x + 2*bordersThickness, 
-											y + height/2 - towerPreviewSpriteRealSize/2);
+			float towerPreviewSpriteRealSize = minf(height - 4 * bordersThickness, 
+													(width - 5 * bordersThickness) * relativeSeparatorPosition);
+			towerPreviewSprite.setPosition(	x + 5 * bordersThickness, 
+											y + height / 2 - towerPreviewSpriteRealSize / 2);
 			towerPreviewSprite.setScale(towerPreviewSpriteRealSize
 										/ towerPreviewSprite.getTexture()->getSize().x,
 										towerPreviewSpriteRealSize
@@ -96,7 +96,13 @@ class TowerInfo
 
 		void click()
 		{
-			if (money < specification->getCost()) return;
+			if (addingTower)
+			{
+				if ((money + addingTower->getCost()) < specification->getCost()) return;
+				money += addingTower->getCost();
+			}
+			else
+				if (money < specification->getCost()) return;
 			money -= specification->getCost();
 			updateMoneyText();
 			addingTower = new Tower(specification);

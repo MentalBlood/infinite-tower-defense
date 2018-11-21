@@ -16,3 +16,8 @@ press button "SAVE" and then enter file name to save map
 in game:
 press Space to set pause on/off
 press N to launch next wave immediately
+you can add towers using only keyboard buttons:
+press number buttons to enter number of tower to add (default is 0)
+press A to start positioning new tower with entered number (after this entered number will be reseted to 0)
+press arrow buttons to select position of new tower
+press S to add tower on selected cell

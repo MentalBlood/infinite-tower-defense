@@ -35,16 +35,53 @@ class GraphicalEntity
 			rotateInDirection(getVectorAngle(point - position));
 		}
 
-		void drag(const sf::Vector2f & offset)
-		{
-			transform.translate(offset / scale);
-			position += sf::Vector2f(offset);
-		}
-
 		void move(const sf::Vector2f &offset)
 		{
 			transform.translate(offset);
 			position += offset * scale;
+		}
+
+	public:
+		GraphicalEntity(sf::Vector2f initialPosition, float radius, float initialScale,
+						float initialRotationAngle):
+		position(sf::Vector2f(0, 0)), rotationAngle(0), radius(radius), scale(1),
+		graphicalElements(NULL)
+		{
+			if (initialScale != 1) changeScale(initialScale);
+			if (initialPosition != sf::Vector2f(0, 0)) drag(initialPosition);
+			if (initialRotationAngle != 0) rotate(initialRotationAngle);
+		}
+
+		GraphicalEntity(std::vector<sf::VertexArray> *graphicalElements,
+						sf::Vector2f initialPosition, float radius, float initialScale,
+						float initialRotationAngle):
+		position(sf::Vector2f(0, 0)), rotationAngle(0), radius(radius), scale(1),
+		graphicalElements(graphicalElements)
+		{
+			if (initialScale != 1) changeScale(initialScale);
+			if (initialPosition != sf::Vector2f(0, 0)) drag(initialPosition);
+			if (initialRotationAngle != 0) rotate(initialRotationAngle);
+		}
+
+		void setGraphicalElements(std::vector<sf::VertexArray> *newGraphicalElements)
+		{
+			if (graphicalElements) delete graphicalElements;
+			graphicalElements = newGraphicalElements;
+		}
+
+		virtual ~GraphicalEntity()
+		{}
+
+		void drag(const sf::Vector2f & offset)
+		{
+			transform.translate(offset / scale);
+			position += offset;
+		}
+
+		void dragTo(const sf::Vector2f point)
+		{
+			transform.translate((point - position) / scale);
+			position = point;
 		}
 
 		void changeScale(float delta)
@@ -61,26 +98,6 @@ class GraphicalEntity
 			scale *= delta;
 			return shift;
 		}
-
-	public:
-		GraphicalEntity(sf::Vector2f initialPosition, float radius, float initialScale,
-						float initialRotationAngle):
-		position(sf::Vector2f(0, 0)), rotationAngle(0), radius(radius), scale(1),
-		graphicalElements(NULL)
-		{
-			if (initialScale != 1) changeScale(initialScale);
-			if (initialPosition != sf::Vector2f(0, 0)) drag(initialPosition);
-			if (initialRotationAngle != 0) rotate(initialRotationAngle);
-		}
-
-		void setGraphicalElements(std::vector<sf::VertexArray> *newGraphicalElements)
-		{
-			if (graphicalElements) delete graphicalElements;
-			graphicalElements = newGraphicalElements;
-		}
-
-		virtual ~GraphicalEntity()
-		{}
 
 		void draw()
 		{
@@ -105,6 +122,4 @@ class GraphicalEntity
 
 		void completeSplinter(std::vector<sf::VertexArray> *);
 		void collapse();
-
-		virtual void animate() =0;
 };

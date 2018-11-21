@@ -65,40 +65,76 @@ void changeScale(bool up)
 	}
 }
 
-void changeBool(bool *something)
+std::list<Tower*>::iterator getTowerUnderSelector()
 {
-	if (*something == true)
-		*something = false;
-	else
-		*something = true;
+	if (!gameMap->selectorOnTower()) return towers.end();
+	sf::Vector2f cellSelectorPosition = gameMap->getSelectorCenteredPosition();
+	for (std::list<Tower*>::iterator i = towers.begin(); i != towers.end(); i++)
+		if ((*i)->havePoint(cellSelectorPosition))
+			return i;
+	return towers.end();
 }
 
 void tryToDeleteTower()
 {
-	if (!gameMap->selectorOnTower()) return;
-	sf::Vector2f cellSelectorPosition = gameMap->getSelectorCenteredPosition();
-	for (std::list<Tower*>::iterator i = towers.begin(); i != towers.end(); i++)
-		if ((*i)->havePoint(cellSelectorPosition))
-		{
-			money += (*i)->getCost() / 2;
-			delete (*i);
-			towers.erase(i);
-			gameMap->removeTower();
-			updateMoneyText();
-			return;
-		}
+	std::list<Tower*>::iterator towerUnderSelector = getTowerUnderSelector();
+	if (towerUnderSelector != towers.end())
+	{
+		money += (*towerUnderSelector)->getCost() / 2;
+		delete (*towerUnderSelector);
+		towers.erase(towerUnderSelector);
+		gameMap->removeTower();
+		updateMoneyText();
+	}
+}
+
+void tryToShowHideTowerRangeRadius()
+{
+	std::list<Tower*>::iterator towerUnderSelector = getTowerUnderSelector();
+	if (towerUnderSelector != towers.end())
+		(*towerUnderSelector)->showHideRangeCircle();
+}
+
+void tryToSetAddingTower()
+{
+	if (!addingTower) return;
+	if (gameMap->selectorOnCellWhichFitsForTower())
+	{
+		towers.push_back(addingTower);
+		gameMap->setTowerOnCell();
+		addingTower->hideRangeCircle();
+		tryToShoot(addingTower);
+	}
+	else
+	{
+		money += addingTower->getCost();
+		updateMoneyText();
+		delete addingTower;
+	}
+	addingTower = NULL;
+}
+
+void moveCellSelector(char direction)
+{
+	gameMap->moveCellSelector(direction);
+	if (addingTower) addingTower->goToCellSelector();
 }
 
 void gameKeyPressed()
 {
-	if (event.key.code == sf::Keyboard::Up)
-		gameMap->moveCellSelector(UP);
+	if ((event.key.code <= 35) && (event.key.code >= 26))
+	{
+		if (towerToAddNumber > 0) towerToAddNumber *= 10;
+		towerToAddNumber += event.key.code - 26;
+	}
+	else if (event.key.code == sf::Keyboard::Up)
+		moveCellSelector(UP);
 	else if (event.key.code == sf::Keyboard::Down)
-		gameMap->moveCellSelector(DOWN);
+		moveCellSelector(DOWN);
 	else if (event.key.code == sf::Keyboard::Right)
-		gameMap->moveCellSelector(RIGHT);
+		moveCellSelector(RIGHT);
 	else if (event.key.code == sf::Keyboard::Left)
-		gameMap->moveCellSelector(LEFT);
+		moveCellSelector(LEFT);
 	else if (event.key.code == sf::Keyboard::PageUp)
 		changeScale(SCALE_UP);
 	else if (event.key.code == sf::Keyboard::PageDown)
@@ -107,6 +143,15 @@ void gameKeyPressed()
 		changeBool(&pause);
 	else if (event.key.code == sf::Keyboard::N)
 		abandonTimers<char*>();
+	else if (event.key.code == sf::Keyboard::R)
+		tryToShowHideTowerRangeRadius();
+	else if (event.key.code == sf::Keyboard::A)
+	{
+		towersInfoStack->click(towerToAddNumber);
+		towerToAddNumber = 0;
+	}
+	else if (event.key.code == sf::Keyboard::S)
+		tryToSetAddingTower();
 	else if (event.key.code == sf::Keyboard::Delete)
 		tryToDeleteTower();
 	else if (event.key.code == sf::Keyboard::Escape) gameExit();
@@ -140,22 +185,7 @@ void gameMouseButtonPressed()
 	}
 	else
 	if (event.mouseButton.button == sf::Mouse::Right)
-	{
-		if (!addingTower) return;
-		if (gameMap->selectorOnCellWhichFitsForTower())
-		{
-			towers.push_back(addingTower);
-			gameMap->setTowerOnCell();
-			tryToShoot(addingTower);
-		}
-		else
-		{
-			money += addingTower->getCost();
-			updateMoneyText();
-			delete addingTower;
-		}
-		addingTower = NULL;
-	}
+		tryToSetAddingTower();
 }
 
 void gameMouseButtonReleased()

@@ -73,4 +73,10 @@ class TowersInfoStack
 			towersInfo[int(mouseY / height * towersInfo.size())]->click();
 			return true;
 		}
+
+		void click(unsigned int towerNumber)
+		{
+			if (towerNumber < towersInfo.size())
+				towersInfo[towerNumber]->click();
+		}
 };

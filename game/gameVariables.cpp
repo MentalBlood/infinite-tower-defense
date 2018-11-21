@@ -28,6 +28,7 @@ std::list<Monster*> monsters;
 
 #include "towers/towersPanel.cpp"
 std::list<Tower*> towers;
+unsigned int towerToAddNumber;
 
 #include "shooting.cpp"
 
@@ -51,6 +52,7 @@ void setGameVariables(const char *gameMapFileName)
 
 	loadMonstersParameters();
 	setTowersPanel();
+	towerToAddNumber = 0;
 	addingTower = NULL;
 
 	windowSize = window.getSize();
