@@ -342,14 +342,28 @@ class MapForEditing : public Map
 
 					int pathesFromCell = 0;
 
-					if (i) //LEFT
-						if (pathMap[i-1][j] && (pathMap[i-1][j] != ROCK)) ++pathesFromCell;
-					if ((i+1) < pathMap.size()) //RIGHT
-						if (pathMap[i+1][j] && (pathMap[i+1][j] != ROCK)) ++pathesFromCell;
-					if (j) //UP
-						if (pathMap[i][j-1] && (pathMap[i][j-1] != ROCK)) ++pathesFromCell;
-					if ((j+1) < pathMap[0].size()) //DOWN
-						if (pathMap[i][j+1] && (pathMap[i][j+1] != ROCK)) ++pathesFromCell;
+					if (pathMap[i][j] == PATH)
+					{
+						if (i) //LEFT
+							if (pathMap[i-1][j] && (pathMap[i-1][j] != ROCK)) ++pathesFromCell;
+						if ((i+1) < pathMap.size()) //RIGHT
+							if (pathMap[i+1][j] && (pathMap[i+1][j] != ROCK)) ++pathesFromCell;
+						if (j) //UP
+							if (pathMap[i][j-1] && (pathMap[i][j-1] != ROCK)) ++pathesFromCell;
+						if ((j+1) < pathMap[0].size()) //DOWN
+							if (pathMap[i][j+1] && (pathMap[i][j+1] != ROCK)) ++pathesFromCell;
+					}
+					else
+					{
+							if (i) //LEFT
+								if (pathMap[i-1][j] == PATH) ++pathesFromCell;
+							if ((i+1) < pathMap.size()) //RIGHT
+								if (pathMap[i+1][j] == PATH) ++pathesFromCell;
+							if (j) //UP
+								if (pathMap[i][j-1] == PATH) ++pathesFromCell;
+							if ((j+1) < pathMap[0].size()) //DOWN
+								if (pathMap[i][j+1] == PATH) ++pathesFromCell;
+					}
 
 
 					if (pathMap[i][j] == PATH)
