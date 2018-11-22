@@ -24,6 +24,9 @@ class GraphicalEntity
 			rotationAngle += angle;
 		}
 
+		void rotateImage(float angle)
+		{ rotationTransform.rotate(angle); }
+
 		void rotateInDirection(float angle)
 		{
 			rotationTransform.rotate(angle - rotationAngle);

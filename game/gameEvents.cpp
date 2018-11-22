@@ -7,20 +7,36 @@ void gameResized()
 
 void gameClear()
 {
+	printf("1\n");
 	delete gameMap;
+	printf("2\n");
 	gameMap = NULL;
+	printf("3\n");
 	deleteTimers<Monster*>();
+	printf("4\n");
 	deleteTimers<char*>();
+	printf("5\n");
 	deleteTimers<Tower*>();
+	printf("6\n");
 	deleteSplinters();
-	monsters.clear();
-	towers.clear();
+	printf("7\n");
 	shots.clear();
+	printf("8\n");
+	monsters.clear();
+	printf("9\n");
+	towers.clear();
+	printf("10\n");
 	delete addingTower;
+	printf("11\n");
 	addingTower = NULL;
+	printf("12\n");
 	delete currentSecondsToNextWaveText;
+	printf("13\n");
 	delete currentWaveNumberText;
+	printf("14\n");
 	delete baseHealthText;
+	printf("15\n");
+	delete moneyText;
 }
 
 void gameExit()

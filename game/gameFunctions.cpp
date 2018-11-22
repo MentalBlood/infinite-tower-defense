@@ -4,6 +4,8 @@
 #define	TYPE_A 0
 #define TYPE_B 1
 #define TYPE_C 2
+#define TYPE_D 3
+#define TYPE_E 4
 
 void spawn(Monster *monster)
 {
@@ -24,7 +26,7 @@ void spawnNextWave(char *monsterType)
 		for (	unsigned int i = 0;
 				i < nextWaveNumberOfMonsters->getValue();
 				i++, timeToWait += nextWaveSecondsBetweenSpawns->getValue())
-			new Timer<Monster*>(timeToWait, spawn, new ModelA(	19, 60,
+			new Timer<Monster*>(timeToWait, spawn, new ModelA(	rand() % 9 * 2 + 19, 60,
 																nextWaveMonstersSpeed->getValue(),
 																nextWaveMonstersHealth->getValue()));
 	else
@@ -33,7 +35,7 @@ void spawnNextWave(char *monsterType)
 				i < nextWaveNumberOfMonsters->getValue();
 				i++, timeToWait += nextWaveSecondsBetweenSpawns->getValue())
 			new Timer<Monster*>(timeToWait, spawn,
-								new ModelB(	25, sf::Color(20, 20, 20, 0), sf::Color(100, 100, 100),
+								new ModelB(	rand() % 9 * 2 + 19, sf::Color(20, 20, 20, 0), sf::Color(100, 100, 100),
 											sf::Color(100, 100, 100, 0), sf::Color(180, 180, 180),
 											nextWaveMonstersSpeed->getValue(),
 											nextWaveMonstersHealth->getValue()));

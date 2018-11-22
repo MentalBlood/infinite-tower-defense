@@ -2,6 +2,8 @@
 #include "shots/ShotTypeA.cpp"
 #include "shots/ShotTypeB.cpp"
 #include "shots/ShotTypeC.cpp"
+#include "shots/ShotTypeD.cpp"
+#include "shots/ShotTypeE.cpp"
 std::list<Shot*> shots;
 
 void tryToShoot(Tower *tower)
@@ -14,11 +16,15 @@ void tryToShoot(Tower *tower)
 		{
 			if (tower->getShotType() == TYPE_A)
 				shots.push_back(new ShotTypeA(tower, (*i), sf::Color(30, 130, 30), sf::Color(130, 255, 130)));
-			else
-			if (tower->getShotType() == TYPE_B)
+			else if (tower->getShotType() == TYPE_B)
 				shots.push_back(new ShotTypeB(tower, (*i), sf::Color::Blue, 16));
-			if (tower->getShotType() == TYPE_C)
+			else if (tower->getShotType() == TYPE_C)
 				shots.push_back(new ShotTypeC(tower, (*i), sf::Color::Red));
+			else if (tower->getShotType() == TYPE_D)
+				shots.push_back(new ShotTypeD(tower, (*i)));
+			else if (tower->getShotType() == TYPE_E)
+				shots.push_back(new ShotTypeE(tower, (*i)));
+
 			new Timer<Tower*>(tower->getShotsDelay(), tryToShoot, tower);
 			return;
 		}
