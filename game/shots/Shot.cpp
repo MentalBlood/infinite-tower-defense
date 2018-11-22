@@ -1,5 +1,37 @@
+float vectorLengthSquare(const sf::Vector2f & vector)
+{ return vector.x * vector.x + vector.y * vector.y; }
+
 float vectorLength(const sf::Vector2f & vector)
 { return sqrt(vector.x * vector.x + vector.y * vector.y); }
+
+float triangleHeightSquareFromSidesLengthsSquares(float a2, float b2, float c2)
+{ return (b2 + c2 - (a2 + pow(b2 - c2, 2) / a2) / 2) / 2; }
+
+float triangleHeightSquare(float a, float b, float c)
+{
+	float a2 = a*a,
+		  b2 = b*b,
+		  c2 = c*c;
+
+	return (b2 + c2 - (a2 + pow(b2 - c2, 2) / a2) / 2) / 2;
+}
+
+float triangleHeightSquare(sf::Vector2f & A, sf::Vector2f & B, sf::Vector2f & C)
+{
+	float a2 = vectorLengthSquare(B - C),
+		  b2 = vectorLengthSquare(A - C),
+		  c2 = vectorLengthSquare(A - B);
+
+	return (b2 + c2 - (a2 + pow(b2 - c2, 2) / a2) / 2) / 2;
+}
+
+sf::Vector2f solveQuadraticEquation(float a, float b, float c)
+{
+	float D = b*b - 4*a*c;
+	if (D < 0) return sf::Vector2f(-1, -1);
+	float sqrtD = sqrt(D);
+	return sf::Vector2f(-b/2 + sqrtD, -b/2 - sqrtD);
+}
 
 class Shot : public GraphicalEntity
 {
@@ -94,7 +126,7 @@ class Shot : public GraphicalEntity
 					distanceLeft -= maxDistanceToMove;
 				}
 			}
-			/*else //not homing
+			else //not homing
 			{
 				sf::Vector2f distanceVector = getDistanceVector(initialMonsterPosition);
 				float distanceLength = vectorLength(distanceVector);
@@ -120,23 +152,33 @@ class Shot : public GraphicalEntity
 					return;
 				}
 
-				sf::Vector2f arrowHeadNow = position + unitDistanceVector * radius;
+				sf::Vector2f arrowHeadNow = getPosition() + unitDistanceVector * radius * scale;
 				sf::Vector2f arrowHeadAfterMovement = arrowHeadNow
 													+ unitDistanceVector * maxDistanceToMove;
-				float minDistance = monsterRadius + radius;
-				if ((vectorLength(getDistanceVector(lastMonsterPosition)))
-					<= (minDistance * scale))
-				{
-					move(unitDistanceVector * minDistance);
-					monster->sufferDamage(damage);
-					finished = true;
-				}
-				else
+				float a2 = vectorLengthSquare(arrowHeadAfterMovement - arrowHeadNow),
+					  b2 = vectorLengthSquare(lastMonsterPosition - arrowHeadAfterMovement),
+					  c2 = vectorLengthSquare(lastMonsterPosition - arrowHeadNow);
+				float h2 = triangleHeightSquareFromSidesLengthsSquares(a2, b2, c2);
+				if (h2 > monsterRadius) //passing by
 				{
 					move(unitDistanceVector * maxDistanceToMove);
 					distanceLeft -= maxDistanceToMove;
+					return;
 				}
-			}*/
+
+				float a = sqrt(a2);
+				float distanceToMonster = a - sqrt(pow(monsterRadius * getScale(), 2) - h2) - sqrt(c2 - h2);
+				if (distanceToMonster > a) //didn't reach
+				{
+					move(unitDistanceVector * maxDistanceToMove);
+					distanceLeft -= maxDistanceToMove;
+					return;
+				}
+
+				move(unitDistanceVector * distanceToMonster);
+				monster->sufferDamage(damage);
+				finished = true;
+			}
 		}
 
 		void updateScale()

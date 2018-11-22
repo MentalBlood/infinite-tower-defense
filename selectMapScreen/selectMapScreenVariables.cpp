@@ -25,11 +25,12 @@ void selectMapScreenFillMapsList()
 				}
 				else ++c;
 
-			selectMapScreenMapsList->addItem(userFriendlyMapName, fileName);
+			selectMapScreenMapsList->addItem(userFriendlyMapName);
 		}
 	}
 
 	closedir(dir);
+	selectMapScreenMapsList->updateItems();
 }
 
 void updateSelectMapScreenVariables()

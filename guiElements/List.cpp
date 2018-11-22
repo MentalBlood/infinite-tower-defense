@@ -21,7 +21,6 @@ class List
 					selectorColor;
 
 		std::vector<sf::Text> items;
-		std::vector<std::string> itemsStringsToReturn;
 
 		sf::Font	nameFont,
 					itemsFont;
@@ -32,7 +31,7 @@ class List
 						itemsFrame,
 						fill;
 		sf::RectangleShape selector;
-		
+
 		float bordersThickness,
 			  selectorBordersThickness,
 			  separatorY,
@@ -94,17 +93,25 @@ class List
 								width - 2*bordersThickness, height - 2*bordersThickness, fillColor);
 		}
 
-		void addItem(sf::String name, sf::String stringToReturn)
+		void addItem(sf::String name)
 		{
 			sf::Text *newItem = new sf::Text(name, itemsFont);
 			newItem->setFillColor(itemsColor);
-			items.push_back(*newItem);
-			itemsStringsToReturn.push_back(stringToReturn);
-			if ((lastItemShownNumber - int(firstItemShownNumber)) < int(numberOfItemsShown-1))
-			{
-				++lastItemShownNumber;
-				updateItems();
-			}
+
+			for (unsigned int i = 0; i < items.size(); i++)
+				if (name < items[i].getString())
+				{
+					
+					items.insert(items.begin() + i, *newItem);
+					return;
+				}
+
+			items.insert(items.end(), *newItem);
+
+			if (items.size() < numberOfItemsShown)
+				lastItemShownNumber = items.size();
+			else
+				lastItemShownNumber = numberOfItemsShown-1;
 		}
 
 		void selectNext()
@@ -138,7 +145,7 @@ class List
 		}
 
 		void selectThis()
-		{ functionOnSelect(itemsStringsToReturn[selectedItemNumber]); }
+		{ functionOnSelect(items[selectedItemNumber].getString()); }
 
 		bool selectByMouse(float mouseY)
 		{
