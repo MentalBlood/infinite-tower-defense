@@ -74,6 +74,7 @@ class EnterFileNameDialog
 			if (character == '\t') return true;
 			if (character == 13) //"Enter"
 			{
+				if (!enteredText.getString().getSize()) return true;
 				functionOnComplete(enteredText.getString());
 				return false;
 			}

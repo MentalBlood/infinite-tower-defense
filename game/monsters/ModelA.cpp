@@ -45,7 +45,7 @@ class ModelA : public Monster
 				nextColor((*graphicalElements)[0][i].color, elapsed.asMilliseconds()*(rand()%2), sf::Color(40, 40, 40), sf::Color(140, 140, 140));
 
 			//closing/opening mouth
-			float jawRotationAngle = initialMouthAngle/64 * elapsed.asMilliseconds() * speed;
+			float jawRotationAngle = initialMouthAngle/64 * elapsed.asMilliseconds() * minf(speed, 0.2);
 			sf::Transform	upperMouthPartRotation,
 							lowerMouthPartRotation;
 

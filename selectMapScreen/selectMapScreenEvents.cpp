@@ -28,8 +28,8 @@ void selectMapScreenMouseWheelScrolled()
 {
 	if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
 	{
-		if (event.mouseWheelScroll.delta > 0) selectMapScreenMapsList->selectNext();
-		else selectMapScreenMapsList->selectPrevious();
+		if (event.mouseWheelScroll.delta > 0) selectMapScreenMapsList->selectPrevious();
+		else selectMapScreenMapsList->selectNext();
 	}
 }
 

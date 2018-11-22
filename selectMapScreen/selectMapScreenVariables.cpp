@@ -11,20 +11,27 @@ void selectMapScreenFillMapsList()
 	while ((entery = readdir(dir)) != NULL)
 	{
 		sprintf(fileName,"%s/%s", path, entery->d_name);
+		char *c = fileName;
+		while (*c) ++c;
+		while (*c != '.') --c;
+		++c;
+		if (*c != 't') continue;
+		++c;
+		if (*c != 'd') continue;
+		++c;
+		if (*c != 'm') continue;
+		++c;
+		if (*c) continue;
+
 		if (checkMapFile(fileName))
 		{
 			//making user friendly name of map (without path and extension)
 			char userFriendlyMapName[128];
 			strcpy(userFriendlyMapName, entery->d_name);
-			char *c = userFriendlyMapName;
-			while (*c)
-				if (*c == '.')
-				{
-					*c = 0;
-					break;
-				}
-				else ++c;
-
+			c = userFriendlyMapName;
+			while (*c) ++c;
+			while (*c != '.') --c;
+			*c = 0;
 			selectMapScreenMapsList->addItem(userFriendlyMapName);
 		}
 	}

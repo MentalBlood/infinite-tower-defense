@@ -84,7 +84,7 @@ class List
 			makeVertexArrayFrame(&nameFrame, x, y, width, separatorY - y, bordersThickness, bordersColor);
 			makeVertexArrayFrame(&itemsFrame, x, separatorY - bordersThickness, width, y + height - separatorY + bordersThickness, bordersThickness, bordersColor);
 			selector.setSize(sf::Vector2f(width - 2*bordersThickness, itemHeight));
-			selector.setPosition(x + bordersThickness, separatorY);
+			selector.setPosition(x + bordersThickness, separatorY + itemHeight * (selectedItemNumber - firstItemShownNumber));
 			selector.setFillColor(sf::Color(0, 0, 0, 0));
 			selectorBordersThickness = sqrt(selector.getSize().x * selector.getSize().y)/64;
 			selector.setOutlineThickness(-selectorBordersThickness);
@@ -98,18 +98,21 @@ class List
 			sf::Text *newItem = new sf::Text(name, itemsFont);
 			newItem->setFillColor(itemsColor);
 
+			bool inserted = false;
 			for (unsigned int i = 0; i < items.size(); i++)
 				if (name < items[i].getString())
 				{
 					
 					items.insert(items.begin() + i, *newItem);
-					return;
+					inserted = true;
+					break;
 				}
 
-			items.insert(items.end(), *newItem);
+			if (!inserted)
+				items.insert(items.end(), *newItem);
 
 			if (items.size() < numberOfItemsShown)
-				lastItemShownNumber = items.size();
+				lastItemShownNumber = items.size() - 1;
 			else
 				lastItemShownNumber = numberOfItemsShown-1;
 		}
