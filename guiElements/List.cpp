@@ -102,7 +102,6 @@ class List
 			for (unsigned int i = 0; i < items.size(); i++)
 				if (name < items[i].getString())
 				{
-					
 					items.insert(items.begin() + i, *newItem);
 					inserted = true;
 					break;

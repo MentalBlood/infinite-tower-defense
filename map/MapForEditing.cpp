@@ -272,8 +272,6 @@ class MapForEditing : public Map
 			}
 		}
 
-		
-
 		void pressOnCell()
 		{
 			if (pathMap[cellSelectorX][cellSelectorY] == EMPTY)
@@ -283,7 +281,7 @@ class MapForEditing : public Map
 				changeCell(cellSelectorX, cellSelectorY, EMPTY);
 			else
 			if (pathMap[cellSelectorX][cellSelectorY] == ROCK)
-				changeCell(cellSelectorX, cellSelectorY, EMPTY);
+				changeCell(cellSelectorX, cellSelectorY, PATH);
 			if (pathMap[cellSelectorX][cellSelectorY] == BEGIN)
 				draggingStartCell = true;
 			else
@@ -444,8 +442,6 @@ class MapForEditing : public Map
 			cellSelectorY = 0;
 			++lastActionIndex;
 		}
-
-		
 
 		void changeZoom(float delta, float mouseX, float mouseY)
 		{
