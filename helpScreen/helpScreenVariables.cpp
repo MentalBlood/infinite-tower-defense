@@ -25,7 +25,7 @@ void setHelpScreenVariables()
 	helpTextData = (char*)realloc(helpTextData, sizeof(char)*(c - helpTextData + 1));
 
 	helpScreenMessage = new Message(helpScreenExit, sf::String(helpTextData), "OK",
-									"fonts/helpTextFont.otf",
+									"fonts/helpTextFont.ttf",
 									0, 0, 1, 1, 4,
 									sf::Color(0, 0, 0), sf::Color(64, 128, 64), sf::Color(192, 192, 192));
 }
