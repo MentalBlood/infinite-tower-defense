@@ -18,6 +18,16 @@ class Timer
 			if (first) first->previous = this;
 			first = this;
 		}
+		
+		~Timer()
+		{
+			if (previous)
+				previous->next = next;
+			else
+				first = next;
+			if (next)
+				next->previous = previous;
+		}
 
 		bool tick()
 		{
@@ -38,14 +48,6 @@ class Timer
 				return;
 			}
 
-			//else remove self from list
-			if (previous)
-				previous->next = next;
-			else
-				first = next;
-			if (next)
-				next->previous = previous;
-
 			//call function
 			function(argument);
 
@@ -56,18 +58,35 @@ class Timer
 			delete this;
 		}
 
-		void deleteArgument()
-		{
-			delete argument;
-		}
-
 		void deleteChain()
 		{
 			if (!next) return;
 			if (next->next)
 				next->deleteChain();
 			delete next;
-			delete argument;
+		}
+
+		Type getArgument()
+		{ return argument; }
+
+		bool haveNext()
+		{
+			if (next) return true;
+			return false;
+		}
+
+		void deleteTimersWithSuchArgument(Type argumentToDelete)
+		{
+			printf("deleteTimersWithSuchArgument\n");
+			if (next) next->deleteTimersWithSuchArgument(argumentToDelete);
+			else return;
+			printf("checking next\n");
+			if (next->getArgument() == argumentToDelete)
+			{
+				printf("delete next\n");
+				delete next;
+			}
+			printf("check ok\n");
 		}
 
 		void abandonChain()
@@ -97,6 +116,23 @@ void deleteTimers()
 	Timer<Type>::first->deleteChain();
 	delete Timer<Type>::first;
 	Timer<Type>::first = NULL;
+}
+
+template<class Type>
+void deleteTimersWithSuchArgument(Type argument)
+{
+	if (!Timer<Type>::first) return;
+	Timer<Type>::first->deleteTimersWithSuchArgument(argument);
+	if (Timer<Type>::first->getArgument() == argument)
+	{
+		if (!Timer<Type>::first->haveNext())
+		{
+			delete Timer<Type>::first;
+			Timer<Type>::first = NULL;
+		}
+		else
+			delete Timer<Type>::first;
+	}
 }
 
 template<class Type>

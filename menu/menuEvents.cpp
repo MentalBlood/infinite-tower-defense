@@ -1,3 +1,9 @@
+void menuClosed()
+{
+	clearMenuVariables();
+	window.close();
+}
+
 void menuResized()
 {
 	windowSize = window.getSize();
@@ -60,6 +66,7 @@ void menuMouseMoved()
 
 void setMenuEvents()
 {
+	events[0] = menuClosed;
 	events[1] = menuResized; //resized
 	events[4] = nothing; //text entered
 	events[5] = menuKeyPressed; //key pressed

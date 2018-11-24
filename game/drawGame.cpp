@@ -1,6 +1,7 @@
 void drawGame()
 {
 	window.clear(sf::Color::Black);
+	windowSize = window.getSize();
 	
 	gameMap->draw();
 

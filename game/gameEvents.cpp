@@ -7,22 +7,39 @@ void gameResized()
 
 void gameClear()
 {
+	printf("1\n");
 	delete gameMap;
+	printf("2\n");
 	gameMap = NULL;
+	printf("3\n");
 	deleteTimers<Monster*>();
-	deleteTimers<char*>();
+	printf("4\n");
+	deleteTimers<char>();
+	printf("5\n");
 	deleteTimers<Tower*>();
+	printf("6\n");
 	deleteSplinters();
+	printf("7\n");
 	deleteGrid();
+	printf("8\n");
 	shots.clear();
+	printf("9\n");
 	monsters.clear();
+	printf("10\n");
 	towers.clear();
+	printf("11\n");
 	delete addingTower;
+	printf("12\n");
 	addingTower = NULL;
+	printf("13\n");
 	delete currentSecondsToNextWaveText;
+	printf("14\n");
 	delete currentWaveNumberText;
+	printf("15\n");
 	delete baseHealthText;
+	printf("16\n");
 	delete moneyText;
+	printf("17\n");
 }
 
 void gameExit()
@@ -85,6 +102,7 @@ void tryToDeleteTower()
 	if (towerUnderSelector != towers.end())
 	{
 		money += (*towerUnderSelector)->getCost() / 2;
+		deleteTimersWithSuchArgument<Tower*>(*towerUnderSelector);
 		delete (*towerUnderSelector);
 		towers.erase(towerUnderSelector);
 		gameMap->removeTower();
@@ -147,7 +165,7 @@ void gameKeyPressed()
 	else if (event.key.code == sf::Keyboard::Space)
 		changeBool(&pause);
 	else if (event.key.code == sf::Keyboard::N)
-		abandonTimers<char*>();
+		abandonTimers<char>();
 	else if (event.key.code == sf::Keyboard::R)
 		tryToShowHideTowerRangeRadius();
 	else if (event.key.code == sf::Keyboard::S)

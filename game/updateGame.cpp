@@ -54,7 +54,7 @@ void updateGame()
 	processTimers<Tower*>(); //towers shooting
 
 	processTimers<Monster*>(); //monsters spawning
-	processTimers<char*>(); //waves starting
+	processTimers<char>(); //waves starting
 	updateCurrentSecondsToNextWaveText();
 
 	moveSplinters(); //splinters moving

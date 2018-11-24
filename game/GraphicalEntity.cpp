@@ -100,8 +100,16 @@ class GraphicalEntity
 			return shift;
 		}
 
+		bool onScreen()
+		{
+			return	(((position.x + radius) > 0) && ((position.y + radius) > 0) &&
+					((position.x - radius) < windowSize.x) &&
+					((position.y - radius) < windowSize.y));
+		}
+
 		void draw()
 		{
+			if (!onScreen()) return;
 			sf::Transform totalTransform = transform * rotationTransform;
 			for (unsigned int i = 0; i < graphicalElements->size(); i++)
 				window.draw((*graphicalElements)[i], totalTransform);
