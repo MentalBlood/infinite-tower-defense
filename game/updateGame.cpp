@@ -1,12 +1,14 @@
 void updateGame()
 {
 	if (pause) return;
+	//monsters are moving
 	for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
 	{
 		(*i)->animate();
 		(*i)->moveInCorrectDirection();
 	}
-	//shots flying & monsters dying
+	updateMonstersCoordinatesInGrid();
+	//shots are flying & monsters are dying
 	for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
 	{
 		(*i)->checkMonsterExistance();
@@ -15,7 +17,7 @@ void updateGame()
 	for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
 	{
 		(*i)->checkMonsterExistance();
-		(*i)->moveCorrectly();
+		(*i)->moveCorrectlyUsingGrid();
 		(*i)->animate();
 
 		if ((*i)->isFinished())

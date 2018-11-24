@@ -30,6 +30,7 @@ std::list<Monster*> monsters;
 std::list<Tower*> towers;
 unsigned int towerToAddNumber;
 
+#include "Grid.cpp"
 #include "shooting.cpp"
 
 void updateGameVariables()
@@ -77,6 +78,8 @@ void setGameVariables(const char *gameMapFileName)
 	updateBaseHealthText();
 	money = 350;
 	updateMoneyText();
+
+	setGrid();
 
 	startWaving();
 }

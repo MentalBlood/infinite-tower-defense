@@ -4,6 +4,15 @@ float vectorLengthSquare(const sf::Vector2f & vector)
 float vectorLength(const sf::Vector2f & vector)
 { return sqrt(vector.x * vector.x + vector.y * vector.y); }
 
+sf::Vector2f unitVector(sf::Vector2f distanceVector)
+{ return distanceVector / vectorLength(distanceVector); }
+
+sf::Vector2f unitVector(sf::Vector2f & A, sf::Vector2f & B)
+{
+	sf::Vector2f distanceVector = B - A;
+	return distanceVector / vectorLength(distanceVector);
+}
+
 float triangleHeightSquareFromSidesLengthsSquares(float a2, float b2, float c2)
 { return (b2 + c2 - (a2 + pow(b2 - c2, 2) / a2) / 2) / 2; }
 
@@ -44,7 +53,8 @@ class Shot : public GraphicalEntity
 
 		Monster *monster;
 		sf::Vector2f	initialMonsterPosition,
-						lastMonsterPosition;
+						lastMonsterPosition,
+						unitMovementVector;
 
 		float distanceLeft,
 			  speed,
@@ -56,10 +66,11 @@ class Shot : public GraphicalEntity
 		GraphicalEntity(tower->getPosition(), gameMap->getCellSize() * relativeRadius, monster->getScale(), 0),
 		finished(false), homing(tower->areShotsHoming()), monster(monster),
 		initialMonsterPosition(monster->getPosition()), lastMonsterPosition(monster->getPosition()),
+		unitMovementVector(unitVector(getDistanceVector(monster->getPosition()))),
 		distanceLeft(tower->getRange()), speed(tower->getShellsSpeed()), damage(tower->getDamage()),
 		monsterRadius(monster->getRadius())
 		{
-			rotateToPoint(lastMonsterPosition);
+			rotateToPoint(initialMonsterPosition);
 		}
 
 		virtual ~Shot()
@@ -78,7 +89,11 @@ class Shot : public GraphicalEntity
 		{
 			if (!monster) return;
 			lastMonsterPosition = monster->getPosition();
-			if (homing) rotateToPoint(lastMonsterPosition);
+			if (homing)
+			{
+				rotateToPoint(lastMonsterPosition);
+				unitMovementVector = unitVector(getDistanceVector(lastMonsterPosition));
+			}
 		}
 
 		void checkMonsterExistance()
@@ -86,6 +101,53 @@ class Shot : public GraphicalEntity
 			if (!monster) return;
 			if (monster->isDead() || monster->isCame())
 				monster = NULL;
+		}
+
+		void moveCorrectlyUsingGrid()
+		{
+			std::list<Monster*> *monstersWhichCanTouch = getMonstersWhichCanTouch(getPosition());
+			if (!monstersWhichCanTouch) return;
+
+			float maxDistanceToMove = speed * elapsed.asSeconds();
+			if (maxDistanceToMove > (distanceLeft * scale))
+			{
+				maxDistanceToMove = distanceLeft * scale;
+				finished = true;
+			}
+
+			sf::Vector2f movementVector = unitMovementVector * maxDistanceToMove;
+			sf::Vector2f positionAfterMovement =
+				getPosition() +  movementVector;
+
+			for (	std::list<Monster*>::iterator i = monstersWhichCanTouch->begin();
+					i != monstersWhichCanTouch->end(); i++)
+			{
+				sf::Vector2f monsterPosition = (*i)->getPosition();
+				float R2 = pow((radius + (*i)->getRadius()) * scale, 2);
+				if (vectorLengthSquare(monsterPosition - positionAfterMovement) < R2)
+				{	//have already reached
+					(*i)->sufferDamage(damage);
+					finished = true;
+					continue;
+				}
+
+				float a2 = vectorLengthSquare(positionAfterMovement - getPosition()),
+					  b2 = vectorLengthSquare(monsterPosition - positionAfterMovement),
+					  c2 = vectorLengthSquare(monsterPosition - getPosition());
+				float h2 = triangleHeightSquareFromSidesLengthsSquares(a2, b2, c2);
+
+				if ((h2 > R2) || //passing by
+					(vectorLength(vectorsMultiplication(monsterPosition - getPosition(), positionAfterMovement - getPosition())) > vectorLengthSquare(positionAfterMovement - getPosition()))) //did not reach
+					continue;
+
+				(*i)->sufferDamage(damage); //will reach after the movement
+				finished = true;
+			}
+			if (!finished)
+			{
+				move(movementVector);
+				distanceLeft -= maxDistanceToMove;
+			}
 		}
 
 		void moveCorrectly()
@@ -101,6 +163,7 @@ class Shot : public GraphicalEntity
 					maxDistanceToMove = distanceLeft * scale;
 					finished = true;
 				}
+				printf("maxDistanceToMove = %f\n", maxDistanceToMove);
 				if (!monster)
 				{
 					if ((distanceLength - maxDistanceToMove) <= (radius * scale))

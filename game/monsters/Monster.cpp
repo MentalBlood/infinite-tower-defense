@@ -64,7 +64,7 @@ class Monster : public GraphicalEntity
 		const unsigned int damage;
 
 		Monster(unsigned int damage, const float speed, float healthArg):
-		GraphicalEntity(sf::Vector2f(0, 0), gameMap->getCellSize() / 2.5, 1, 0),
+		GraphicalEntity(sf::Vector2f(0, 0), gameMap->getCellSize() / 4, 1, 0),
 		speed(speed), currentDirectionIndex(0), distanceToNextDirectionLeft(gameMap->getCellSize()),
 		initialHealth(healthArg), health(healthArg), came(false), dead(false), damage(damage)
 		{

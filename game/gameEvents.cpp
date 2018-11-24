@@ -13,6 +13,7 @@ void gameClear()
 	deleteTimers<char*>();
 	deleteTimers<Tower*>();
 	deleteSplinters();
+	deleteGrid();
 	shots.clear();
 	monsters.clear();
 	towers.clear();
@@ -52,6 +53,7 @@ void changeScale(bool up)
 	gameScaleCenter.x = event.mouseWheelScroll.x;
 	gameScaleCenter.y = event.mouseWheelScroll.y;
 	gameMap->changeZoom();
+	mapPosition = gameMap->getPosition();
 	for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
 		(*i)->updateScale();
 	for (std::list<Tower*>::iterator i = towers.begin(); i != towers.end(); i++)
@@ -194,6 +196,7 @@ void gameMouseMoved()
 		gameMap->setPosition(
 			gameMapDraggingMapInitialCoordinates.x + event.mouseMove.x - gameMapDraggingMouseX1, 
 			gameMapDraggingMapInitialCoordinates.y + event.mouseMove.y - gameMapDraggingMouseY1);
+		mapPosition = gameMap->getPosition();
 		gameDragOffset.x = event.mouseMove.x - gameDraggingPreviousMouseX0;
 		gameDragOffset.y = event.mouseMove.y - gameDraggingPreviousMouseY0;
 		dragGameObjects();

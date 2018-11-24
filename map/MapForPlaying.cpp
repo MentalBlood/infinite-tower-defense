@@ -100,6 +100,9 @@ class MapForPlaying : public Map
 		float getRealCellSize()
 		{ return realCellTextureSize; }
 
+		sf::Vector2u getMapSize()
+		{ return sf::Vector2u(mapWidth, mapHeight); }
+
 		sf::Vector2f getSelectorPosition()
 		{
 			return sf::Vector2f(mapPositionX + realCellTextureSize * cellSelectorX,
