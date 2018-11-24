@@ -49,8 +49,7 @@ void updateGame()
 			i--;
 		}
 	}
-	if (gotSomeMoney)
-		updateMoneyText();
+	if (gotSomeMoney) updateMoneyText();
 
 	processTimers<Tower*>(); //towers shooting
 

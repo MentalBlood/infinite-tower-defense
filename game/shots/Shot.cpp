@@ -87,27 +87,27 @@ class Shot : public GraphicalEntity
 
 		void refreshLastMonsterPosition()
 		{
-			if (!monster) return;
+			if (!monster || !homing) return;
 			lastMonsterPosition = monster->getPosition();
-			if (homing)
-			{
-				rotateToPoint(lastMonsterPosition);
-				unitMovementVector = unitVector(getDistanceVector(lastMonsterPosition));
-			}
+			rotateToPoint(lastMonsterPosition);
+			unitMovementVector = unitVector(getDistanceVector(lastMonsterPosition));
 		}
 
 		void checkMonsterExistance()
 		{
-			if (!monster) return;
+			if (!monster || !homing) return;
 			if (monster->isDead() || monster->isCame())
 				monster = NULL;
 		}
 
+		void moveInCorrectDirection(float distance)
+		{
+			move(unitMovementVector * distance);
+			distanceLeft -= distance;
+		}
+
 		void moveCorrectlyUsingGrid()
 		{
-			std::list<Monster*> *monstersWhichCanTouch = getMonstersWhichCanTouch(getPosition());
-			if (!monstersWhichCanTouch) return;
-
 			float maxDistanceToMove = speed * elapsed.asSeconds();
 			if (maxDistanceToMove > (distanceLeft * scale))
 			{
@@ -115,9 +115,15 @@ class Shot : public GraphicalEntity
 				finished = true;
 			}
 
+			std::list<Monster*> *monstersWhichCanTouch = getMonstersWhichCanTouch(getPosition());
 			sf::Vector2f movementVector = unitMovementVector * maxDistanceToMove;
-			sf::Vector2f positionAfterMovement =
-				getPosition() +  movementVector;
+			if (!monstersWhichCanTouch)
+			{
+				moveInCorrectDirection(maxDistanceToMove);
+				return;
+			}
+
+			sf::Vector2f positionAfterMovement = getPosition() +  movementVector;
 
 			for (	std::list<Monster*>::iterator i = monstersWhichCanTouch->begin();
 					i != monstersWhichCanTouch->end(); i++)
@@ -143,107 +149,8 @@ class Shot : public GraphicalEntity
 				(*i)->sufferDamage(damage); //will reach after the movement
 				finished = true;
 			}
-			if (!finished)
-			{
-				move(movementVector);
-				distanceLeft -= maxDistanceToMove;
-			}
-		}
 
-		void moveCorrectly()
-		{
-			if (homing)
-			{
-				sf::Vector2f distanceVector = getDistanceVector(lastMonsterPosition);
-				float distanceLength = vectorLength(distanceVector);
-				sf::Vector2f unitDistanceVector = distanceVector / distanceLength;
-				float maxDistanceToMove = speed * elapsed.asSeconds();
-				if (maxDistanceToMove > (distanceLeft * scale))
-				{
-					maxDistanceToMove = distanceLeft * scale;
-					finished = true;
-				}
-				printf("maxDistanceToMove = %f\n", maxDistanceToMove);
-				if (!monster)
-				{
-					if ((distanceLength - maxDistanceToMove) <= (radius * scale))
-					{
-						move(unitDistanceVector * radius);
-						finished = true;
-					}
-					else
-					{
-						move(unitDistanceVector * maxDistanceToMove);
-						distanceLeft -= maxDistanceToMove;
-					}
-					return;
-				}
-
-				float minDistance = monsterRadius + radius;
-				if ((distanceLength - maxDistanceToMove) <= (minDistance * scale))
-				{
-					move(unitDistanceVector * minDistance);
-					monster->sufferDamage(damage);
-					finished = true;
-				}
-				else
-				{
-					move(unitDistanceVector * maxDistanceToMove);
-					distanceLeft -= maxDistanceToMove;
-				}
-			}
-			else //not homing
-			{
-				sf::Vector2f distanceVector = getDistanceVector(initialMonsterPosition);
-				float distanceLength = vectorLength(distanceVector);
-				sf::Vector2f unitDistanceVector = distanceVector / distanceLength;
-				float maxDistanceToMove = speed * elapsed.asSeconds();
-				if (maxDistanceToMove > (distanceLeft * scale))
-				{
-					maxDistanceToMove = distanceLeft * scale;
-					finished = true;
-				}
-				if (!monster)
-				{
-					if ((distanceLength - maxDistanceToMove) <= (radius * scale))
-					{
-						move(unitDistanceVector * radius);
-						finished = true;
-					}
-					else
-					{
-						move(unitDistanceVector * maxDistanceToMove);
-						distanceLeft -= maxDistanceToMove;
-					}
-					return;
-				}
-
-				sf::Vector2f positionAfterMovement = getPosition()
-													+ unitDistanceVector * maxDistanceToMove;
-				float R2 = pow((radius + monsterRadius) * scale, 2);
-				if (vectorLengthSquare(lastMonsterPosition - positionAfterMovement) < R2)
-				{
-					monster->sufferDamage(damage); //reach
-					finished = true;
-					return;
-				}
-
-				float a2 = vectorLengthSquare(positionAfterMovement - getPosition()),
-					  b2 = vectorLengthSquare(lastMonsterPosition - positionAfterMovement),
-					  c2 = vectorLengthSquare(lastMonsterPosition - getPosition());
-				float h2 = triangleHeightSquareFromSidesLengthsSquares(a2, b2, c2);
-
-				if ((h2 > R2) || //passing by
-					(vectorLength(vectorsMultiplication(lastMonsterPosition - getPosition(), positionAfterMovement - getPosition())) > vectorLengthSquare(positionAfterMovement - getPosition()))) //did not reach
-				{
-					move(unitDistanceVector * maxDistanceToMove);
-					distanceLeft -= maxDistanceToMove;
-					return;
-				}
-
-				monster->sufferDamage(damage); //reach
-				finished = true;
-			}
+			if (!finished) moveInCorrectDirection(maxDistanceToMove);
 		}
 
 		void updateScale()

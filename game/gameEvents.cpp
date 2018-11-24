@@ -80,6 +80,7 @@ std::list<Tower*>::iterator getTowerUnderSelector()
 
 void tryToDeleteTower()
 {
+	printf("tryToDeleteTower\n");
 	std::list<Tower*>::iterator towerUnderSelector = getTowerUnderSelector();
 	if (towerUnderSelector != towers.end())
 	{
@@ -89,6 +90,7 @@ void tryToDeleteTower()
 		gameMap->removeTower();
 		updateMoneyText();
 	}
+	printf("OK\n");
 }
 
 void tryToShowHideTowerRangeRadius()
