@@ -18,8 +18,9 @@ class ShotTypeE : public Shot
 			for (unsigned int i = 0; i < 3; i++)
 				(*graphicalElements)[0][i].color = sf::Color(128 + (rand() % 128), 128 + (rand() % 128), 0);
 
-			makeVertexArrayRing(&(*graphicalElements)[1], 0, 0, 0, radius, 16, sf::Color::Transparent,
-								sf::Color(128 + (rand() % 128), 128 + (rand() % 128), 0, 128));
+			makeVertexArrayCircle(	&(*graphicalElements)[1], 0, 0, radius, 16,
+									sf::Color::Transparent,
+									sf::Color(128 + (rand() % 128), 128 + (rand() % 128), 0, 128));
 		}
 
 		void animate()

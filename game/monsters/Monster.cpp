@@ -86,6 +86,9 @@ class Monster : public GraphicalEntity
 		void updatePosition()
 		{ drag(gameDragOffset); }
 
+//		void updateScaleWithoutShifting()
+//		{ changeScale(gameScaleDelta); }
+
 		void updateScale()
 		{ changeScale(gameScaleDelta, gameScaleCenter); }
 

@@ -196,8 +196,8 @@ class Map
 			cellSelectorSprite.setTexture(*cellSelectorTexture);
 		}
 
-		void fitInRectangle(sf::Vector2f rectangleRelativePosition,
-							sf::Vector2f rectangleRelativeSize)
+		sf::Vector2f fitInRectangle(sf::Vector2f rectangleRelativePosition,
+									sf::Vector2f rectangleRelativeSize)
 		{
 			windowSize = window.getSize();
 			float realMapWidth = mapWidth * cellTextureSize,
@@ -213,9 +213,20 @@ class Map
 			realMapWidth = mapWidth * realCellTextureSize;
 			realMapHeight = mapHeight * realCellTextureSize;
 
+			float oldMapPositionX = mapPositionX,
+				  oldMapPositionY = mapPositionY;
+
 			mapPositionX = rectangleRelativePosition.x * windowSize.x
 							+ (rectangleSize.x - realMapWidth) / 2;
 			mapPositionY = rectangleRelativePosition.y * windowSize.y
 							+ (rectangleSize.y - realMapHeight) / 2;
+
+			return sf::Vector2f(mapPositionX - oldMapPositionX, mapPositionY - oldMapPositionY);
+		}
+
+		sf::Vector2f getCellCoordinates(unsigned int x, unsigned int y)
+		{
+			return sf::Vector2f(x * realCellTextureSize + mapPositionX,
+								y * realCellTextureSize + mapPositionY);
 		}
 };

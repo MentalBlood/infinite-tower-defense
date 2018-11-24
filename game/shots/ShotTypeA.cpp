@@ -9,7 +9,7 @@ class ShotTypeA : public Shot
 		Shot(tower, monster, 0.25), minColor(minColor), maxColor(maxColor)
 		{
 			graphicalElements = new std::vector<sf::VertexArray>;
-			graphicalElements->resize(1);
+			graphicalElements->resize(2);
 			(*graphicalElements)[0].setPrimitiveType(sf::Triangles);
 
 			(*graphicalElements)[0].resize(3);
@@ -21,6 +21,9 @@ class ShotTypeA : public Shot
 			(*graphicalElements)[0][0].color = sf::Color(maxColor.r, minColor.g, minColor.b);
 			(*graphicalElements)[0][1].color = sf::Color(minColor.r, maxColor.g, minColor.b, 155);
 			(*graphicalElements)[0][2].color = sf::Color(minColor.r, minColor.g, maxColor.b, 155);
+
+			makeVertexArrayCircle(	&(*graphicalElements)[1], 0, 0, radius, 16,
+									sf::Color::Transparent, minColor - sf::Color(0, 0, 0, 64));
 		}
 
 		void animate()

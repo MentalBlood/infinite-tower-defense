@@ -8,7 +8,7 @@ class ShotTypeC : public Shot
 		Shot(tower, monster, 0.25), color(color)
 		{
 			graphicalElements = new std::vector<sf::VertexArray>;
-			graphicalElements->resize(1);
+			graphicalElements->resize(2);
 			(*graphicalElements)[0].setPrimitiveType(sf::TriangleStrip);
 
 			(*graphicalElements)[0].resize(5);
@@ -24,6 +24,9 @@ class ShotTypeC : public Shot
 			(*graphicalElements)[0][2].color = color - sf::Color(0, 0, 0, 64);
 			(*graphicalElements)[0][3].color = color - sf::Color(0, 0, 0, 128);
 			(*graphicalElements)[0][4].color = color - sf::Color(0, 0, 0, 128);
+
+			makeVertexArrayCircle(	&(*graphicalElements)[1], 0, 0, radius, 16,
+									sf::Color::Transparent, color - sf::Color(0, 0, 0, 64));
 		}
 
 		void animate()

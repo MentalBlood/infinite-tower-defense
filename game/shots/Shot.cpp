@@ -33,6 +33,9 @@ sf::Vector2f solveQuadraticEquation(float a, float b, float c)
 	return sf::Vector2f(-b/2 + sqrtD, -b/2 - sqrtD);
 }
 
+sf::Vector2f vectorsMultiplication(sf::Vector2f a, sf::Vector2f b)
+{ return sf::Vector2f(a.x * b.x, a.y * b.y); }
+
 class Shot : public GraphicalEntity
 {
 	private:
@@ -152,31 +155,30 @@ class Shot : public GraphicalEntity
 					return;
 				}
 
-				sf::Vector2f arrowHeadNow = getPosition() + unitDistanceVector * radius * scale;
-				sf::Vector2f arrowHeadAfterMovement = arrowHeadNow
+				sf::Vector2f positionAfterMovement = getPosition()
 													+ unitDistanceVector * maxDistanceToMove;
-				float a2 = vectorLengthSquare(arrowHeadAfterMovement - arrowHeadNow),
-					  b2 = vectorLengthSquare(lastMonsterPosition - arrowHeadAfterMovement),
-					  c2 = vectorLengthSquare(lastMonsterPosition - arrowHeadNow);
+				float R2 = pow((radius + monsterRadius) * scale, 2);
+				if (vectorLengthSquare(lastMonsterPosition - positionAfterMovement) < R2)
+				{
+					monster->sufferDamage(damage); //reach
+					finished = true;
+					return;
+				}
+
+				float a2 = vectorLengthSquare(positionAfterMovement - getPosition()),
+					  b2 = vectorLengthSquare(lastMonsterPosition - positionAfterMovement),
+					  c2 = vectorLengthSquare(lastMonsterPosition - getPosition());
 				float h2 = triangleHeightSquareFromSidesLengthsSquares(a2, b2, c2);
-				if (h2 > monsterRadius) //passing by
+
+				if ((h2 > R2) || //passing by
+					(vectorLength(vectorsMultiplication(lastMonsterPosition - getPosition(), positionAfterMovement - getPosition())) > vectorLengthSquare(positionAfterMovement - getPosition()))) //did not reach
 				{
 					move(unitDistanceVector * maxDistanceToMove);
 					distanceLeft -= maxDistanceToMove;
 					return;
 				}
 
-				float a = sqrt(a2);
-				float distanceToMonster = a - sqrt(pow(monsterRadius * getScale(), 2) - h2) - sqrt(c2 - h2);
-				if (distanceToMonster > a) //didn't reach
-				{
-					move(unitDistanceVector * maxDistanceToMove);
-					distanceLeft -= maxDistanceToMove;
-					return;
-				}
-
-				move(unitDistanceVector * distanceToMonster);
-				monster->sufferDamage(damage);
+				monster->sufferDamage(damage); //reach
 				finished = true;
 			}
 		}

@@ -34,9 +34,7 @@ class GraphicalEntity
 		}
 
 		void rotateToPoint(sf::Vector2f point)
-		{
-			rotateInDirection(getVectorAngle(point - position));
-		}
+		{ rotateInDirection(getVectorAngle(point - position)); }
 
 		void move(const sf::Vector2f &offset)
 		{
@@ -110,9 +108,7 @@ class GraphicalEntity
 		}
 
 		sf::Vector2f getDistanceVector(sf::Vector2f & point)
-		{
-			return point - position;
-		}
+		{ return point - position; }
 
 		sf::Vector2f & getPosition()
 		{ return position; }

@@ -23,7 +23,7 @@ class Tower
 			std::vector<sf::VertexArray> *rangeCircleGraphicalElements =
 										new std::vector<sf::VertexArray>;
 			rangeCircleGraphicalElements->resize(1);
-			makeVertexArrayRing(&(*rangeCircleGraphicalElements)[0], 0, 0, 0, specification->getRange(),
+			makeVertexArrayCircle(&(*rangeCircleGraphicalElements)[0], 0, 0, specification->getRange(),
 								64, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 			rangeCircle = new GraphicalEntity(rangeCircleGraphicalElements,
 						sf::Vector2f(0, 0), specification->getRange(), 1, 0);
@@ -55,6 +55,12 @@ class Tower
 		{
 			sprite.setScale(sf::Vector2f(gameMap->getScale(), gameMap->getScale()));
 			rangeCircle->changeScale(gameScaleDelta);
+		}
+
+		void changeScale(float delta)
+		{
+			sprite.scale(delta, delta);
+			rangeCircle->changeScale(delta);
 		}
 
 		void changeScale()

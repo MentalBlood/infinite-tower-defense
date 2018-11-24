@@ -7,35 +7,20 @@ void gameResized()
 
 void gameClear()
 {
-	printf("1\n");
 	delete gameMap;
-	printf("2\n");
 	gameMap = NULL;
-	printf("3\n");
 	deleteTimers<Monster*>();
-	printf("4\n");
 	deleteTimers<char*>();
-	printf("5\n");
 	deleteTimers<Tower*>();
-	printf("6\n");
 	deleteSplinters();
-	printf("7\n");
 	shots.clear();
-	printf("8\n");
 	monsters.clear();
-	printf("9\n");
 	towers.clear();
-	printf("10\n");
 	delete addingTower;
-	printf("11\n");
 	addingTower = NULL;
-	printf("12\n");
 	delete currentSecondsToNextWaveText;
-	printf("13\n");
 	delete currentWaveNumberText;
-	printf("14\n");
 	delete baseHealthText;
-	printf("15\n");
 	delete moneyText;
 }
 
@@ -142,10 +127,8 @@ void gameKeyPressed()
 	{
 		towersInfoStack->click(event.key.code - 26 - 1);
 		tryToSetAddingTower();
-		return;
 	}
-
-	if (event.key.code == sf::Keyboard::Up)
+	else if (event.key.code == sf::Keyboard::Up)
 		moveCellSelector(UP);
 	else if (event.key.code == sf::Keyboard::Down)
 		moveCellSelector(DOWN);
@@ -202,26 +185,18 @@ void gameMouseButtonPressed()
 }
 
 void gameMouseButtonReleased()
-{
-	gameMapDragging = false;
-}
+{ gameMapDragging = false; }
 
 void gameMouseMoved()
 {
 	if (gameMapDragging)
 	{
 		gameMap->setPosition(
-		gameMapDraggingMapInitialCoordinates.x + event.mouseMove.x - gameMapDraggingMouseX1, 
-		gameMapDraggingMapInitialCoordinates.y + event.mouseMove.y - gameMapDraggingMouseY1);
+			gameMapDraggingMapInitialCoordinates.x + event.mouseMove.x - gameMapDraggingMouseX1, 
+			gameMapDraggingMapInitialCoordinates.y + event.mouseMove.y - gameMapDraggingMouseY1);
 		gameDragOffset.x = event.mouseMove.x - gameDraggingPreviousMouseX0;
 		gameDragOffset.y = event.mouseMove.y - gameDraggingPreviousMouseY0;
-		for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
-			(*i)->updatePosition();
-		for (std::list<Tower*>::iterator i = towers.begin(); i != towers.end(); i++)
-			(*i)->drag();
-		for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
-			(*i)->updatePosition();
-		dragSplinters();
+		dragGameObjects();
 		gameDraggingPreviousMouseX0 = event.mouseMove.x;
 		gameDraggingPreviousMouseY0 = event.mouseMove.y;
 	}

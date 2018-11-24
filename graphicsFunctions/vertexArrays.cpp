@@ -74,22 +74,23 @@ void makeVertexArraysHalo(std::vector<sf::VertexArray> & graphicalElements, floa
 }
 
 void makeVertexArrayCircle(sf::VertexArray *vertexArrayPointer, float x, float y,
-						float radius, unsigned int numberOfVertexes, sf::Color color)
+						float radius, unsigned int numberOfVertexes,
+						sf::Color innerColor, sf::Color outerColor)
 {
 	vertexArrayPointer->setPrimitiveType(sf::TriangleFan);
 	vertexArrayPointer->resize(numberOfVertexes + 2);
 
 	(*vertexArrayPointer)[0].position = sf::Vector2f(x, y);
-	(*vertexArrayPointer)[0].color = color;
+	(*vertexArrayPointer)[0].color = innerColor;
 	(*vertexArrayPointer)[1].position = sf::Vector2f(x + radius, y);
-	(*vertexArrayPointer)[1].color = color;
+	(*vertexArrayPointer)[1].color = outerColor;
 
 	sf::Transform rotation;
-	rotation.rotate(360 / numberOfVertexes);
+	rotation.rotate(360.0 / numberOfVertexes);
 
 	for (unsigned int i = 2; i < (numberOfVertexes + 2); i++)
 	{
 		(*vertexArrayPointer)[i].position = rotation.transformPoint((*vertexArrayPointer)[i-1].position);
-		(*vertexArrayPointer)[i].color = color;
+		(*vertexArrayPointer)[i].color = outerColor;
 	}
 }
