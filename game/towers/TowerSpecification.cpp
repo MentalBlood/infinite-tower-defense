@@ -3,52 +3,70 @@ class TowerSpecification
 	private:
 		char shotType;
 		sf::Texture texture;
-		float damage,
-			  range,
-			  shotsDelay,
-			  shellsSpeed;
+		Parameter *damage,
+				  *range,
+				  *shotsDelay,
+				  *shellsSpeed,
+				  *cost;
 		bool homingShots;
-		unsigned int cost;
 		
 	public:
-		TowerSpecification(char *textureFileName, char *characteristicsFileName, char shotType):
-		shotType(shotType)
+		TowerSpecification(char *textureFileName, char *characteristicsFileName, char shotTypeArg)
 		{
+			shotType = shotTypeArg;
 			if (!texture.loadFromFile(textureFileName)) Closed();
 
 			FILE *characteristicsFile = fopen(characteristicsFileName, "rb");
 			if (!characteristicsFile) Closed();
-			fscanf(characteristicsFile, "%f", &damage);
-			fscanf(characteristicsFile, "%f", &range);
-			fscanf(characteristicsFile, "%f", &shotsDelay);
-			fscanf(characteristicsFile, "%f", &shellsSpeed);
-			int homingShotsTemp;
-			fscanf(characteristicsFile, "%d", &homingShotsTemp);
-			if (homingShotsTemp)
+
+			damage = new Parameter(characteristicsFile);
+			range = new Parameter(characteristicsFile);
+			shotsDelay = new Parameter(characteristicsFile);
+			shellsSpeed = new Parameter(characteristicsFile);
+			int temp;
+			fscanf(characteristicsFile, "%d", &temp);
+			if (temp)
 				homingShots = true;
 			else
 				homingShots = false;
-			fscanf(characteristicsFile, "%u", &cost);
+			cost = new Parameter(characteristicsFile);
+
 			fclose(characteristicsFile);
+
+			printf("damage = %f\nrange = %f\nshotsDelay = %f\nshellsSpeed = %f\ncost = %f\n",
+					damage->getValue(),
+					range->getValue(),
+					shotsDelay->getValue(),
+					shellsSpeed->getValue(),
+					cost->getValue());
+		}
+
+		~TowerSpecification()
+		{
+			delete damage;
+			delete range;
+			delete shotsDelay;
+			delete shellsSpeed;
+			delete cost;
 		}
 
 		const sf::Texture & getTexture()
 		{ return texture; }
 
 		float getDamage()
-		{ return damage; }
+		{ return damage->getValue(); }
 
 		float getRange()
-		{ return range; }
+		{ return range->getValue(); }
 
 		float getShotsDelay()
-		{ return shotsDelay; }
+		{ return shotsDelay->getValue(); }
 
 		float getShellsSpeed()
-		{ return shellsSpeed; }
+		{ return shellsSpeed->getValue(); }
 
-		unsigned int getCost()
-		{ return cost; }
+		float getCost()
+		{ return cost->getValue(); }
 
 		bool areShotsHoming()
 		{ return homingShots; }

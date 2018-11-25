@@ -1,52 +1,35 @@
-template <class Type>
 class Parameter
 {
 	private:
-		Type currentValue;
-
-		Type adder;
-		float multiplier;
-
-		bool typeIsFloat;
+		float currentValue,
+			  adder,
+			  multiplier;
 
 	public:
-		Parameter(FILE *file, bool typeIsFloat, bool raw = false):
-		typeIsFloat(typeIsFloat)
+		Parameter(FILE *file)
 		{
-			if (raw)
-			{
-				fread(&currentValue, sizeof(Type), 1, file);
-				fread(&adder, sizeof(Type), 1, file);
-				fread(&multiplier, sizeof(float), 1, file);
-			}
-			else
-			{
-				if (typeIsFloat)
-					fscanf(file, "%f%f%f", &currentValue, &adder, &multiplier);
-				else
-					fscanf(file, "%u%u%f", &currentValue, &adder, &multiplier);
-			}
+			fscanf(file, "%f%f%f", &currentValue, &adder, &multiplier);
+			printf("currentValue = %f\nadder = %f\nmultiplier = %f\n",
+					currentValue, adder, multiplier);
 		}
 
-		static void rawWrite(FILE *file, Type currentValueArg, Type adderArg, float multiplierArg)
+		static void rawWrite(FILE *file, float currentValueArg, float adderArg, float multiplierArg)
 		{
-			fwrite(&currentValueArg, sizeof(Type), 1, file);
-			fwrite(&adderArg, sizeof(Type), 1, file);
-			fwrite(&multiplierArg, sizeof(float), 1, file);
+			size_t sizeOfFloat = sizeof(float);
+			fwrite(&currentValueArg, sizeOfFloat, 1, file);
+			fwrite(&adderArg, sizeOfFloat, 1, file);
+			fwrite(&multiplierArg, sizeOfFloat, 1, file);
 		}
 
-		static void write(	FILE *file, Type currentValueArg, Type adderArg, float multiplierArg,
-							bool typeIsFloat, bool firstWrite = false)
+		static void write(	FILE *file, float currentValueArg, float adderArg, float multiplierArg,
+							bool firstWrite = false)
 		{
 			if (!firstWrite)
 				fprintf(file, " ");
-			if (typeIsFloat)
-				fprintf(file, "%f %f %f", currentValueArg, adderArg, multiplierArg);
-			else
-				fprintf(file, "%u %u %f", currentValueArg, adderArg, multiplierArg);
+			fprintf(file, "%f %f %f", currentValueArg, adderArg, multiplierArg);
 		}
 
-		Type getValue()
+		float getValue()
 		{ return currentValue; }
 
 		void calculateNextValue()

@@ -37,7 +37,7 @@ class TowerInfo
 
 		void refreshText()
 		{
-			sprintf(textString, "damage: %.1f\nrange: %.1f\nshots/sec: %.2f\nshells speed: %.0f\n\nCOST: %u",
+			sprintf(textString, "damage: %.1f\nrange: %.1f\nshots/sec: %.1f\nshells speed: %.1f\n\nCOST: %.1f",
 					specification->getDamage(),
 					specification->getRange(),
 					1.0 / specification->getShotsDelay(),

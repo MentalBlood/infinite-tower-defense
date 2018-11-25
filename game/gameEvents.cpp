@@ -42,6 +42,8 @@ void gameClear()
 	printf("17\n");
 	delete gameHelpButton;
 	printf("18\n");
+	clearMonsterParameters();
+	printf("19\n");
 }
 
 void gameExit()

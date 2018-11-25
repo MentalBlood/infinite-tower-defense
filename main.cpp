@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <math.h>
 #include <iostream>
+#include <typeinfo>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
