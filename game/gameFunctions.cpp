@@ -1,4 +1,5 @@
 #include "Timer.cpp"
+#include "Parameter.cpp"
 #include "monstersParametres.cpp"
 
 #define	TYPE_A 0
