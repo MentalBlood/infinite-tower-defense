@@ -9,7 +9,8 @@ void helpScreenExit()
 {
 	delete helpScreenMessage;
 	helpScreenMessage = NULL;
-	startMenu();
+	helpScreenFunctionAfterExit();
+	helpScreenFunctionAfterExit = startMenu;
 }
 
 void setHelpScreenVariables()

@@ -21,6 +21,7 @@ void drawGame()
 
 	drawGameInfo();
 	drawTowersPanel();
+	gameHelpButton->draw();
 	
 	window.display();
 }

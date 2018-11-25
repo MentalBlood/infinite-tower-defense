@@ -40,6 +40,8 @@ void gameClear()
 	printf("16\n");
 	delete moneyText;
 	printf("17\n");
+	delete gameHelpButton;
+	printf("18\n");
 }
 
 void gameExit()
@@ -193,6 +195,7 @@ void gameMouseButtonPressed()
 {
 	if (event.mouseButton.button == sf::Mouse::Left)
 	{
+		if (gameHelpButton->tryToPress(event.mouseButton.x, event.mouseButton.y)) return;
 		if (towersInfoStack->click(event.mouseButton.x, event.mouseButton.y)) return;
 		gameMapDragging = true;
 		gameMapDraggingMouseX1 = event.mouseButton.x;
@@ -207,7 +210,10 @@ void gameMouseButtonPressed()
 }
 
 void gameMouseButtonReleased()
-{ gameMapDragging = false; }
+{
+	gameMapDragging = false;
+	gameHelpButton->unpress();
+}
 
 void gameMouseMoved()
 {

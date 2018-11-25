@@ -3,8 +3,9 @@ void drawMapEditor()
 	window.clear();
 	mapEditorMap->draw();
 	mapEditorMap->drawCellSelector();
-	for (unsigned int i = 0; i < mapEditorButtons.size(); i++)
-		mapEditorButtons[i].draw();
+	for (std::list<TwoConditionButton>::iterator i = mapEditorButtons.begin();
+			i != mapEditorButtons.end(); i++)
+		i->draw();
 	if (mapEditorFileNameDialog)
 		mapEditorFileNameDialog->draw();
 	if (mapEditorWrongMapMessage)

@@ -11,6 +11,8 @@ sf::Vector2f	gameMapDraggingMapInitialCoordinates,
 unsigned int gameBaseHealth,
 			 money;
 
+TwoConditionButton *gameHelpButton;
+
 #include "../map/MapForPlaying.cpp"
 MapForPlaying *gameMap;
 
@@ -56,6 +58,24 @@ void makeMapCentered()
 											sf::Vector2f(towersPanelRelativeX, 1));
 }
 
+void setGameEvents();
+void updateGame();
+void drawGame();
+
+void continueToGame()
+{
+	setGameEvents();
+	updateFunction = updateGame;
+	drawFunction = drawGame;
+}
+
+void gameShowHelpScreen()
+{
+	pause = true;
+	helpScreenFunctionAfterExit = continueToGame;
+	startHelpScreen();
+}
+
 void setGameVariables(const char *gameMapFileName)
 {
 	gameMap = new MapForPlaying(gameMapFileName, sf::Color(150, 150, 64, 196),
@@ -73,6 +93,10 @@ void setGameVariables(const char *gameMapFileName)
 
 	windowSize = window.getSize();
 	setGameInfoVariables();
+
+	gameHelpButton = new TwoConditionButton(nothing, gameShowHelpScreen, "?", "fonts/helpButtonFont.otf",
+											sf::Color(255, 196, 64), sf::Color(0, 0, 64, 128), sf::Color(64, 64, 128),
+											0.01, 0.01, 0.03, 0.06, 1, 4);
 
 	gameBaseHealth = 100;
 	updateBaseHealthText();

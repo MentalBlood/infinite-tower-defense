@@ -34,12 +34,13 @@ void mapEditorSaveButtonPress()
 														sf::Color(16, 64, 16), sf::Color(64, 128, 64));
 }
 
-std::vector<TwoConditionButton> mapEditorButtons;
+std::list<TwoConditionButton> mapEditorButtons;
 
 void updateMapEditorButtons()
 {
-	for (unsigned int i = 0; i < mapEditorButtons.size(); i++)
-		mapEditorButtons[i].updatePositionAndSize();
+	for (std::list<TwoConditionButton>::iterator i = mapEditorButtons.begin();
+			i != mapEditorButtons.end(); i++)
+		i->updatePositionAndSize();
 }
 
 void setMapEditorButtons()
@@ -50,4 +51,7 @@ void setMapEditorButtons()
 	mapEditorButtons.push_back(TwoConditionButton(	nothing, mapEditorSaveButtonPress, "save", "fonts/mapEditorButtonsFont.otf",
 													sf::Color(255, 128, 255), sf::Color(0, 64, 0, 128), sf::Color(64, 128, 64),
 													0.75, 0.15, 0.15, 0.08, 2));
+	mapEditorButtons.push_back(TwoConditionButton(	nothing, mapEditorShowHelpScreen, "?", "fonts/helpButtonFont.otf",
+													sf::Color(255, 196, 64), sf::Color(0, 0, 64, 128), sf::Color(64, 64, 128),
+													0.01, 0.01, 0.03, 0.06, 1, 4));
 }

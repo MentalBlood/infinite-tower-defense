@@ -97,8 +97,9 @@ void mapEditorMouseButtonPressed()
 
 	if (event.mouseButton.button == sf::Mouse::Left)
 	{
-		for (unsigned int i = 0; i < mapEditorButtons.size(); i++)
-			if (mapEditorButtons[i].tryToPress(event.mouseButton.x, event.mouseButton.y))
+		for (std::list<TwoConditionButton>::iterator i = mapEditorButtons.begin();
+			i != mapEditorButtons.end(); i++)
+			if (i->tryToPress(event.mouseButton.x, event.mouseButton.y))
 				return;
 		mapEditorMapDragging = true;
 		mapEditorMapDraggingMouseX1 = event.mouseButton.x;
@@ -117,8 +118,9 @@ void mapEditorMouseButtonReleased()
 {
 	mapEditorMap->unpressCellSelector();
 	if (event.mouseButton.button != sf::Mouse::Left) return;
-	for (unsigned int i = 0; i < mapEditorButtons.size(); i++)
-		mapEditorButtons[i].unpress();
+	for (std::list<TwoConditionButton>::iterator i = mapEditorButtons.begin();
+		i != mapEditorButtons.end(); i++)
+		i->unpress();
 	if (mapEditorWrongMapMessage)
 	{
 		mapEditorWrongMapMessage->unpress();

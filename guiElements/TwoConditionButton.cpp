@@ -24,7 +24,8 @@ class TwoConditionButton
 			  relativeWidth,
 			  relativeHeight,
 			  x, y, width, height,
-			  relativeTextIndent;
+			  relativeTextIndent,
+			  relativeBordersThickness;
 
 		void press()
 		{
@@ -37,11 +38,11 @@ class TwoConditionButton
 		TwoConditionButton(	void (*functionOnPress)(), void (*functionOnUnpress)(), sf::String textString,
 							sf::String textFontFileName, sf::Color textColor, sf::Color fillColor, sf::Color bordersColor, 
 							float relativeX, float relativeY, float relativeWidth, float relativeHeight,
-							float relativeTextIndent):
+							float relativeTextIndent, float relativeBordersThickness = 1.0):
 			pressed(false), functionOnPress(functionOnPress), functionOnUnpress(functionOnUnpress),
 			textString(textString), fillColor(fillColor), bordersColor(bordersColor),
 			relativeX(relativeX), relativeY(relativeY), relativeWidth(relativeWidth), relativeHeight(relativeHeight),
-			relativeTextIndent(relativeTextIndent)
+			relativeTextIndent(relativeTextIndent), relativeBordersThickness(relativeBordersThickness)
 		{
 			font = new sf::Font;
 			if (!font->loadFromFile(textFontFileName)) Closed();
@@ -57,7 +58,7 @@ class TwoConditionButton
 			y = windowSize.y * relativeY;
 			width = windowSize.x * relativeWidth;
 			height = windowSize.y * relativeHeight;
-			float bordersThickness = sqrt(width * height) / 64;
+			float bordersThickness = sqrt(width * height) / 64 * relativeBordersThickness;
 
 			fitTextIntoRectangle(&text, x + bordersThickness * relativeTextIndent, y + bordersThickness * relativeTextIndent,
 								width - 2 * bordersThickness * relativeTextIndent,

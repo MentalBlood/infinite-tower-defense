@@ -10,6 +10,23 @@ sf::Vector2f mapEditorMapDraggingMapInitialCoordinates;
 EnterFileNameDialog *mapEditorFileNameDialog = NULL;
 Message *mapEditorWrongMapMessage = NULL;
 
+void setMapEditorEvents();
+void updateMapEditor();
+void drawMapEditor();
+
+void continueToMapEditor()
+{
+	setMapEditorEvents();
+	updateFunction = updateMapEditor;
+	drawFunction = drawMapEditor;
+}
+
+void mapEditorShowHelpScreen()
+{
+	helpScreenFunctionAfterExit = continueToMapEditor;
+	startHelpScreen();
+}
+
 #include "mapEditorButtons.cpp"
 
 void updateMapEditorVariables()
