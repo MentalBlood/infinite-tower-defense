@@ -19,10 +19,6 @@ class Map
 					*endCellTexture,
 					*rockCellTexture;
 
-		sf::Color	towerCellBordersColor,
-					towerCellFillColor,
-					cellSelectorColor;
-
 		bool cellSelectorPressed;
 
 		unsigned int cellTextureSize;
@@ -51,14 +47,11 @@ class Map
 		}
 
 	public:
-		Map(unsigned int width, unsigned int height,
-			sf::Color towerCellBordersColor, sf::Color towerCellFillColor, sf::Color cellSelectorColor):
+		Map(unsigned int width, unsigned int height):
 		mapWidth(width), mapHeight(height), x1(0), y1(0), x2(width - 1), y2(height - 1), zoom(1),
 		cellSelectorX(0), cellSelectorY(0),
 		towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL), startCellTexture(NULL),
-		endCellTexture(NULL), rockCellTexture(NULL),
-		towerCellBordersColor(towerCellBordersColor), towerCellFillColor(towerCellFillColor),
-		cellSelectorColor(cellSelectorColor), cellSelectorPressed(false)
+		endCellTexture(NULL), rockCellTexture(NULL)
 		{}
 
 		void setPosition(float x, float y)
@@ -120,20 +113,21 @@ class Map
 			realCellTextureSize = cellTextureSize * zoom;
 			sf::RenderTexture RenderTexture;
 			if (!RenderTexture.create(cellTextureSize, cellTextureSize)) Closed();
-			RenderTexture.clear(sf::Color(16, 32, 16));
+			RenderTexture.clear(sf::Color(16, 16, 16));
 
 			//1.1 drawing borders
 			float cellSize = cellTextureSize * cellRelativeSize;
 			float indent = (cellTextureSize - cellSize) / 2;
 			float bordersThickness = cellSize / 8;
 			sf::VertexArray borders;
-			makeVertexArrayFrame(&borders, indent, indent, cellSize, cellSize, bordersThickness, towerCellBordersColor);
+			makeVertexArrayFrame(&borders, indent, indent, cellSize, cellSize, bordersThickness,
+								 sf::Color(32, 64, 128));
 
 			//1.2 drawing fill
 			sf::VertexArray fill;
 			makeVertexArrayQuad(&fill, indent + bordersThickness, indent + bordersThickness,
 								cellSize - 2*bordersThickness, cellSize - 2*bordersThickness,
-								towerCellFillColor);
+								sf::Color(16, 32, 64));
 
 			RenderTexture.draw(borders);
 			RenderTexture.draw(fill);
@@ -148,7 +142,7 @@ class Map
 			//2 drawing path cell texture
 			if (!RenderTexture.create(cellTextureSize, cellTextureSize)) Closed();
 
-			RenderTexture.clear(sf::Color(16, 32, 16));
+			RenderTexture.clear(sf::Color(16, 16, 16));
 			RenderTexture.display();
 
 			//setting texture to sprite
@@ -183,7 +177,7 @@ class Map
 
 			sf::VertexArray cellSelectorVertexArray;
 			makeVertexArrayFrame(&cellSelectorVertexArray, 0, 0, cellTextureSize, cellTextureSize,
-														indent, cellSelectorColor);
+														indent, sf::Color(64, 128, 255));
 
 			RenderTexture.clear(sf::Color(0, 0, 0, 0));
 			RenderTexture.draw(cellSelectorVertexArray);

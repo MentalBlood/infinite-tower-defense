@@ -51,9 +51,8 @@ class MapForPlaying : public Map
 		}
 
 	public:
-		MapForPlaying(const char *fileName,
-			sf::Color towerCellBordersColor, sf::Color towerCellFillColor, sf::Color cellSelectorColor):
-		Map(0, 0, towerCellBordersColor, towerCellFillColor, cellSelectorColor)
+		MapForPlaying(const char *fileName):
+		Map(0, 0)
 		{
 			loadFile(fileName);
 		}

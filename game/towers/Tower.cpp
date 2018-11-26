@@ -17,18 +17,12 @@ class Tower
 		TowerUpgradeInfo *upgradeInfo;
 
 	public:
-		Tower(TowerSpecification *specification):
-		specification(specification), rangeSquare(specification->getParameterValue(RANGE) * specification->getParameterValue(RANGE)),
-		sprite(specification->getTexture()), drawRangeCircle(true), upgradeInfo(new TowerUpgradeInfo(specification))
+		Tower(TowerSpecification *specificationToCopy):
+		specification(new TowerSpecification(specificationToCopy)), rangeSquare(specification->getParameterValue(RANGE) * specification->getParameterValue(RANGE)),
+		sprite(specification->getTexture()), drawRangeCircle(true), rangeCircle(NULL)
 		{
-			std::vector<sf::VertexArray> *rangeCircleGraphicalElements =
-										new std::vector<sf::VertexArray>;
-			rangeCircleGraphicalElements->resize(1);
-			makeVertexArrayCircle(&(*rangeCircleGraphicalElements)[0], 0, 0, specification->getParameterValue(RANGE),
-								64, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
-			rangeCircle = new GraphicalEntity(rangeCircleGraphicalElements,
-						sf::Vector2f(0, 0), specification->getParameterValue(RANGE), 1, 0);
-			rangeCircle->changeScale(gameMap->getScale());
+			upgradeInfo = new TowerUpgradeInfo(specification);
+			refreshRangeCircle();
 			sprite.setTextureRect(sf::IntRect(0, 0, gameMap->getCellSize(), gameMap->getCellSize()));
 			sprite.setOrigin(gameMap->getCellSize()/2, gameMap->getCellSize()/2);
 			goToCellSelector();
@@ -38,7 +32,22 @@ class Tower
 		~Tower()
 		{
 			delete upgradeInfo;
-//			delete specification;
+			delete specification;
+		}
+
+		void refreshRangeCircle()
+		{
+			std::vector<sf::VertexArray> *rangeCircleGraphicalElements =
+										new std::vector<sf::VertexArray>;
+			rangeCircleGraphicalElements->resize(1);
+			makeVertexArrayCircle(&(*rangeCircleGraphicalElements)[0], 0, 0, specification->getParameterValue(RANGE),
+								64, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
+			if (rangeCircle)
+				delete rangeCircle;
+			rangeCircle = new GraphicalEntity(rangeCircleGraphicalElements,
+						sf::Vector2f(0, 0), specification->getParameterValue(RANGE), 1, 0);
+			rangeCircle->changeScale(gameMap->getScale());
+			rangeCircle->drag(sprite.getPosition());
 		}
 
 		void drag()
@@ -114,6 +123,12 @@ class Tower
 
 		float getParameterValue(enum towerParameterType parameterType)
 		{ return specification->getParameterValue(parameterType); }
+
+		unsigned int getCost()
+		{ return specification->getCost(); }
+
+		unsigned int getCostWithUpgrades()
+		{ return specification->getCostWithUpgrades(); }
 
 		TowerUpgradeInfo* getUpgradeInfo()
 		{ return upgradeInfo; }

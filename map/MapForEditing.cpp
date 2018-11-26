@@ -299,9 +299,8 @@ class MapForEditing : public Map
 		}
 
 	public:
-		MapForEditing(unsigned int width, unsigned int height,
-			sf::Color towerCellBordersColor, sf::Color towerCellFillColor, sf::Color cellSelectorColor):
-		Map(width, height, towerCellBordersColor, towerCellFillColor, cellSelectorColor),
+		MapForEditing(unsigned int width, unsigned int height):
+		Map(width, height),
 		draggingStartCell(false), draggingEndCell(false), settingRocks(false), lastActionIndex(-1),
 		startNowWhereWas(EMPTY), endNowWhereWas(EMPTY)
 		{
@@ -311,9 +310,8 @@ class MapForEditing : public Map
 			pathMap[width-1][height-1] = 3;
 		}
 
-		MapForEditing(const char *fileName,
-			sf::Color towerCellBordersColor, sf::Color towerCellFillColor, sf::Color cellSelectorColor):
-		Map(0, 0, towerCellBordersColor, towerCellFillColor, cellSelectorColor),
+		MapForEditing(const char *fileName):
+		Map(0, 0),
 		draggingStartCell(false), draggingEndCell(false), settingRocks(false), lastActionIndex(-1),
 		startNowWhereWas(EMPTY), endNowWhereWas(EMPTY)
 		{

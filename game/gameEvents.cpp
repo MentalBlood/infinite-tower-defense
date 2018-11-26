@@ -99,24 +99,28 @@ std::list<Tower*>::iterator getTowerUnderSelector()
 	return towers.end();
 }
 
-void tryToShowTowerUpgradeInfo()
+bool tryToShowTowerUpgradeInfo()
 {
 	std::list<Tower*>::iterator towerUnderSelector = getTowerUnderSelector();
 	if (towerUnderSelector != towers.end())
-		currentShowingUpgradeInfo = (*towerUnderSelector)->getUpgradeInfo();
+	{
+		currentShowingUpgradeInfoTower = (*towerUnderSelector);
+		return true;
+	}
+	return false;
 }
 
 void hideTowerUpgradeInfo()
-{ currentShowingUpgradeInfo = NULL; }
+{ currentShowingUpgradeInfoTower = NULL; }
 
 void tryToDeleteTower()
 {
 	std::list<Tower*>::iterator towerUnderSelector = getTowerUnderSelector();
 	if (towerUnderSelector != towers.end())
 	{
-		money += (*towerUnderSelector)->getParameterValue(COST) / 2;
+		money += (*towerUnderSelector)->getCostWithUpgrades() / 2;
 		deleteTimersWithSuchArgument<Tower*>(*towerUnderSelector);
-		if ((*towerUnderSelector)->getUpgradeInfo() == currentShowingUpgradeInfo)
+		if ((*towerUnderSelector) == currentShowingUpgradeInfoTower)
 			hideTowerUpgradeInfo();
 		delete (*towerUnderSelector);
 		towers.erase(towerUnderSelector);
@@ -144,7 +148,7 @@ void tryToSetAddingTower()
 	}
 	else
 	{
-		money += addingTower->getParameterValue(COST);
+		money += addingTower->getCost();
 		updateMoneyText();
 		delete addingTower;
 	}
@@ -188,7 +192,7 @@ void gameKeyPressed()
 		tryToDeleteTower();
 	else if (event.key.code == sf::Keyboard::Escape)
 	{
-		if (currentShowingUpgradeInfo)
+		if (currentShowingUpgradeInfoTower)
 			hideTowerUpgradeInfo();
 		else
 			gameExit();
@@ -209,17 +213,28 @@ void gameMouseWheelScrolled()
 float gameDraggingPreviousMouseX0,
 	  gameDraggingPreviousMouseY0;
 
+bool itWasNotDraggingButClick;
+
 void gameMouseButtonPressed()
 {
 	if (event.mouseButton.button == sf::Mouse::Left)
 	{
-		if (currentShowingUpgradeInfo)
-			if (currentShowingUpgradeInfo->tryToPress(event.mouseButton.x, event.mouseButton.y))
-				return;
-		tryToShowTowerUpgradeInfo();
+		if (event.mouseButton.x < (windowSize.x * towersPanelRelativeX))
+			itWasNotDraggingButClick = true;
+		else
+		{
+			itWasNotDraggingButClick = false;
+			if (currentShowingUpgradeInfoTower)
+			{
+				if (currentShowingUpgradeInfoTower->getUpgradeInfo()->tryToPress(event.mouseButton.x, event.mouseButton.y))
+					currentShowingUpgradeInfoTower->refreshRangeCircle();
+			}
+			else
+				towersInfoStack->click(event.mouseButton.x, event.mouseButton.y);
+			return;
+		}
+		
 		if (gameHelpButton->tryToPress(event.mouseButton.x, event.mouseButton.y)) return;
-		if (!currentShowingUpgradeInfo)
-			if (towersInfoStack->click(event.mouseButton.x, event.mouseButton.y)) return;
 		gameMapDragging = true;
 		gameMapDraggingMouseX1 = event.mouseButton.x;
 		gameMapDraggingMouseY1 = event.mouseButton.y;
@@ -236,12 +251,16 @@ void gameMouseButtonReleased()
 {
 	gameMapDragging = false;
 	gameHelpButton->unpress();
-	if (currentShowingUpgradeInfo)
-		currentShowingUpgradeInfo->unpressButton();
+	if (currentShowingUpgradeInfoTower)
+		currentShowingUpgradeInfoTower->getUpgradeInfo()->unpressButton();
+	if (itWasNotDraggingButClick)
+		if (!tryToShowTowerUpgradeInfo())
+			hideTowerUpgradeInfo();
 }
 
 void gameMouseMoved()
 {
+	itWasNotDraggingButClick = false;
 	if (gameMapDragging)
 	{
 		gameMap->setPosition(

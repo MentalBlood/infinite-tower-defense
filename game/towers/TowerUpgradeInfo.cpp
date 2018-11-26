@@ -18,7 +18,7 @@ class TowerUpgradeInfo
 
 	public:
 		TowerUpgradeInfo(TowerSpecification *specification):
-		specification(new TowerSpecification(specification)), towerPreviewSprite(sf::Sprite(specification->getTexture())),
+		specification(specification), towerPreviewSprite(sf::Sprite(specification->getTexture())),
 		button(NULL)
 		{
 			text.setFont(fonts[towerInfoFont]);
@@ -29,7 +29,7 @@ class TowerUpgradeInfo
 		void refreshText()
 		{
 			int charactersWritten = 0;
-			for (unsigned int i = 0; i < towerParametersCount; i++)
+			for (unsigned int i = 0; i < (towerParametersCount-1); i++)
 			{
 				if (i)
 					charactersWritten += sprintf(textString + charactersWritten, "\n\n");
@@ -62,8 +62,8 @@ class TowerUpgradeInfo
 		void refreshButtonText()
 		{
 			char costString[32];
-			int costStringLength = sprintf( costString, "(costs %u)",
-											specification->getUpgradeCost());
+			int costStringLength = sprintf( costString, "(costs %.0f)",
+											specification->getParameterValue(towerParameterType(UPGRADE_COST)));
 			char stringFormat[32];
 			sprintf(stringFormat, "%%%ds\n%s", costStringLength - 2, costString);
 			sprintf(buttonString, stringFormat, "upgrade");
@@ -100,8 +100,8 @@ class TowerUpgradeInfo
 
 		void tryToUpgrade()
 		{
-			if (specification->getUpgradeCost() > money) return;
-			money -= specification->getUpgradeCost();
+			if (specification->getParameterValue(UPGRADE_COST) > money) return;
+			money -= specification->getParameterValue(UPGRADE_COST);
 			specification->setNextValues();
 
 			refreshText();

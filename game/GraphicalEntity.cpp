@@ -71,7 +71,9 @@ class GraphicalEntity
 		}
 
 		virtual ~GraphicalEntity()
-		{}
+		{
+			delete graphicalElements;
+		}
 
 		void drag(const sf::Vector2f & offset)
 		{

@@ -6,7 +6,7 @@ enum towerParameterType
 	RANGE,
 	SHOTS_DELAY,
 	SHELLS_SPEED,
-	COST,
+	UPGRADE_COST,
 	towerParametersCount
 };
 
@@ -15,8 +15,7 @@ const char *towerParameterTypeName[fontsCount]
 	"damage",
 	"range",
 	"shots delay",
-	"shells speed",
-	"COST"
+	"shells speed"
 };
 
 class TowerSpecification
@@ -27,11 +26,9 @@ class TowerSpecification
 		std::vector<Parameter*> parameters;
 		bool homingShots;
 
-		unsigned int upgradeCost;
+		unsigned int cost,
+					 costWithUpgrades;
 
-		void refreshUpgradeCost()
-		{ upgradeCost = 2 * (parameters[COST]->getNextValue() - parameters[COST]->getValue()); }
-		
 	public:
 		TowerSpecification(char *textureFileName, char *characteristicsFileName, char shotTypeArg)
 		{
@@ -43,11 +40,10 @@ class TowerSpecification
 		TowerSpecification(TowerSpecification *specificationToCopy):
 		shotType(specificationToCopy->getShotType()), texture(specificationToCopy->getTexture()),
 		parameters(specificationToCopy->getParameters()), homingShots(specificationToCopy->areShotsHoming()),
-		upgradeCost(specificationToCopy->getUpgradeCost())
+		cost(specificationToCopy->getCost()), costWithUpgrades(specificationToCopy->getCostWithUpgrades())
 		{
 			for (unsigned int i = 0; i < parameters.size(); i++)
 				parameters[i] = new Parameter(*parameters[i]);
-			refreshUpgradeCost();
 		}
 
 		~TowerSpecification()
@@ -72,14 +68,20 @@ class TowerSpecification
 			else
 				homingShots = false;
 
+			fscanf(characteristicsFile, "%u", &cost);
+			costWithUpgrades = cost;
+
 			fclose(characteristicsFile);
 		}
 
 		const sf::Texture & getTexture()
 		{ return texture; }
 
-		unsigned int getUpgradeCost()
-		{ return upgradeCost; }
+		unsigned int getCost()
+		{ return cost; }
+
+		unsigned int getCostWithUpgrades()
+		{ return costWithUpgrades; }
 
 		std::vector<Parameter*> & getParameters()
 		{ return parameters; }
@@ -92,9 +94,9 @@ class TowerSpecification
 
 		void setNextValues()
 		{
+			costWithUpgrades += parameters[UPGRADE_COST]->getValue();
 			for (unsigned int i = 0; i < parameters.size(); i++)
 				parameters[i]->setNextValue();
-			refreshUpgradeCost();
 		}
 
 		bool areShotsHoming()

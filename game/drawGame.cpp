@@ -20,8 +20,8 @@ void drawGame()
 	drawSplinters();
 
 	drawGameInfo();
-	if (currentShowingUpgradeInfo)
-		currentShowingUpgradeInfo->draw();
+	if (currentShowingUpgradeInfoTower)
+		currentShowingUpgradeInfoTower->getUpgradeInfo()->draw();
 	else
 		drawTowersPanel();
 	gameHelpButton->draw();

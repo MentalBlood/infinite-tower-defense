@@ -36,7 +36,7 @@ class TowerInfo
 		void refreshText()
 		{
 			int charactersWritten = 0;
-			for (unsigned int i = 0; i < towerParametersCount; i++)
+			for (unsigned int i = 0; i < (towerParametersCount-1); i++)
 			{
 				if (i)
 					charactersWritten += sprintf(textString + charactersWritten, "\n");
@@ -44,8 +44,9 @@ class TowerInfo
 											 towerParameterTypeName[i],
 											 specification->getParameterValue(towerParameterType(i)));
 			}
+			sprintf(textString + charactersWritten, "\n\nCOST: %u", specification->getCost());
 			text.setString(sf::String(textString));
-			fitTextIntoRectangle(&text, x + width * relativeSeparatorPosition, y + 2*bordersThickness,
+			fitTextIntoRectangle(&text, x + width * relativeSeparatorPosition, y + 2 * bordersThickness,
 										width * (1 - relativeSeparatorPosition) - bordersThickness,
 										height - 2 * bordersThickness);
 		}
@@ -99,12 +100,12 @@ class TowerInfo
 		{
 			if (addingTower)
 			{
-				if ((money + addingTower->getParameterValue(COST)) < specification->getParameterValue(COST)) return;
-				money += addingTower->getParameterValue(COST);
+				if ((money + addingTower->getCost()) < specification->getCost()) return;
+				money += addingTower->getCost();
 			}
 			else
-				if (money < specification->getParameterValue(COST)) return;
-			money -= specification->getParameterValue(COST);
+				if (money < specification->getCost()) return;
+			money -= specification->getCost();
 			updateMoneyText();
 			addingTower = new Tower(specification);
 		}

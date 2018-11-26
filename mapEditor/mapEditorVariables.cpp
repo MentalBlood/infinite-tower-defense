@@ -43,8 +43,7 @@ void updateMapEditorVariables()
 void setMapEditorVariables(int mapEditorMapWidth, int mapEditorMapHeight)
 {
 	editingNewMap = true;
-	mapEditorMap = new MapForEditing(mapEditorMapWidth, mapEditorMapHeight,
-					sf::Color(150, 150, 64, 196), sf::Color(0, 0, 196, 128), sf::Color(128, 0, 196));
+	mapEditorMap = new MapForEditing(mapEditorMapWidth, mapEditorMapHeight);
 	mapEditorMap->setTextures(0.9);
 	mapEditorMap->fitInRectangle(sf::Vector2f(0, 0), sf::Vector2f(1, 1));
 	mapEditorMapDragging = false;
@@ -61,8 +60,7 @@ void setMapEditorVariables(int mapEditorMapWidth, int mapEditorMapHeight)
 void setMapEditorVariables(std::string &fileName)
 {
 	editingNewMap = false;
-	mapEditorMap = new MapForEditing(fileName.data(), sf::Color(150, 150, 64, 196),
-									sf::Color(0, 0, 196, 128), sf::Color(128, 0, 196));
+	mapEditorMap = new MapForEditing(fileName.data());
 	mapEditorMap->setTextures(0.9);
 	mapEditorMap->fitInRectangle(sf::Vector2f(0, 0), sf::Vector2f(1, 1));
 	mapEditorMapDragging = false;

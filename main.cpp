@@ -18,7 +18,6 @@ sf::Time elapsed;
 void (*updateFunction)(),
 	 (*drawFunction)();
 
-
 void startMenu();
 void (*helpScreenFunctionAfterExit)() = startMenu;
 void startHelpScreen();
