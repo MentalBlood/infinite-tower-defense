@@ -12,7 +12,6 @@ class TwoConditionButton
 			 (*functionOnUnpress)();
 
 		sf::String textString;
-		sf::Font *font;
 		sf::Text text;
 		sf::Color	fillColor,
 					bordersColor;
@@ -25,7 +24,8 @@ class TwoConditionButton
 			  relativeHeight,
 			  x, y, width, height,
 			  relativeTextIndent,
-			  relativeBordersThickness;
+			  relativeBordersThickness,
+			  bordersThickness;
 
 		void press()
 		{
@@ -34,9 +34,16 @@ class TwoConditionButton
 			functionOnPress();
 		}
 
+		void updateTextPositionAndSize()
+		{
+			fitTextIntoRectangle(&text, x + bordersThickness * relativeTextIndent, y + bordersThickness * relativeTextIndent,
+								width - 2 * bordersThickness * relativeTextIndent,
+								height - 2 * bordersThickness * relativeTextIndent);
+		}
+
 	public:
 		TwoConditionButton(	void (*functionOnPress)(), void (*functionOnUnpress)(), sf::String textString,
-							sf::String textFontFileName, sf::Color textColor, sf::Color fillColor, sf::Color bordersColor, 
+							enum fontType fontIndex, sf::Color textColor, sf::Color fillColor, sf::Color bordersColor, 
 							float relativeX, float relativeY, float relativeWidth, float relativeHeight,
 							float relativeTextIndent, float relativeBordersThickness = 1.0):
 			pressed(false), functionOnPress(functionOnPress), functionOnUnpress(functionOnUnpress),
@@ -44,9 +51,7 @@ class TwoConditionButton
 			relativeX(relativeX), relativeY(relativeY), relativeWidth(relativeWidth), relativeHeight(relativeHeight),
 			relativeTextIndent(relativeTextIndent), relativeBordersThickness(relativeBordersThickness)
 		{
-			font = new sf::Font;
-			if (!font->loadFromFile(textFontFileName)) Closed();
-			text.setFont(*font);
+			text.setFont(fonts[fontIndex]);
 			text.setString(textString);
 			text.setFillColor(textColor);
 			updatePositionAndSize();
@@ -58,11 +63,9 @@ class TwoConditionButton
 			y = windowSize.y * relativeY;
 			width = windowSize.x * relativeWidth;
 			height = windowSize.y * relativeHeight;
-			float bordersThickness = sqrt(width * height) / 64 * relativeBordersThickness;
+			bordersThickness = sqrt(width * height) / 64 * relativeBordersThickness;
 
-			fitTextIntoRectangle(&text, x + bordersThickness * relativeTextIndent, y + bordersThickness * relativeTextIndent,
-								width - 2 * bordersThickness * relativeTextIndent,
-								height - 2 * bordersThickness * relativeTextIndent);
+			updateTextPositionAndSize();
 
 			makeVertexArrayFrame(&borders, x, y, width, height, bordersThickness, bordersColor);
 			makeVertexArrayQuad(&fill, x + bordersThickness, y + bordersThickness,
@@ -87,6 +90,13 @@ class TwoConditionButton
 				return true;
 			}
 			return false;
+		}
+
+		void setString(sf::String newString)
+		{
+			textString = newString;
+			text.setString(newString);
+			updateTextPositionAndSize();
 		}
 
 		void draw()

@@ -31,6 +31,7 @@ std::list<Monster*> monsters;
 #include "towers/towersPanel.cpp"
 std::list<Tower*> towers;
 unsigned int towerToAddNumber;
+TowerUpgradeInfo *currentShowingUpgradeInfo;
 
 #include "Grid.cpp"
 #include "shooting.cpp"
@@ -39,6 +40,9 @@ void updateGameVariables()
 {
 	updateGameInfoVariables();
 	updateTowersPanelPositionAndSize();
+	if (currentShowingUpgradeInfo)
+		currentShowingUpgradeInfo->updatePositionAndSize();
+	gameHelpButton->updatePositionAndSize();
 }
 
 void dragGameObjects()
@@ -90,11 +94,12 @@ void setGameVariables(const char *gameMapFileName)
 	setTowersPanel();
 	towerToAddNumber = 0;
 	addingTower = NULL;
+	currentShowingUpgradeInfo = NULL;
 
 	windowSize = window.getSize();
 	setGameInfoVariables();
 
-	gameHelpButton = new TwoConditionButton(nothing, gameShowHelpScreen, "?", "fonts/helpButtonFont.otf",
+	gameHelpButton = new TwoConditionButton(nothing, gameShowHelpScreen, "?", helpButtonFont,
 											sf::Color(255, 196, 64), sf::Color(0, 0, 64, 128), sf::Color(64, 64, 128),
 											0.01, 0.01, 0.03, 0.06, 1, 4);
 

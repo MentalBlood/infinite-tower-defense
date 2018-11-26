@@ -1,5 +1,3 @@
-sf::Font menuFont;
-
 sf::Color	menuFontColor(0, 175, 70),
 			menuSelectedEntryColor(215, 215, 60);
 
@@ -33,13 +31,11 @@ void setMenuVariables()
 	menuEntries.resize(5);
 	menuFunctions.resize(5);
 
-	if (!menuFont.loadFromFile("fonts/menuFont.otf")) Closed();
-
 	updateMenuVariables();
 	
 	for (unsigned int i = 0; i < menuEntries.size(); i++)
 	{
-		menuEntries[i].setFont(menuFont);
+		menuEntries[i].setFont(fonts[menuFont]);
 		menuEntries[i].setFillColor(menuFontColor);
 	}
 

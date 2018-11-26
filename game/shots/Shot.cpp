@@ -67,7 +67,7 @@ class Shot : public GraphicalEntity
 		finished(false), homing(tower->areShotsHoming()), monster(monster),
 		initialMonsterPosition(monster->getPosition()), lastMonsterPosition(monster->getPosition()),
 		unitMovementVector(unitVector(getDistanceVector(monster->getPosition()))),
-		distanceLeft(tower->getRange()), speed(tower->getShellsSpeed()), damage(tower->getDamage()),
+		distanceLeft(tower->getParameterValue(RANGE)), speed(tower->getParameterValue(SHELLS_SPEED)), damage(tower->getParameterValue(DAMAGE)),
 		monsterRadius(monster->getRadius())
 		{
 			rotateToPoint(initialMonsterPosition);

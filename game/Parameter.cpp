@@ -2,15 +2,18 @@ class Parameter
 {
 	private:
 		float currentValue,
+			  nextValue,
 			  adder,
 			  multiplier;
+
+		float calculateNextValue()
+		{ return (currentValue + adder) * multiplier; }
 
 	public:
 		Parameter(FILE *file)
 		{
 			fscanf(file, "%f%f%f", &currentValue, &adder, &multiplier);
-			printf("currentValue = %f\nadder = %f\nmultiplier = %f\n",
-					currentValue, adder, multiplier);
+			nextValue = calculateNextValue();
 		}
 
 		static void rawWrite(FILE *file, float currentValueArg, float adderArg, float multiplierArg)
@@ -32,6 +35,12 @@ class Parameter
 		float getValue()
 		{ return currentValue; }
 
-		void calculateNextValue()
-		{ currentValue = (currentValue + adder) * multiplier; }
+		float getNextValue()
+		{ return nextValue; }
+
+		void setNextValue()
+		{
+			currentValue = nextValue;
+			nextValue = calculateNextValue();
+		}
 };

@@ -5,23 +5,19 @@ Text *currentSecondsToNextWaveText,
 
 void setGameInfoVariables()
 {
-	currentSecondsToNextWaveText = new Text("next wave in ",
-											"fonts/gameInfoFont.otf",
+	currentSecondsToNextWaveText = new Text("next wave in ", gameInfoFont,
 											sf::Color(255, 255, 255, 192),
 											0.05, 0.9, 0.05);
 
-	currentWaveNumberText =	new Text(		"wave ",
-											"fonts/gameInfoFont.otf",
+	currentWaveNumberText =	new Text(		"wave ", gameInfoFont,
 											sf::Color(255, 128, 128, 192),
 											0.65, 0.9, 0.05);
 
-	baseHealthText = new Text(				"base health:",
-											"fonts/gameInfoFont.otf",
+	baseHealthText = new Text(				"base health:", gameInfoFont,
 											sf::Color(0, 255, 0, 192),
 											0.50, 0, 0.05);
 
-	moneyText = new Text(					"money:",
-											"fonts/gameInfoFont.otf",
+	moneyText = new Text(					"money:", gameInfoFont,
 											sf::Color(255, 255, 0, 192),
 											0.05, 0, 0.05);
 }

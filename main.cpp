@@ -30,6 +30,7 @@ void startNewMapSettings();
 void startMapEditor();
 
 #include "events.cpp"
+#include "loadFonts.cpp"
 
 #include "graphicsFunctions/vertexArrays.cpp"
 #include "graphicsFunctions/textFunctions.cpp"
@@ -98,6 +99,7 @@ int main(void)
 	window.setVerticalSyncEnabled(false);
 	window.setFramerateLimit(60);
 	setCommonEvents();
+	loadFonts();
 
 	startMenu();
 

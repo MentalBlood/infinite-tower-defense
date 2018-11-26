@@ -213,9 +213,6 @@ void gameMouseButtonPressed()
 {
 	if (event.mouseButton.button == sf::Mouse::Left)
 	{
-		if (currentShowingUpgradeInfo)
-			if (currentShowingUpgradeInfo->tryToPress(event.mouseButton.x, event.mouseButton.y))
-				return;
 		tryToShowTowerUpgradeInfo();
 		if (gameHelpButton->tryToPress(event.mouseButton.x, event.mouseButton.y)) return;
 		if (!currentShowingUpgradeInfo)
@@ -236,8 +233,6 @@ void gameMouseButtonReleased()
 {
 	gameMapDragging = false;
 	gameHelpButton->unpress();
-	if (currentShowingUpgradeInfo)
-		currentShowingUpgradeInfo->unpressButton();
 }
 
 void gameMouseMoved()

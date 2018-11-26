@@ -15,7 +15,6 @@ class Message
 					fillColor,
 					bordersColor;
 
-		sf::Font font;
 		sf::Text text;
 
 		TwoConditionButton *button;
@@ -27,7 +26,7 @@ class Message
 						borders;
 
 	public:
-		Message(void (*functionOnUnpress)(), sf::String textString, sf::String buttonTextString, sf::String fontFileName,
+		Message(void (*functionOnUnpress)(), sf::String textString, sf::String buttonTextString, enum fontType fontIndex,
 				float relativeX, float relativeY, float relativeWidth, float relativeHeight, float relativeTextIndent,
 				sf::Color textColor, sf::Color fillColor, sf::Color bordersColor):
 			functionOnUnpress(functionOnUnpress), textString(textString),
@@ -35,12 +34,11 @@ class Message
 			relativeTextIndent(relativeTextIndent),
 			textColor(textColor), fillColor(fillColor), bordersColor(bordersColor)
 		{
-			if (!font.loadFromFile(fontFileName)) Closed();
-			text.setFont(font);
+			text.setFont(fonts[fontIndex]);
 			text.setString(textString);
 			text.setFillColor(textColor);
 			if (buttonTextString.getSize())
-				button = new TwoConditionButton(nothing, functionOnUnpress, buttonTextString, fontFileName,
+				button = new TwoConditionButton(nothing, functionOnUnpress, buttonTextString, fontIndex,
 												textColor, fillColor, bordersColor,
 												relativeX + relativeWidth/4, relativeY + relativeHeight*3/4,
 												relativeWidth/2, relativeHeight/8, relativeTextIndent);

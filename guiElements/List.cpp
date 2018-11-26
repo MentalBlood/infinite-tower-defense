@@ -19,14 +19,11 @@ class List
 					fillColor,
 					bordersColor,
 					selectorColor;
+		enum fontType itemsFontIndex;
 
 		std::vector<sf::Text> items;
 
-		sf::Font	nameFont,
-					itemsFont;
-
 		sf::Text nameText;
-
 		sf::VertexArray nameFrame,
 						itemsFrame,
 						fill;
@@ -40,20 +37,19 @@ class List
 
 	public:
 		List(sf::String nameString, void (*functionOnSelect)(std::string),
-			sf::String nameFontFileName, sf::String itemsFontFileName,
+			enum fontType nameFontIndex, enum fontType itemsFontIndex,
 			float relativeX, float relativeY,
 			float relativeWidth, float relativeHeight, int numberOfItemsShown,
 			sf::Color nameColor, sf::Color itemsColor, sf::Color fillColor, sf::Color bordersColor, sf::Color selectorColor):
 			numberOfItemsShown(numberOfItemsShown), firstItemShownNumber(0), lastItemShownNumber(-1), selectedItemNumber(0),
 			nameString(nameString), relativeX(relativeX), relativeY(relativeY),
 			relativeWidth(relativeWidth), relativeHeight(relativeHeight), functionOnSelect(functionOnSelect),
-			itemsColor(itemsColor), fillColor(fillColor), bordersColor(bordersColor), selectorColor(selectorColor)
+			itemsColor(itemsColor), fillColor(fillColor), bordersColor(bordersColor), selectorColor(selectorColor),
+			itemsFontIndex(itemsFontIndex)
 		{
-			if (!nameFont.loadFromFile(nameFontFileName)) Closed();
-			nameText.setFont(nameFont);
+			nameText.setFont(fonts[nameFontIndex]);
 			nameText.setString(nameString);
 			nameText.setFillColor(nameColor);
-			if (!itemsFont.loadFromFile(itemsFontFileName)) Closed();
 			updatePositionAndSize();
 		}
 
@@ -95,7 +91,7 @@ class List
 
 		void addItem(sf::String name)
 		{
-			sf::Text *newItem = new sf::Text(name, itemsFont);
+			sf::Text *newItem = new sf::Text(name, fonts[itemsFontIndex]);
 			newItem->setFillColor(itemsColor);
 
 			bool inserted = false;

@@ -21,8 +21,6 @@ char* intToString(int x)
 	return *string;
 }
 
-sf::Font newMapSettingsFont;
-
 sf::Color	newMapSettingsFontColor(0, 175, 70),
 			newMapSelectedSettingColor(215, 215, 60);
 
@@ -50,10 +48,8 @@ void updateNewMapSettingsVariables()
 
 void setNewMapSettingsVariables()
 {
-	if (!newMapSettingsFont.loadFromFile("fonts/newMapSettingsFont.otf")) Closed();
-
-	newMapSettings.push_back(Setting(sf::String("width"), &newMapSettingsFont, newMapSettingsFontColor, 1, 8, 128));
-	newMapSettings.push_back(Setting(sf::String("height"), &newMapSettingsFont, newMapSettingsFontColor, 1, 8, 128));
+	newMapSettings.push_back(Setting(sf::String("width"), &fonts[newMapSettingsFont], newMapSettingsFontColor, 1, 8, 128));
+	newMapSettings.push_back(Setting(sf::String("height"), &fonts[newMapSettingsFont], newMapSettingsFontColor, 1, 8, 128));
 
 	updateNewMapSettingsVariables();
 	newMapSettingsSelectedSettingNumber = 0;

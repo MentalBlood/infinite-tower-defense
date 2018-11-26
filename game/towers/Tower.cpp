@@ -14,19 +14,20 @@ class Tower
 		sf::Sprite sprite;
 		bool drawRangeCircle;
 		GraphicalEntity *rangeCircle;
+		TowerUpgradeInfo *upgradeInfo;
 
 	public:
 		Tower(TowerSpecification *specification):
-		specification(specification), rangeSquare(specification->getRange() * specification->getRange()),
-		sprite(specification->getTexture()), drawRangeCircle(true)
+		specification(specification), rangeSquare(specification->getParameterValue(RANGE) * specification->getParameterValue(RANGE)),
+		sprite(specification->getTexture()), drawRangeCircle(true), upgradeInfo(new TowerUpgradeInfo(specification))
 		{
 			std::vector<sf::VertexArray> *rangeCircleGraphicalElements =
 										new std::vector<sf::VertexArray>;
 			rangeCircleGraphicalElements->resize(1);
-			makeVertexArrayCircle(&(*rangeCircleGraphicalElements)[0], 0, 0, specification->getRange(),
+			makeVertexArrayCircle(&(*rangeCircleGraphicalElements)[0], 0, 0, specification->getParameterValue(RANGE),
 								64, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
 			rangeCircle = new GraphicalEntity(rangeCircleGraphicalElements,
-						sf::Vector2f(0, 0), specification->getRange(), 1, 0);
+						sf::Vector2f(0, 0), specification->getParameterValue(RANGE), 1, 0);
 			rangeCircle->changeScale(gameMap->getScale());
 			sprite.setTextureRect(sf::IntRect(0, 0, gameMap->getCellSize(), gameMap->getCellSize()));
 			sprite.setOrigin(gameMap->getCellSize()/2, gameMap->getCellSize()/2);
@@ -35,7 +36,10 @@ class Tower
 		}
 
 		~Tower()
-		{}
+		{
+			delete upgradeInfo;
+//			delete specification;
+		}
 
 		void drag()
 		{
@@ -102,24 +106,15 @@ class Tower
 		float getRangeSquare()
 		{ return rangeSquare; }
 
-		float getShotsDelay()
-		{ return specification->getShotsDelay(); }
-
 		char getShotType()
 		{ return specification->getShotType(); }
-
-		float getDamage()
-		{ return specification->getDamage(); }
-
-		float getRange()
-		{ return specification->getRange(); }
-
-		float getShellsSpeed()
-		{ return specification->getShellsSpeed(); }
 
 		bool areShotsHoming()
 		{ return specification->areShotsHoming(); }
 
-		unsigned int getCost()
-		{ return specification->getCost(); }
+		float getParameterValue(enum towerParameterType parameterType)
+		{ return specification->getParameterValue(parameterType); }
+
+		TowerUpgradeInfo* getUpgradeInfo()
+		{ return upgradeInfo; }
 };

@@ -41,5 +41,5 @@ void tryToShoot(Tower *tower)
 	else if (tower->getShotType() == TYPE_E)
 		shots.push_back(new ShotTypeE(tower, nearestMonster));
 
-	new Timer<Tower*>(tower->getShotsDelay(), tryToShoot, tower);
+	new Timer<Tower*>(tower->getParameterValue(SHOTS_DELAY), tryToShoot, tower);
 }

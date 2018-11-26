@@ -7,17 +7,15 @@ class Text
 
 		sf::String string;
 		sf::Color color;
-		sf::Font font;
 		sf::Text text;
 
 	public:
-		Text(	sf::String string, sf::String fontFileName, sf::Color color,
+		Text(	sf::String string, enum fontType fontIndex, sf::Color color,
 				float relativeX, float relativeY, float relativeSize):
 			relativeX(relativeX), relativeY(relativeY), relativeSize(relativeSize),
 			string(string), color(color)
 		{
-			if (!font.loadFromFile(fontFileName)) Closed();
-			text.setFont(font);
+			text.setFont(fonts[fontIndex]);
 			text.setString(string);
 			text.setFillColor(color);
 

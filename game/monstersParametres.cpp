@@ -36,8 +36,8 @@ void clearMonsterParameters()
 
 void calculateNextWaveMonstersParametres()
 {
-	nextWaveNumberOfMonsters->calculateNextValue();
-	nextWaveSecondsBetweenSpawns->calculateNextValue();
-	nextWaveMonstersSpeed->calculateNextValue();
-	nextWaveMonstersHealth->calculateNextValue();
+	nextWaveNumberOfMonsters->setNextValue();
+	nextWaveSecondsBetweenSpawns->setNextValue();
+	nextWaveMonstersSpeed->setNextValue();
+	nextWaveMonstersHealth->setNextValue();
 }

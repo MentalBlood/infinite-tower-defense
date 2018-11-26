@@ -13,8 +13,7 @@ class TowerInfo
 
 		sf::VertexArray borders, fill;
 
-		sf::Font font;
-		char textString[128];
+		char textString[256];
 		sf::Text text;
 
 	public:
@@ -26,9 +25,8 @@ class TowerInfo
 		relativeX(relativeX), relativeY(relativeY),
 		relativeWidth(relativeWidth), relativeHeight(relativeHeight)
 		{
-			if (!font.loadFromFile("fonts/towerInfoFont.otf")) Closed();
-			text.setFont(font);
-			text.setFillColor(sf::Color(192, 64, 64));
+			text.setFont(fonts[towerInfoFont]);
+			text.setFillColor(sf::Color(196, 255, 0));
 			updatePositionAndSize();
 		}
 
@@ -37,12 +35,15 @@ class TowerInfo
 
 		void refreshText()
 		{
-			sprintf(textString, "damage: %.1f\nrange: %.1f\nshots/sec: %.1f\nshells speed: %.1f\n\nCOST: %.1f",
-					specification->getDamage(),
-					specification->getRange(),
-					1.0 / specification->getShotsDelay(),
-					specification->getShellsSpeed(),
-					specification->getCost());
+			int charactersWritten = 0;
+			for (unsigned int i = 0; i < towerParametersCount; i++)
+			{
+				if (i)
+					charactersWritten += sprintf(textString + charactersWritten, "\n");
+				charactersWritten += sprintf(textString + charactersWritten, "%s: %.2f",
+											 towerParameterTypeName[i],
+											 specification->getParameterValue(towerParameterType(i)));
+			}
 			text.setString(sf::String(textString));
 			fitTextIntoRectangle(&text, x + width * relativeSeparatorPosition, y + 2*bordersThickness,
 										width * (1 - relativeSeparatorPosition) - bordersThickness,
@@ -58,10 +59,10 @@ class TowerInfo
 			bordersThickness = sqrt(width * height) / 64;
 
 			makeVertexArrayFrame(&borders, x, y, width, height, bordersThickness,
-								sf::Color(32, 128, 32, 192));
+								sf::Color(8, 8, 8));
 			makeVertexArrayQuad(&fill, x + bordersThickness, y + bordersThickness,
 								width - 2 * bordersThickness, height - 2 * bordersThickness,
-								sf::Color(sf::Color(192, 192, 192)));
+								sf::Color(sf::Color(16, 32, 64)));
 			refreshText();
 
 			
@@ -98,12 +99,12 @@ class TowerInfo
 		{
 			if (addingTower)
 			{
-				if ((money + addingTower->getCost()) < specification->getCost()) return;
-				money += addingTower->getCost();
+				if ((money + addingTower->getParameterValue(COST)) < specification->getParameterValue(COST)) return;
+				money += addingTower->getParameterValue(COST);
 			}
 			else
-				if (money < specification->getCost()) return;
-			money -= specification->getCost();
+				if (money < specification->getParameterValue(COST)) return;
+			money -= specification->getParameterValue(COST);
 			updateMoneyText();
 			addingTower = new Tower(specification);
 		}

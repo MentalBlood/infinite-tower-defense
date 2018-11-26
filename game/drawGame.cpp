@@ -20,7 +20,10 @@ void drawGame()
 	drawSplinters();
 
 	drawGameInfo();
-	drawTowersPanel();
+	if (currentShowingUpgradeInfo)
+		currentShowingUpgradeInfo->draw();
+	else
+		drawTowersPanel();
 	gameHelpButton->draw();
 	
 	window.display();

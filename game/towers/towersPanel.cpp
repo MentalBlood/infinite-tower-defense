@@ -7,8 +7,10 @@ float towersPanelRelativeX = 0.8,
 std::vector<sf::VertexArray> towersPanelGraphicsElements;
 
 #include "TowerSpecification.cpp"
+#include "TowerUpgradeInfo.cpp"
 #include "Tower.cpp"
 Tower *addingTower;
+
 #include "TowerInfo.cpp"
 #include "TowersInfoStack.cpp"
 TowersInfoStack *towersInfoStack;
@@ -18,7 +20,7 @@ void updateTowersPanelPositionAndSize()
 	makeVertexArrayQuad(&towersPanelGraphicsElements[0],
 						towersPanelRelativeX * windowSize.x, towersPanelRelativeY * windowSize.y,
 						towersPanelRelativeWidth * windowSize.x,
-						towersPanelRelativeHeight * windowSize.y, sf::Color(92, 128, 92));
+						towersPanelRelativeHeight * windowSize.y, sf::Color(8, 16, 32));
 	towersInfoStack->updatePositionAndSize();
 }
 

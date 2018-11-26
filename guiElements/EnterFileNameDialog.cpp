@@ -15,7 +15,6 @@ class EnterFileNameDialog
 					bordersColor;
 
 		sf::Text prompt, enteredText;
-		sf::Font font;
 
 		sf::VertexArray promptFrame,
 						enteredTextFrame,
@@ -27,17 +26,16 @@ class EnterFileNameDialog
 
 	public:
 		EnterFileNameDialog(sf::String promptString, void (*functionOnComplete)(std::string), float relativeX, float relativeY, float relativeWidth, float relativeHeight,
-							sf::String textFontFileName,
+							enum fontType textFontIndex,
 							sf::Color promptColor, sf::Color enteredTextColor, sf::Color fillColor, sf::Color bordersColor):
 			promptString(promptString), functionOnComplete(functionOnComplete),
 			relativeX(relativeX), relativeY(relativeY), relativeWidth(relativeWidth), relativeHeight(relativeHeight),
 			promptColor(promptColor), enteredTextColor(enteredTextColor), fillColor(fillColor), bordersColor(bordersColor)
 		{
-			if (!font.loadFromFile(textFontFileName)) Closed();
-			prompt.setFont(font);
+			prompt.setFont(fonts[textFontIndex]);
 			prompt.setString(promptString);
 			prompt.setFillColor(promptColor);
-			enteredText.setFont(font);
+			enteredText.setFont(fonts[textFontIndex]);
 			enteredText.setString("");
 			enteredText.setFillColor(enteredTextColor);
 
