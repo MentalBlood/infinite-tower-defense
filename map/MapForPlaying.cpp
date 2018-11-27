@@ -57,16 +57,6 @@ class MapForPlaying : public Map
 			loadFile(fileName);
 		}
 
-		~MapForPlaying()
-		{
-			delete towerCellTexture;
-			delete pathCellTexture;
-			delete cellSelectorTexture;
-			delete startCellTexture;
-			delete endCellTexture;
-			delete rockCellTexture;
-		}
-
 		void changeZoom()
 		{
 			if ((gameScaleDelta < 1.0) && (zoom < (0.1 / gameScaleDelta))) return;

@@ -33,17 +33,25 @@ class Tower
 		{
 			delete upgradeInfo;
 			delete specification;
+			delete rangeCircle;
 		}
 
 		void refreshRangeCircle()
 		{
+			if (rangeCircle)
+			{
+				if (specification->getParameterValue(RANGE) == rangeCircle->getRadius())
+					return;
+				else
+					delete rangeCircle;
+			}
+
+			rangeSquare = pow(specification->getParameterValue(RANGE), 2);
 			std::vector<sf::VertexArray> *rangeCircleGraphicalElements =
 										new std::vector<sf::VertexArray>;
 			rangeCircleGraphicalElements->resize(1);
 			makeVertexArrayCircle(&(*rangeCircleGraphicalElements)[0], 0, 0, specification->getParameterValue(RANGE),
 								64, sf::Color::Transparent, sf::Color(255, 255, 255, 128));
-			if (rangeCircle)
-				delete rangeCircle;
 			rangeCircle = new GraphicalEntity(rangeCircleGraphicalElements,
 						sf::Vector2f(0, 0), specification->getParameterValue(RANGE), 1, 0);
 			rangeCircle->changeScale(gameMap->getScale());

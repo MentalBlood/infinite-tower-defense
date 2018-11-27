@@ -60,6 +60,16 @@ class Map
 			mapPositionY = y;
 		}
 
+		~Map()
+		{
+			delete towerCellTexture;
+			delete pathCellTexture;
+			delete cellSelectorTexture;
+			delete startCellTexture;
+			delete endCellTexture;
+			delete rockCellTexture;
+		}
+
 		void draw()
 		{
 			float cellSpriteX = mapPositionX, 

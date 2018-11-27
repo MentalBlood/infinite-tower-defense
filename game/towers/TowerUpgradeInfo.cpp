@@ -26,6 +26,9 @@ class TowerUpgradeInfo
 			updatePositionAndSize();
 		}
 
+		~TowerUpgradeInfo()
+		{ delete button; }
+
 		void refreshText()
 		{
 			int charactersWritten = 0;

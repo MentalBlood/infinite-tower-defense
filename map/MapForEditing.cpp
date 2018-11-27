@@ -318,16 +318,6 @@ class MapForEditing : public Map
 			loadFile(fileName);
 		}
 
-		~MapForEditing()
-		{
-			delete towerCellTexture;
-			delete pathCellTexture;
-			delete cellSelectorTexture;
-			delete startCellTexture;
-			delete endCellTexture;
-			delete rockCellTexture;
-		}
-
 		bool check()
 		{
 			for (unsigned int i = 0; i < pathMap.size(); i++)
