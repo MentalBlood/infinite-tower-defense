@@ -21,7 +21,7 @@ class TowerUpgradeInfo
 		specification(specification), towerPreviewSprite(sf::Sprite(specification->getTexture())),
 		button(NULL)
 		{
-			text.setFont(fonts[towerInfoFont]);
+			text.setFont(fonts[towerUpgradeInfoFont]);
 			text.setFillColor(sf::Color(196, 255, 0));
 			updatePositionAndSize();
 		}

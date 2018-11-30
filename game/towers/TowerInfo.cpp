@@ -60,10 +60,10 @@ class TowerInfo
 			bordersThickness = sqrt(width * height) / 64;
 
 			makeVertexArrayFrame(&borders, x, y, width, height, bordersThickness,
-								sf::Color(8, 8, 8));
+								sf::Color(0, 33, 102));
 			makeVertexArrayQuad(&fill, x + bordersThickness, y + bordersThickness,
 								width - 2 * bordersThickness, height - 2 * bordersThickness,
-								sf::Color(sf::Color(16, 32, 64)));
+								sf::Color(sf::Color(32, 64, 128)));
 			refreshText();
 
 			

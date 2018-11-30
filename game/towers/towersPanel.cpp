@@ -20,7 +20,7 @@ void updateTowersPanelPositionAndSize()
 	makeVertexArrayQuad(&towersPanelGraphicsElements[0],
 						towersPanelRelativeX * windowSize.x, towersPanelRelativeY * windowSize.y,
 						towersPanelRelativeWidth * windowSize.x,
-						towersPanelRelativeHeight * windowSize.y, sf::Color(8, 16, 32));
+						towersPanelRelativeHeight * windowSize.y, sf::Color(0, 33, 102));
 	towersInfoStack->updatePositionAndSize();
 }
 

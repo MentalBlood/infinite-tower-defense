@@ -12,6 +12,7 @@ enum fontType
 	selectMapScreenFont,
 	towerInfoFont,
 	upgradeButtonFont,
+	towerUpgradeInfoFont,
 	fontsCount
 };
 
@@ -27,8 +28,9 @@ const char *fontTypeFileName[fontsCount]
 	"messageFont.otf",
 	"newMapSettingsFont.otf",
 	"selectMapScreenFont.otf",
-	"towerInfoFont.ttf",
-	"upgradeButtonFont.otf"
+	"towerInfoFont.otf",
+	"upgradeButtonFont.otf",
+	"towerUpgradeInfoFont.otf"
 };
 
 std::vector<sf::Font> fonts;
