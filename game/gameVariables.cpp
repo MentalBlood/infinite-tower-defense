@@ -36,6 +36,8 @@ Tower *currentShowingUpgradeInfoTower;
 #include "Grid.cpp"
 #include "shooting.cpp"
 
+#include "Bot.cpp"
+
 void updateGameVariables()
 {
 	updateGameInfoVariables();

@@ -228,6 +228,12 @@ class Map
 			return sf::Vector2f(mapPositionX - oldMapPositionX, mapPositionY - oldMapPositionY);
 		}
 
+		sf::Vector2f getRelativeCellCoordinates(unsigned int x, unsigned int y)
+		{
+			return sf::Vector2f(x * cellTextureSize,
+								y * cellTextureSize);
+		}
+
 		sf::Vector2f getCellCoordinates(unsigned int x, unsigned int y)
 		{
 			return sf::Vector2f(x * realCellTextureSize + mapPositionX,

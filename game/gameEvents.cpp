@@ -136,6 +136,15 @@ void tryToShowHideTowerRangeRadius()
 		(*towerUnderSelector)->showHideRangeCircle();
 }
 
+void tryToGetDistanceCoveredByTower()
+{
+	std::list<Tower*>::iterator towerUnderSelector = getTowerUnderSelector();
+	if (towerUnderSelector != towers.end())
+		printf("tower covers distance %f\n", getDistanceCoveredByTower((*towerUnderSelector)));
+	else
+		printf("no tower here\n");
+}
+
 void tryToSetAddingTower()
 {
 	if (!addingTower) return;
@@ -188,6 +197,8 @@ void gameKeyPressed()
 		tryToShowHideTowerRangeRadius();
 	else if (event.key.code == sf::Keyboard::S)
 		tryToSetAddingTower();
+	else if (event.key.code == sf::Keyboard::D)
+		tryToGetDistanceCoveredByTower();
 	else if (event.key.code == sf::Keyboard::Delete)
 		tryToDeleteTower();
 	else if (event.key.code == sf::Keyboard::Escape)

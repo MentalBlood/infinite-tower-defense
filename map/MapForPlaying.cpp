@@ -71,6 +71,12 @@ class MapForPlaying : public Map
 		sf::Vector2f getPosition()
 		{ return sf::Vector2f(mapPositionX, mapPositionY); }
 
+		sf::Vector2f getRelativeSpawnPoint()
+		{
+			return sf::Vector2f(cellTextureSize * (x1 + 0.5),
+								cellTextureSize * (y1 + 0.5));
+		}
+
 		sf::Vector2f getSpawnPoint()
 		{
 			return sf::Vector2f(mapPositionX + realCellTextureSize * (x1 + 0.5),
@@ -80,7 +86,7 @@ class MapForPlaying : public Map
 		float getScale()
 		{ return zoom; }
 
-		const std::vector<char>* getPathPointer()
+		std::vector<char>* getPathPointer()
 		{ return &path; }
 
 		float getCellSize()
@@ -91,6 +97,12 @@ class MapForPlaying : public Map
 
 		sf::Vector2u getMapSize()
 		{ return sf::Vector2u(mapWidth, mapHeight); }
+
+		sf::Vector2f getRelativeSelectorPosition()
+		{
+			return sf::Vector2f(cellTextureSize * (cellSelectorX + 0.5),
+								cellTextureSize * (cellSelectorY + 0.5));
+		}
 
 		sf::Vector2f getSelectorPosition()
 		{

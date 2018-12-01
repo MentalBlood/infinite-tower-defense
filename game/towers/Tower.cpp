@@ -12,14 +12,16 @@ class Tower
 		TowerSpecification *specification;
 		float rangeSquare;
 		sf::Sprite sprite;
+		const sf::Vector2f positionOnMap;
 		bool drawRangeCircle;
 		GraphicalEntity *rangeCircle;
 		TowerUpgradeInfo *upgradeInfo;
 
 	public:
 		Tower(TowerSpecification *specificationToCopy):
-		specification(new TowerSpecification(specificationToCopy)), rangeSquare(specification->getParameterValue(RANGE) * specification->getParameterValue(RANGE)),
-		sprite(specification->getTexture()), drawRangeCircle(true), rangeCircle(NULL)
+		specification(new TowerSpecification(specificationToCopy)), rangeSquare(pow(specification->getParameterValue(RANGE) + float(gameMap->getCellSize()) / 4.0, 2)),
+		sprite(specification->getTexture()), positionOnMap(gameMap->getRelativeSelectorPosition()),
+		drawRangeCircle(true), rangeCircle(NULL)
 		{
 			upgradeInfo = new TowerUpgradeInfo(specification);
 			refreshRangeCircle();
@@ -46,7 +48,8 @@ class Tower
 					delete rangeCircle;
 			}
 
-			rangeSquare = pow(specification->getParameterValue(RANGE), 2);
+			rangeSquare = pow(specification->getParameterValue(RANGE) +
+							  float(gameMap->getCellSize()) / 4.0, 2);
 			std::vector<sf::VertexArray> *rangeCircleGraphicalElements =
 										new std::vector<sf::VertexArray>;
 			rangeCircleGraphicalElements->resize(1);
@@ -119,6 +122,9 @@ class Tower
 
 		const sf::Vector2f & getPosition()
 		{ return sprite.getPosition(); }
+
+		const sf::Vector2f & getRelativePosition()
+		{ return positionOnMap; }
 
 		float getRangeSquare()
 		{ return rangeSquare; }
