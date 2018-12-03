@@ -1,4 +1,4 @@
-EnterFileNameDialog *chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog = NULL;
+List *chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog = NULL;
 Message *chooseNewOrSavedMapToEditDialogWrongFileNameMessage = NULL;
 
 #include "chooseNewOrSavedMapToEditDialogButtons.cpp"
@@ -6,14 +6,14 @@ Message *chooseNewOrSavedMapToEditDialogWrongFileNameMessage = NULL;
 void updateChooseNewOrSavedMapToEditDialogVariables()
 {
 	updateChooseNewOrSavedMapToEditDialogButtons();
-	if (chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog)
-		chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog->updatePositionAndSize();
+	if (chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog)
+		chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog->updatePositionAndSize();
 	if (chooseNewOrSavedMapToEditDialogWrongFileNameMessage)
 		chooseNewOrSavedMapToEditDialogWrongFileNameMessage->updatePositionAndSize();
 }
 
 void setChooseNewOrSavedMapToEditDialogVariables()
 {
-	chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog = NULL;
+	chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog = NULL;
 	setChooseNewOrSavedMapToEditDialogButtons();
 }

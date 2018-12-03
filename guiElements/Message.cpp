@@ -67,8 +67,13 @@ class Message
 		void unpress()
 		{ if (button) button->unpress(); }
 
-		void tryToPress(float mouseX, float mouseY)
-		{ if (button) button->tryToPress(mouseX, mouseY); }
+		bool tryToPress(float mouseX, float mouseY)
+		{
+			if (button)
+				return button->tryToPress(mouseX, mouseY);
+			else
+				return false;
+		}
 
 		void draw()
 		{

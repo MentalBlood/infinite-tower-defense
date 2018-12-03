@@ -1,6 +1,6 @@
 List *selectMapScreenMapsList;
 
-void selectMapScreenFillMapsList()
+void fillMapsList(List *mapsList)
 {
 	const char path[128] = "maps";
 	DIR *dir = opendir(path);
@@ -32,12 +32,12 @@ void selectMapScreenFillMapsList()
 			while (*c) ++c;
 			while (*c != '.') --c;
 			*c = 0;
-			selectMapScreenMapsList->addItem(userFriendlyMapName);
+			mapsList->addItem(userFriendlyMapName);
 		}
 	}
 
 	closedir(dir);
-	selectMapScreenMapsList->updateItems();
+	mapsList->updateItems();
 }
 
 void updateSelectMapScreenVariables()
@@ -50,7 +50,7 @@ void setSelectMapScreenVariables()
 	selectMapScreenMapsList = new List(	"Select map to play on:", startGame,
 										selectMapScreenFont, selectMapScreenFont,
 										0, 0, 1, 1, 4,
-										sf::Color(0, 175, 70), sf::Color(215, 215, 215),
-										sf::Color(128, 128, 128, 64), sf::Color(0, 0, 0), sf::Color(0, 175, 60));
-	selectMapScreenFillMapsList();
+										sf::Color(192, 92, 0), sf::Color(215, 215, 215),
+										sf::Color(32, 32, 32), sf::Color(0, 0, 0), sf::Color(192, 92, 0));
+	fillMapsList(selectMapScreenMapsList);
 }

@@ -36,14 +36,11 @@ void selectMapScreenMouseWheelScrolled()
 void selectMapScreenMouseButtonPressed()
 {
 	if (event.mouseButton.button == sf::Mouse::Left)
-		if (selectMapScreenMapsList->selectByMouse(event.mouseButton.y))
-			selectMapScreenMapsList->selectThis();
+		selectMapScreenMapsList->selectThis(event.mouseButton.x, event.mouseButton.y);
 }
 
 void selectMapScreenMouseMoved()
-{
-	selectMapScreenMapsList->selectByMouse(event.mouseMove.y);
-}
+{ selectMapScreenMapsList->selectByMouse(event.mouseMove.x, event.mouseMove.y); }
 
 void setSelectMapScreenEvents()
 {

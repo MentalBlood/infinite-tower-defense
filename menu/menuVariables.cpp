@@ -45,12 +45,12 @@ void setMenuVariables()
 	menuFunctions[0] = startSelectMapScreen;
 	menuEntries[1].setString("developer mode");
 	menuFunctions[1] = nothing;
-	menuEntries[1].setString("map editor");
-	menuFunctions[1] = startChooseNewOrSavedMapToEditDialog;
-	menuEntries[2].setString("help");
-	menuFunctions[2] = startHelpScreen;
-	menuEntries[3].setString("exit");
-	menuFunctions[3] = Closed;
+	menuEntries[2].setString("map editor");
+	menuFunctions[2] = startChooseNewOrSavedMapToEditDialog;
+	menuEntries[3].setString("help");
+	menuFunctions[3] = startHelpScreen;
+	menuEntries[4].setString("exit");
+	menuFunctions[4] = Closed;
 }
 
 void clearMenuVariables()

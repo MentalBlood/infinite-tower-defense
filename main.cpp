@@ -68,17 +68,17 @@ void startMapEditor();
 #include "game/gameEvents.cpp"
 #include "game/startGame.cpp"
 
-#include "chooseNewOrSavedMapToEditDialog/chooseNewOrSavedMapToEditDialogVariables.cpp"
-#include "chooseNewOrSavedMapToEditDialog/updateChooseNewOrSavedMapToEditDialog.cpp"
-#include "chooseNewOrSavedMapToEditDialog/drawChooseNewOrSavedMapToEditDialog.cpp"
-#include "chooseNewOrSavedMapToEditDialog/chooseNewOrSavedMapToEditDialogEvents.cpp"
-#include "chooseNewOrSavedMapToEditDialog/startChooseNewOrSavedMapToEditDialog.cpp"
-
 #include "selectMapScreen/selectMapScreenVariables.cpp"
 #include "selectMapScreen/updateSelectMapScreen.cpp"
 #include "selectMapScreen/drawSelectMapScreen.cpp"
 #include "selectMapScreen/selectMapScreenEvents.cpp"
 #include "selectMapScreen/startSelectMapScreen.cpp"
+
+#include "chooseNewOrSavedMapToEditDialog/chooseNewOrSavedMapToEditDialogVariables.cpp"
+#include "chooseNewOrSavedMapToEditDialog/updateChooseNewOrSavedMapToEditDialog.cpp"
+#include "chooseNewOrSavedMapToEditDialog/drawChooseNewOrSavedMapToEditDialog.cpp"
+#include "chooseNewOrSavedMapToEditDialog/chooseNewOrSavedMapToEditDialogEvents.cpp"
+#include "chooseNewOrSavedMapToEditDialog/startChooseNewOrSavedMapToEditDialog.cpp"
 
 #include "helpScreen/helpScreenVariables.cpp"
 #include "helpScreen/updateHelpScreen.cpp"

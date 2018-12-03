@@ -5,21 +5,10 @@ void chooseNewOrSavedMapToEditDialogResized()
 	updateChooseNewOrSavedMapToEditDialogVariables();
 }
 
-void chooseNewOrSavedMapToEditDialogTextEntered()
-{
-	if ((!chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog) || chooseNewOrSavedMapToEditDialogWrongFileNameMessage) return;
-
-	if ((event.text.unicode < 128) && (event.key.code != 27))
-		chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog->processCharacter(event.text.unicode);
-}
-
 void chooseNewOrSavedMapToEditDialogExit()
 {
-	if (chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog)
-	{
-		delete chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog;
-		chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog = NULL;
-	}
+	if (chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog)
+		chooseNewOrSavedMapToEditDialogCloseChooseMapDialog();
 	startMenu();
 }
 
@@ -32,10 +21,16 @@ void chooseNewOrSavedMapToEditDialogKeyPressed()
 		return;
 	}
 
-	if (chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog)
+	if (chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog)
 	{
-		if (event.key.code == sf::Keyboard::Escape)
-			chooseNewOrSavedMapToEditDialogCloseSavedMapFileNameDialog();
+		if (event.key.code == sf::Keyboard::Up)
+			chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog->selectPrevious();
+		else if (event.key.code == sf::Keyboard::Down)
+			chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog->selectNext();
+		else if (event.key.code == sf::Keyboard::Return)
+			chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog->selectThis();
+		else if (event.key.code == sf::Keyboard::Escape)
+			chooseNewOrSavedMapToEditDialogCloseChooseMapDialog();
 		return;
 	}
 
@@ -43,11 +38,34 @@ void chooseNewOrSavedMapToEditDialogKeyPressed()
 		chooseNewOrSavedMapToEditDialogExit();
 }
 
+void chooseNewOrSavedMapToEditDialogMouseWheelScrolled()
+{
+	if (!chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog) return;
+
+	if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
+	{
+		if (event.mouseWheelScroll.delta > 0)
+			chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog->selectPrevious();
+		else
+			chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog->selectNext();
+	}
+}
+
 void chooseNewOrSavedMapToEditDialogMouseButtonPressed()
 {
+	if (event.mouseButton.button != sf::Mouse::Left) return;
+
 	if (chooseNewOrSavedMapToEditDialogWrongFileNameMessage)
-		chooseNewOrSavedMapToEditDialogWrongFileNameMessage->tryToPress(event.mouseButton.x, event.mouseButton.y);
-	if (event.mouseButton.button != sf::Mouse::Left || chooseNewOrSavedMapToEditDialogSavedMapFileNameDialog) return;
+	{
+		if (chooseNewOrSavedMapToEditDialogWrongFileNameMessage->tryToPress(event.mouseButton.x, event.mouseButton.y))
+			return;
+	}
+	else
+	if (chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog)
+	{
+		if (chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog->selectThis(event.mouseButton.x, event.mouseButton.y))
+			return;
+	}
 	else
 	{
 		if (chooseNewOrSavedMapToEditDialogNewMapButton->tryToPress(event.mouseButton.x, event.mouseButton.y)) return;
@@ -64,14 +82,20 @@ void chooseNewOrSavedMapToEditDialogMouseButtonReleased()
 	chooseNewOrSavedMapToEditDialogSavedMapButton->unpress();
 }
 
+void chooseNewOrSavedMapToEditDialogMouseMoved()
+{
+	if (chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog)
+		chooseNewOrSavedMapToEditDialogSavedMapChooseFileDialog->selectByMouse(event.mouseMove.x, event.mouseMove.y);
+}
+
 void setChooseNewOrSavedMapToEditDialogEvents()
 {
 	events[1] = chooseNewOrSavedMapToEditDialogResized; //resized
-	events[4] = chooseNewOrSavedMapToEditDialogTextEntered; //text entered
+	events[4] = nothing; //text entered
 	events[5] = chooseNewOrSavedMapToEditDialogKeyPressed; //key pressed
 	events[6] = nothing; //key released
-	events[8] = nothing; //mouse wheel scrolled
+	events[8] = chooseNewOrSavedMapToEditDialogMouseWheelScrolled; //mouse wheel scrolled
 	events[9] = chooseNewOrSavedMapToEditDialogMouseButtonPressed; //mouse button pressed
 	events[10] = chooseNewOrSavedMapToEditDialogMouseButtonReleased; //mouse button released
-	events[11] = nothing; //mouse moved
+	events[11] = chooseNewOrSavedMapToEditDialogMouseMoved; //mouse moved
 }

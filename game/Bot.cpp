@@ -71,7 +71,7 @@ float getDistanceCoveredByTower(float towerPositionX, float towerPositionY, floa
 									abs(distanceFromTestMonsterToPoint(towerPositionX, towerPositionY) -
 										realDamageRadius));
 		//printf("testMonsterCurrentDirectionIndex = %u, distanceToMove = %f, distanceCoveredByTower = %f\n",
-			   testMonsterCurrentDirectionIndex, distanceToMove, distanceCoveredByTower);
+		//	   testMonsterCurrentDirectionIndex, distanceToMove, distanceCoveredByTower);
 		moveTestMonster(distanceToMove);
 	}
 	return distanceCoveredByTower;

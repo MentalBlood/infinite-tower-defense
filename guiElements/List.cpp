@@ -35,6 +35,14 @@ class List
 			  itemHeight,
 			  x, y, width, height;
 
+		bool mouseOnMe(float mouseX, float mouseY)
+		{
+			return ((mouseX > x) && (mouseX < (x + width)) &&
+					(mouseY > y) && (mouseY < (y + height)));
+		}
+
+		
+
 	public:
 		List(sf::String nameString, void (*functionOnSelect)(std::string),
 			enum fontType nameFontIndex, enum fontType itemsFontIndex,
@@ -53,15 +61,6 @@ class List
 			updatePositionAndSize();
 		}
 
-		void updateItems()
-		{
-			if (!items.size()) return;
-			float itemY = separatorY;
-			for (int i = firstItemShownNumber; i <= lastItemShownNumber; i++, itemY += itemHeight)
-				fitTextIntoRectangle(&items[i], x + selectorBordersThickness, itemY + selectorBordersThickness,
-									width - 2*selectorBordersThickness, itemHeight - 2*selectorBordersThickness);
-		}
-
 		void updatePositionAndSize()
 		{
 			x = windowSize.x * relativeX;
@@ -71,7 +70,7 @@ class List
 			bordersThickness = sqrt(width * height) / 64;
 
 			separatorY = y + height/8; //between name and elements
-			itemHeight = (height - separatorY - bordersThickness) / numberOfItemsShown;
+			itemHeight = (height + y - separatorY - bordersThickness) / numberOfItemsShown;
 
 			fitTextIntoRectangle(&nameText, x + bordersThickness, y + bordersThickness,
 								width - 2*bordersThickness, separatorY - y - 2*bordersThickness);
@@ -87,6 +86,15 @@ class List
 			selector.setOutlineColor(selectorColor);
 			makeVertexArrayQuad(&fill, x + bordersThickness, y + bordersThickness,
 								width - 2*bordersThickness, height - 2*bordersThickness, fillColor);
+		}
+
+		void updateItems()
+		{
+			if (!items.size()) return;
+			float itemY = separatorY;
+			for (int i = firstItemShownNumber; i <= lastItemShownNumber; i++, itemY += itemHeight)
+				fitTextIntoRectangle(&items[i], x + selectorBordersThickness, itemY + selectorBordersThickness,
+									width - 2*selectorBordersThickness, itemHeight - 2*selectorBordersThickness);
 		}
 
 		void addItem(sf::String name)
@@ -145,8 +153,17 @@ class List
 		void selectThis()
 		{ functionOnSelect(items[selectedItemNumber].getString()); }
 
-		bool selectByMouse(float mouseY)
+		bool selectThis(float mouseX, float mouseY)
 		{
+			if (!mouseOnMe(mouseX, mouseY)) return false;
+			selectThis();
+			return true;
+		}
+
+		bool selectByMouse(float mouseX, float mouseY)
+		{
+			if (!mouseOnMe(mouseX, mouseY)) return false;
+
 			bool mouseOnItem = true;
 			unsigned int selectedNumber;
 			if (mouseY < separatorY)
