@@ -44,6 +44,8 @@ void gameClear()
 	printf("18\n");
 	clearMonsterParameters();
 	printf("19\n");
+	deleteTowersPanel();
+	printf("20\n");
 }
 
 void gameExit()
@@ -230,21 +232,25 @@ void gameMouseButtonPressed()
 {
 	if (event.mouseButton.button == sf::Mouse::Left)
 	{
-		if (event.mouseButton.x < (windowSize.x * towersPanelRelativeX))
-			itWasNotDraggingButClick = true;
-		else
+		if (towersPanelOpened)
 		{
-			itWasNotDraggingButClick = false;
-			if (currentShowingUpgradeInfoTower)
-			{
-				if (currentShowingUpgradeInfoTower->getUpgradeInfo()->tryToPress(event.mouseButton.x, event.mouseButton.y))
-					currentShowingUpgradeInfoTower->refreshRangeCircle();
-			}
+			if (event.mouseButton.x < (windowSize.x * towersPanelRelativeX))
+				itWasNotDraggingButClick = true;
 			else
-				towersInfoStack->click(event.mouseButton.x, event.mouseButton.y);
-			return;
+			{
+				itWasNotDraggingButClick = false;
+				if (currentShowingUpgradeInfoTower)
+				{
+					if (currentShowingUpgradeInfoTower->getUpgradeInfo()->tryToPress(event.mouseButton.x, event.mouseButton.y))
+						currentShowingUpgradeInfoTower->refreshRangeCircle();
+				}
+				else
+					towersInfoStack->click(event.mouseButton.x, event.mouseButton.y);
+				return;
+			}
 		}
-		
+
+		if (towersPanelOpenCloseButton->tryToPress(event.mouseButton.x, event.mouseButton.y)) return;
 		if (gameHelpButton->tryToPress(event.mouseButton.x, event.mouseButton.y)) return;
 		gameMapDragging = true;
 		gameMapDraggingMouseX1 = event.mouseButton.x;
@@ -262,6 +268,7 @@ void gameMouseButtonReleased()
 {
 	gameMapDragging = false;
 	gameHelpButton->unpress();
+	towersPanelOpenCloseButton->unpress();
 	if (currentShowingUpgradeInfoTower)
 		currentShowingUpgradeInfoTower->getUpgradeInfo()->unpressButton();
 	if (itWasNotDraggingButClick)

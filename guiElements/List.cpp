@@ -150,6 +150,15 @@ class List
 			--selectedItemNumber;
 		}
 
+		std::string getThis()
+		{ return items[selectedItemNumber].getString(); }
+
+		void deleteThis()
+		{
+			items.erase(items.begin() + selectedItemNumber);
+			updateItems();
+		}
+
 		void selectThis()
 		{ functionOnSelect(items[selectedItemNumber].getString()); }
 

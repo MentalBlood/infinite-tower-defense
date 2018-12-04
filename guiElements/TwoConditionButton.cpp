@@ -45,7 +45,7 @@ class TwoConditionButton
 		TwoConditionButton(	void (*functionOnPress)(), void (*functionOnUnpress)(), sf::String textString,
 							enum fontType fontIndex, sf::Color textColor, sf::Color fillColor, sf::Color bordersColor, 
 							float relativeX, float relativeY, float relativeWidth, float relativeHeight,
-							float relativeTextIndent, float relativeBordersThickness = 1.0):
+							float relativeTextIndent = 2.0, float relativeBordersThickness = 1.0):
 			pressed(false), functionOnPress(functionOnPress), functionOnUnpress(functionOnUnpress),
 			textString(textString), fillColor(fillColor), bordersColor(bordersColor),
 			relativeX(relativeX), relativeY(relativeY), relativeWidth(relativeWidth), relativeHeight(relativeHeight),
@@ -56,6 +56,16 @@ class TwoConditionButton
 			text.setFillColor(textColor);
 			updatePositionAndSize();
 		}
+
+		void changePosition(float newRelativeX, float newRelativeY)
+		{
+			relativeX = newRelativeX;
+			relativeY = newRelativeY;
+			updatePositionAndSize();
+		}
+
+		void move(float relativeDeltaX, float relativeDeltaY)
+		{ changePosition(relativeX + relativeDeltaX, relativeY + relativeDeltaY); }
 
 		void updatePositionAndSize()
 		{

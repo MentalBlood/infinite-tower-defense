@@ -26,7 +26,7 @@ class TowerInfo
 		relativeWidth(relativeWidth), relativeHeight(relativeHeight)
 		{
 			text.setFont(fonts[towerInfoFont]);
-			text.setFillColor(sf::Color(196, 255, 0));
+			text.setFillColor(sf::Color(255, 255, 255));
 			updatePositionAndSize();
 		}
 

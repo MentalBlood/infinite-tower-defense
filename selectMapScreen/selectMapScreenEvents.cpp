@@ -20,6 +20,11 @@ void selectMapScreenKeyPressed()
 		selectMapScreenMapsList->selectNext();
 	else if (event.key.code == sf::Keyboard::Return)
 		selectMapScreenMapsList->selectThis();
+	else if (event.key.code == sf::Keyboard::Delete)
+	{
+		remove(("maps/" + selectMapScreenMapsList->getThis() + ".tdm").data());
+		selectMapScreenMapsList->deleteThis();
+	}
 	else if (event.key.code == sf::Keyboard::Escape)
 		selectMapScreenExit();
 }
