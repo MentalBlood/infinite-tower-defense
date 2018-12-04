@@ -9,15 +9,11 @@ void mapEditorExit()
 {
 	delete mapEditorMap;
 	if (mapEditorFileNameDialog)
-	{
-		delete mapEditorFileNameDialog;
-		mapEditorFileNameDialog = NULL;
-	}
+		mapEditorCloseFileNameDialog();
 	if (mapEditorWrongMapMessage)
-	{
-		delete mapEditorWrongMapMessage;
-		mapEditorWrongMapMessage = NULL;
-	}
+		mapEditorCloseWrongMapMessage();
+	if (mapEditorFileAlreadyExistsMessage)
+		mapEditorCloseFileAlreadyExistsMessage();
 	if (editingNewMap) startNewMapSettings();
 	else startChooseNewOrSavedMapToEditDialog();
 }
@@ -26,8 +22,15 @@ void mapEditorKeyPressed()
 {
 	if (mapEditorWrongMapMessage)
 	{
-		if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Escape)
+		if ((event.key.code == sf::Keyboard::Return) || (event.key.code == sf::Keyboard::Escape))
 			mapEditorCloseWrongMapMessage();
+		return;
+	}
+
+	if (mapEditorFileAlreadyExistsMessage)
+	{
+		if ((event.key.code == sf::Keyboard::Return) || (event.key.code == sf::Keyboard::Escape))
+			mapEditorCloseFileAlreadyExistsMessage();
 		return;
 	}
 
@@ -55,7 +58,8 @@ void mapEditorKeyPressed()
 		if (event.key.shift) mapEditorMap->redo();
 		else mapEditorMap->undo();
 	}
-	else if (event.key.code == sf::Keyboard::X) mapEditorMap->print_actions();
+	else if (event.key.code == sf::Keyboard::X)
+		mapEditorMap->print_actions();
 	else if (event.key.code == sf::Keyboard::PageUp)
 		mapEditorMap->changeZoom(1.02, sf::Mouse::getPosition(window).x, sf::Mouse::getPosition(window).y);
 	else if (event.key.code == sf::Keyboard::PageDown)
@@ -75,13 +79,9 @@ void mapEditorKeyReleased()
 
 void mapEditorTextEntered()
 {
-	if (!mapEditorFileNameDialog) return;
-	if (event.text.unicode < 128)
-		if (!mapEditorFileNameDialog->processCharacter(event.text.unicode))
-		{
-			delete mapEditorFileNameDialog;
-			mapEditorFileNameDialog = NULL;
-		}
+	if ((!mapEditorFileNameDialog) || (mapEditorFileAlreadyExistsMessage)) return;
+	if ((event.text.unicode < 128) && (event.text.unicode != 27))
+		mapEditorFileNameDialog->processCharacter(event.text.unicode);
 }
 
 void mapEditorMouseButtonPressed()
@@ -90,6 +90,13 @@ void mapEditorMouseButtonPressed()
 	{
 		if (event.mouseButton.button == sf::Mouse::Left)
 			mapEditorWrongMapMessage->tryToPress(event.mouseButton.x, event.mouseButton.y);
+		return;
+	}
+
+	if (mapEditorFileAlreadyExistsMessage)
+	{
+		if (event.mouseButton.button == sf::Mouse::Left)
+			mapEditorFileAlreadyExistsMessage->tryToPress(event.mouseButton.x, event.mouseButton.y);
 		return;
 	}
 
@@ -122,11 +129,12 @@ void mapEditorMouseButtonReleased()
 		i != mapEditorButtons.end(); i++)
 		i->unpress();
 	if (mapEditorWrongMapMessage)
-	{
 		mapEditorWrongMapMessage->unpress();
-		return;
-	}
-	mapEditorMapDragging = false;
+	else
+	if (mapEditorFileAlreadyExistsMessage)
+		mapEditorFileAlreadyExistsMessage->unpress();
+	else
+		mapEditorMapDragging = false;
 }
 
 void mapEditorMouseMoved()

@@ -1,21 +1,79 @@
 void mapEditorResetButtonPress()
 { mapEditorMap->reset(); }
 
-void mapEditorSaveMap(std::string fileName)
+bool checkFileWithSuchNameExistance(std::string fileNameToCheck)
 {
-	mapEditorMap->save(("maps/" + fileName + ".tdm").data());
+	const char path[128] = "maps";
+	DIR *dir = opendir(path);
+	if (!dir) Closed();
+
+	struct dirent *entery;
+	char fileName[256];
+	while ((entery = readdir(dir)) != NULL)
+	{
+		sprintf(fileName,"%s/%s", path, entery->d_name);
+		char *c = fileName;
+		while (*c) ++c;
+		while (*c != '.') --c;
+		++c;
+		if (*c != 't') continue;
+		++c;
+		if (*c != 'd') continue;
+		++c;
+		if (*c != 'm') continue;
+		++c;
+		if (*c) continue;
+
+		if (checkMapFile(fileName))
+		{
+			//making user friendly name of map (without path and extension)
+			char userFriendlyMapName[128];
+			strcpy(userFriendlyMapName, entery->d_name);
+			c = userFriendlyMapName;
+			while (*c) ++c;
+			while (*c != '.') --c;
+			*c = 0;
+			if (!strcmp(fileNameToCheck.data(), userFriendlyMapName))
+				return true;
+		}
+	}
+
+	closedir(dir);
+	return false;
 }
 
-void mapEditorCloseWrongMapMessage()
+void mapEditorCloseFileAlreadyExistsMessage()
 {
-	delete mapEditorWrongMapMessage;
-	mapEditorWrongMapMessage = NULL;
+	delete mapEditorFileAlreadyExistsMessage;
+	mapEditorFileAlreadyExistsMessage = NULL;
 }
 
 void mapEditorCloseFileNameDialog()
 {
 	delete mapEditorFileNameDialog;
 	mapEditorFileNameDialog = NULL;
+}
+
+void mapEditorSaveMap(std::string fileName)
+{
+	if (checkFileWithSuchNameExistance(fileName))
+	{
+		mapEditorFileAlreadyExistsMessage = new Message(mapEditorCloseFileAlreadyExistsMessage, "file with such name\nalready exists\n\nenter other name", "OK",
+												messageFont,
+												0.3, 0.3, 0.4, 0.4, 4,
+												sf::Color(255, 255, 255), sf::Color(192, 64, 64), sf::Color(0, 0, 0));
+	}
+	else
+	{
+		mapEditorMap->save(("maps/" + fileName + ".tdm").data());
+		mapEditorCloseFileNameDialog();
+	}
+}
+
+void mapEditorCloseWrongMapMessage()
+{
+	delete mapEditorWrongMapMessage;
+	mapEditorWrongMapMessage = NULL;
 }
 
 void mapEditorSaveButtonPress()

@@ -8,7 +8,8 @@ float mapEditorMapDraggingMouseX1,
 sf::Vector2f mapEditorMapDraggingMapInitialCoordinates;
 
 EnterFileNameDialog *mapEditorFileNameDialog = NULL;
-Message *mapEditorWrongMapMessage = NULL;
+Message *mapEditorWrongMapMessage = NULL,
+		*mapEditorFileAlreadyExistsMessage = NULL;
 
 void setMapEditorEvents();
 void updateMapEditor();
@@ -37,6 +38,8 @@ void updateMapEditorVariables()
 		mapEditorFileNameDialog->updatePositionAndSize();
 	if (mapEditorWrongMapMessage)
 		mapEditorWrongMapMessage->updatePositionAndSize();
+	if (mapEditorFileAlreadyExistsMessage)
+		mapEditorFileAlreadyExistsMessage->updatePositionAndSize();
 }
 
 //creating new map
@@ -50,8 +53,6 @@ void setMapEditorVariables(int mapEditorMapWidth, int mapEditorMapHeight)
 
 	windowSize = window.getSize();
 	setMapEditorButtons();
-	if (mapEditorFileNameDialog) delete mapEditorFileNameDialog;
-	mapEditorFileNameDialog = NULL;
 
 	updateMapEditorVariables();
 }
@@ -67,8 +68,6 @@ void setMapEditorVariables(std::string &fileName)
 
 	windowSize = window.getSize();
 	setMapEditorButtons();
-	if (mapEditorFileNameDialog) delete mapEditorFileNameDialog;
-	mapEditorFileNameDialog = NULL;
 
 	updateMapEditorVariables();
 }
