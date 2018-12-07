@@ -8,8 +8,8 @@ float mapEditorMapDraggingMouseX1,
 sf::Vector2f mapEditorMapDraggingMapInitialCoordinates;
 
 EnterFileNameDialog *mapEditorFileNameDialog = NULL;
-Message *mapEditorWrongMapMessage = NULL,
-		*mapEditorFileAlreadyExistsMessage = NULL;
+Message *mapEditorWrongMapMessage = NULL;
+Question *mapEditorFileAlreadyExistsQuestion;
 
 void setMapEditorEvents();
 void updateMapEditor();
@@ -38,8 +38,8 @@ void updateMapEditorVariables()
 		mapEditorFileNameDialog->updatePositionAndSize();
 	if (mapEditorWrongMapMessage)
 		mapEditorWrongMapMessage->updatePositionAndSize();
-	if (mapEditorFileAlreadyExistsMessage)
-		mapEditorFileAlreadyExistsMessage->updatePositionAndSize();
+	if (mapEditorFileAlreadyExistsQuestion)
+		mapEditorFileAlreadyExistsQuestion->updatePositionAndSize();
 }
 
 //creating new map

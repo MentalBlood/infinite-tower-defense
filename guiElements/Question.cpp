@@ -1,7 +1,8 @@
-class Message
+class Question
 {
 	private:
-		void (*functionOnUnpress)();
+		void (*leftButtonFunction)(),
+			 (*rightButtonFunction)();
 
 		sf::String textString;
 
@@ -17,7 +18,8 @@ class Message
 
 		sf::Text text;
 
-		TwoConditionButton *button;
+		TwoConditionButton *leftButton,
+						   *rightButton;
 
 		float x, y,
 			  width, height;
@@ -26,10 +28,13 @@ class Message
 						borders;
 
 	public:
-		Message(void (*functionOnUnpress)(), sf::String textString, sf::String buttonTextString, enum fontType fontIndex,
+		Question(void (*leftButtonFunction)(), void (*rightButtonFunction)(),
+				sf::String textString, sf::String leftButtonString, sf::String rightButtonString,
+				enum fontType fontIndex,
 				float relativeX, float relativeY, float relativeWidth, float relativeHeight, float relativeTextIndent,
 				sf::Color textColor, sf::Color fillColor, sf::Color bordersColor):
-			functionOnUnpress(functionOnUnpress), textString(textString),
+			leftButtonFunction(leftButtonFunction), rightButtonFunction(rightButtonFunction),
+			textString(textString),
 			relativeX(relativeX), relativeY(relativeY), relativeWidth(relativeWidth), relativeHeight(relativeHeight),
 			relativeTextIndent(relativeTextIndent),
 			textColor(textColor), fillColor(fillColor), bordersColor(bordersColor)
@@ -37,17 +42,22 @@ class Message
 			text.setFont(fonts[fontIndex]);
 			text.setString(textString);
 			text.setFillColor(textColor);
-			if (buttonTextString.getSize())
-				button = new TwoConditionButton(nothing, functionOnUnpress, buttonTextString, fontIndex,
+			leftButton = new TwoConditionButton(nothing, leftButtonFunction, leftButtonString, fontIndex,
 												textColor, fillColor, bordersColor,
-												relativeX + relativeWidth/4, relativeY + relativeHeight*3/4,
-												relativeWidth/2, relativeHeight/8, relativeTextIndent);
-			else button = NULL;
+												relativeX + relativeWidth/5, relativeY + relativeHeight*3/4,
+												relativeWidth/5, relativeHeight/8, relativeTextIndent);
+			rightButton = new TwoConditionButton(nothing, rightButtonFunction, rightButtonString, fontIndex,
+												textColor, fillColor, bordersColor,
+												relativeX + 3 * relativeWidth/5, relativeY + relativeHeight*3/4,
+												relativeWidth/5, relativeHeight/8, relativeTextIndent);
 			updatePositionAndSize();
 		}
 
-		~Message()
-		{ delete button; }
+		~Question()
+		{
+			delete leftButton;
+			delete rightButton;
+		}
 
 		void updatePositionAndSize()
 		{
@@ -58,31 +68,31 @@ class Message
 			float bordersThickness = sqrt(width * height) / 64;
 
 			fitTextIntoRectangle(&text, x + 2 * bordersThickness, y + 2 * bordersThickness,
-								width - 4 * bordersThickness, height*3/4 - bordersThickness);
+								 width - 4 * bordersThickness, height*3/4 - bordersThickness);
 
 			makeVertexArrayFrame(&borders, x, y, width, height, bordersThickness, bordersColor);
 			makeVertexArrayQuad(&fill, x + bordersThickness, y + bordersThickness,
 								width - 2*bordersThickness, height - 2*bordersThickness, fillColor);
 
-			if (button) button->updatePositionAndSize();
+			leftButton->updatePositionAndSize();
+			rightButton->updatePositionAndSize();
 		}
 
 		void unpress()
-		{ if (button) button->unpress(); }
+		{
+			leftButton->unpress();
+			rightButton->unpress();
+		}
 
 		bool tryToPress(float mouseX, float mouseY)
-		{
-			if (button)
-				return button->tryToPress(mouseX, mouseY);
-			else
-				return false;
-		}
+		{ return (leftButton->tryToPress(mouseX, mouseY) || rightButton->tryToPress(mouseX, mouseY)); }
 
 		void draw()
 		{
 			window.draw(borders);
 			window.draw(fill);
 			window.draw(text);
-			if (button) button->draw();
+			leftButton->draw();
+			rightButton->draw();
 		}
 };

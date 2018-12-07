@@ -12,8 +12,8 @@ void mapEditorExit()
 		mapEditorCloseFileNameDialog();
 	if (mapEditorWrongMapMessage)
 		mapEditorCloseWrongMapMessage();
-	if (mapEditorFileAlreadyExistsMessage)
-		mapEditorCloseFileAlreadyExistsMessage();
+	if (mapEditorFileAlreadyExistsQuestion)
+		mapEditorCloseFileAlreadyExistsQuestion();
 	if (editingNewMap) startNewMapSettings();
 	else startChooseNewOrSavedMapToEditDialog();
 }
@@ -27,10 +27,10 @@ void mapEditorKeyPressed()
 		return;
 	}
 
-	if (mapEditorFileAlreadyExistsMessage)
+	if (mapEditorFileAlreadyExistsQuestion)
 	{
 		if ((event.key.code == sf::Keyboard::Return) || (event.key.code == sf::Keyboard::Escape))
-			mapEditorCloseFileAlreadyExistsMessage();
+			mapEditorCloseFileAlreadyExistsQuestion();
 		return;
 	}
 
@@ -79,7 +79,7 @@ void mapEditorKeyReleased()
 
 void mapEditorTextEntered()
 {
-	if ((!mapEditorFileNameDialog) || (mapEditorFileAlreadyExistsMessage)) return;
+	if ((!mapEditorFileNameDialog) || (mapEditorFileAlreadyExistsQuestion)) return;
 	if ((event.text.unicode < 128) && (event.text.unicode != 27))
 		mapEditorFileNameDialog->processCharacter(event.text.unicode);
 }
@@ -93,10 +93,10 @@ void mapEditorMouseButtonPressed()
 		return;
 	}
 
-	if (mapEditorFileAlreadyExistsMessage)
+	if (mapEditorFileAlreadyExistsQuestion)
 	{
 		if (event.mouseButton.button == sf::Mouse::Left)
-			mapEditorFileAlreadyExistsMessage->tryToPress(event.mouseButton.x, event.mouseButton.y);
+			mapEditorFileAlreadyExistsQuestion->tryToPress(event.mouseButton.x, event.mouseButton.y);
 		return;
 	}
 
@@ -131,8 +131,8 @@ void mapEditorMouseButtonReleased()
 	if (mapEditorWrongMapMessage)
 		mapEditorWrongMapMessage->unpress();
 	else
-	if (mapEditorFileAlreadyExistsMessage)
-		mapEditorFileAlreadyExistsMessage->unpress();
+	if (mapEditorFileAlreadyExistsQuestion)
+		mapEditorFileAlreadyExistsQuestion->unpress();
 	else
 		mapEditorMapDragging = false;
 }

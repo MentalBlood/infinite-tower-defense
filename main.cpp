@@ -39,6 +39,7 @@ void startMapEditor();
 #include "guiElements/EnterFileNameDialog.cpp"
 #include "guiElements/List.cpp"
 #include "guiElements/Message.cpp"
+#include "guiElements/Question.cpp"
 #include "guiElements/Text.cpp"
 
 #include "map/checkMapFile.cpp"

@@ -10,7 +10,7 @@ void drawMapEditor()
 		mapEditorFileNameDialog->draw();
 	if (mapEditorWrongMapMessage)
 		mapEditorWrongMapMessage->draw();
-	if (mapEditorFileAlreadyExistsMessage)
-		mapEditorFileAlreadyExistsMessage->draw();
+	if (mapEditorFileAlreadyExistsQuestion)
+		mapEditorFileAlreadyExistsQuestion->draw();
 	window.display();
 }

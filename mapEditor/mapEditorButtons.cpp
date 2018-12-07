@@ -42,10 +42,10 @@ bool checkFileWithSuchNameExistance(std::string fileNameToCheck)
 	return false;
 }
 
-void mapEditorCloseFileAlreadyExistsMessage()
+void mapEditorCloseFileAlreadyExistsQuestion()
 {
-	delete mapEditorFileAlreadyExistsMessage;
-	mapEditorFileAlreadyExistsMessage = NULL;
+	delete mapEditorFileAlreadyExistsQuestion;
+	mapEditorFileAlreadyExistsQuestion = NULL;
 }
 
 void mapEditorCloseFileNameDialog()
@@ -54,20 +54,30 @@ void mapEditorCloseFileNameDialog()
 	mapEditorFileNameDialog = NULL;
 }
 
-void mapEditorSaveMap(std::string fileName)
+std::string saveFileName;
+
+void mapEditorSaveMap()
 {
-	if (checkFileWithSuchNameExistance(fileName))
-	{
-		mapEditorFileAlreadyExistsMessage = new Message(mapEditorCloseFileAlreadyExistsMessage, "file with such name\nalready exists\n\nenter other name", "OK",
-												messageFont,
-												0.3, 0.3, 0.4, 0.4, 4,
-												sf::Color(255, 255, 255), sf::Color(192, 64, 64), sf::Color(0, 0, 0));
-	}
-	else
-	{
-		mapEditorMap->save(("maps/" + fileName + ".tdm").data());
+	mapEditorMap->save(("maps/" + saveFileName + ".tdm").data());
+	mapEditorCloseFileNameDialog();
+	if (mapEditorFileAlreadyExistsQuestion)
+		mapEditorCloseFileAlreadyExistsQuestion();
+	if (mapEditorFileNameDialog)
 		mapEditorCloseFileNameDialog();
-	}
+}
+
+void mapEditorTryToSaveMap(std::string fileName)
+{
+	saveFileName = fileName;
+	if (checkFileWithSuchNameExistance(fileName))
+		mapEditorFileAlreadyExistsQuestion =
+			new Question(mapEditorSaveMap, mapEditorCloseFileAlreadyExistsQuestion, "file with such name\nalready exists",
+						 "Overwrite", "Cancel",
+						 messageFont,
+						 0.3, 0.3, 0.4, 0.4, 4,
+						 sf::Color(255, 255, 255), sf::Color(192, 64, 64), sf::Color(0, 0, 0));
+	else
+		mapEditorSaveMap();
 }
 
 void mapEditorCloseWrongMapMessage()
@@ -87,7 +97,7 @@ void mapEditorSaveButtonPress()
 		return;
 	}
 	if (mapEditorFileNameDialog) delete mapEditorFileNameDialog;
-	mapEditorFileNameDialog = new EnterFileNameDialog(	"Enter file name:", mapEditorSaveMap, 0.3, 0.4, 0.4, 0.2, enterFileNameFont,
+	mapEditorFileNameDialog = new EnterFileNameDialog(	"Enter file name:", mapEditorTryToSaveMap, 0.3, 0.4, 0.4, 0.2, enterFileNameFont,
 														sf::Color(255, 128, 255), sf::Color(196, 64, 196),
 														sf::Color(16, 64, 16), sf::Color(64, 128, 64));
 }
