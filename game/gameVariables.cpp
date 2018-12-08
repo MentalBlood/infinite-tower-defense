@@ -1,5 +1,6 @@
 bool gameMapDragging,
-	 pause;
+	 pause,
+	 printTowersLevels;
 float gameMapDraggingMouseX1,
 	  gameMapDraggingMouseY1,
 	  gameScaleDelta,
@@ -90,6 +91,7 @@ void setGameVariables(const char *gameMapFileName)
 	gameScale = 1;
 	gameMapDragging = false;
 	pause = true;
+	printTowersLevels = false;
 
 	loadMonstersParameters();
 	setTowersPanel();

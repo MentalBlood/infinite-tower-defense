@@ -201,6 +201,8 @@ void gameKeyPressed()
 		tryToSetAddingTower();
 	else if (event.key.code == sf::Keyboard::D)
 		tryToGetDistanceCoveredByTower();
+	else if (event.key.code == sf::Keyboard::L)
+		changeBool(&printTowersLevels);
 	else if (event.key.code == sf::Keyboard::Delete)
 		tryToDeleteTower();
 	else if (event.key.code == sf::Keyboard::Escape)
@@ -242,7 +244,10 @@ void gameMouseButtonPressed()
 				if (currentShowingUpgradeInfoTower)
 				{
 					if (currentShowingUpgradeInfoTower->getUpgradeInfo()->tryToPress(event.mouseButton.x, event.mouseButton.y))
+					{
 						currentShowingUpgradeInfoTower->refreshRangeCircle();
+						currentShowingUpgradeInfoTower->printNextLevel();
+					}
 				}
 				else
 					if (!pause)

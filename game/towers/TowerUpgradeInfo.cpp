@@ -101,23 +101,25 @@ class TowerUpgradeInfo
 			refreshButtonText();
 		}
 
-		void tryToUpgrade()
+		bool tryToUpgrade()
 		{
-			if (specification->getParameterValue(UPGRADE_COST) > money) return;
+			if (specification->getParameterValue(UPGRADE_COST) > money) return false;
 			money -= specification->getParameterValue(UPGRADE_COST);
 			specification->setNextValues();
 
 			refreshText();
 			refreshButtonText();
 			updateMoneyText();
+
+			return true;
 		}
 
 		bool tryToPress(float mouseX, float mouseY)
 		{
 			bool valueToReturn = button->tryToPress(mouseX, mouseY);
 			if (valueToReturn)
-				tryToUpgrade();
-			return valueToReturn;
+				return tryToUpgrade();
+			return false;
 		}
 
 		void unpressButton()

@@ -19,6 +19,10 @@ void drawGame()
 
 	drawSplinters();
 
+	if (printTowersLevels)
+		for (std::list<Tower*>::iterator i = towers.begin(); i != towers.end(); i++)
+			(*i)->drawLevelText();
+
 	drawGameInfo();
 	if (currentShowingUpgradeInfoTower)
 		currentShowingUpgradeInfoTower->getUpgradeInfo()->draw();

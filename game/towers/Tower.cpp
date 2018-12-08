@@ -15,13 +15,16 @@ class Tower
 		const sf::Vector2f positionOnMap;
 		bool drawRangeCircle;
 		GraphicalEntity *rangeCircle;
+		unsigned int currentLevel;
+		char levelString[16];
+		sf::Text levelText;
 		TowerUpgradeInfo *upgradeInfo;
 
 	public:
 		Tower(TowerSpecification *specificationToCopy):
 		specification(new TowerSpecification(specificationToCopy)), rangeSquare(pow(specification->getParameterValue(RANGE) + float(gameMap->getCellSize()) / 4.0, 2)),
 		sprite(specification->getTexture()), positionOnMap(gameMap->getRelativeSelectorPosition()),
-		drawRangeCircle(true), rangeCircle(NULL)
+		drawRangeCircle(true), rangeCircle(NULL), currentLevel(1), levelString("1")
 		{
 			upgradeInfo = new TowerUpgradeInfo(specification);
 			refreshRangeCircle();
@@ -29,6 +32,10 @@ class Tower
 			sprite.setOrigin(gameMap->getCellSize()/2, gameMap->getCellSize()/2);
 			goToCellSelector();
 			sprite.setScale(sf::Vector2f(gameMap->getScale(), gameMap->getScale()));
+			levelText.setFont(fonts[towerUpgradeInfoFont]);
+			levelText.setString(levelString);
+			levelText.setFillColor(sf::Color(255, 255, 255, 196));
+			refreshLevelTextPositionAndSize();
 		}
 
 		~Tower()
@@ -61,10 +68,28 @@ class Tower
 			rangeCircle->drag(sprite.getPosition());
 		}
 
+		void refreshLevelTextPositionAndSize()
+		{
+			fitTextIntoRectangle(&levelText,
+								 sprite.getPosition().x - gameMap->getRealCellSize() / 2,
+								 sprite.getPosition().y - gameMap->getRealCellSize() / 2,
+								 gameMap->getRealCellSize(),
+								 gameMap->getRealCellSize());
+		}
+
+		void printNextLevel()
+		{
+			++currentLevel;
+			sprintf(levelString, "%d", currentLevel);
+			levelText.setString(levelString);
+			refreshLevelTextPositionAndSize();
+		}
+
 		void drag()
 		{
 			sprite.move(gameDragOffset);
 			rangeCircle->drag(gameDragOffset);
+			levelText.move(gameDragOffset);
 		}
 
 		void goToCellSelector()
@@ -73,6 +98,7 @@ class Tower
 			+ gameMap->getScale() * sf::Vector2f(gameMap->getCellSize()/2, gameMap->getCellSize()/2);
 			sprite.setPosition(newPosition);
 			rangeCircle->dragTo(newPosition);
+			refreshLevelTextPositionAndSize();
 		}
 
 		void refreshScale()
@@ -92,6 +118,8 @@ class Tower
 			sprite.setScale(sf::Vector2f(gameMap->getScale(), gameMap->getScale()));
 			sprite.move((gameScaleDelta - 1) * (sprite.getPosition() - gameScaleCenter));
 
+			refreshLevelTextPositionAndSize();
+
 			rangeCircle->changeScale(gameScaleDelta, gameScaleCenter);
 		}
 
@@ -101,6 +129,9 @@ class Tower
 				rangeCircle->draw();
 			window.draw(sprite);
 		}
+
+		void drawLevelText()
+		{ window.draw(levelText); }
 
 		bool havePoint(const sf::Vector2f & point)
 		{
