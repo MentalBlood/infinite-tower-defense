@@ -71,12 +71,7 @@ void deleteTowersPanel()
 
 void drawTowersPanel()
 {
-	if (towersPanelOpened)
-	{
-		for (unsigned int i = 0; i < towersPanelGraphicsElements.size(); i++)
-			window.draw(towersPanelGraphicsElements[i]);
-		towersInfoStack->draw();
-	}
-	towersPanelOpenCloseButton->draw();
-	
+	for (unsigned int i = 0; i < towersPanelGraphicsElements.size(); i++)
+		window.draw(towersPanelGraphicsElements[i]);
+	towersInfoStack->draw();
 }

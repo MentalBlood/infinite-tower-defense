@@ -234,6 +234,7 @@ void gameMouseButtonPressed()
 {
 	if (event.mouseButton.button == sf::Mouse::Left)
 	{
+		if (towersPanelOpenCloseButton->tryToPress(event.mouseButton.x, event.mouseButton.y)) return;
 		if (towersPanelOpened)
 		{
 			if (event.mouseButton.x < (windowSize.x * towersPanelRelativeX))
@@ -255,8 +256,7 @@ void gameMouseButtonPressed()
 				return;
 			}
 		}
-
-		if (towersPanelOpenCloseButton->tryToPress(event.mouseButton.x, event.mouseButton.y)) return;
+		
 		if (gameHelpButton->tryToPress(event.mouseButton.x, event.mouseButton.y)) return;
 		gameMapDragging = true;
 		gameMapDraggingMouseX1 = event.mouseButton.x;

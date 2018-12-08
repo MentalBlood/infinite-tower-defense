@@ -24,10 +24,14 @@ void drawGame()
 			(*i)->drawLevelText();
 
 	drawGameInfo();
-	if (currentShowingUpgradeInfoTower)
-		currentShowingUpgradeInfoTower->getUpgradeInfo()->draw();
-	else
-		drawTowersPanel();
+	if (towersPanelOpened)
+	{
+		if (currentShowingUpgradeInfoTower)
+			currentShowingUpgradeInfoTower->getUpgradeInfo()->draw();
+		else
+			drawTowersPanel();
+	}
+	towersPanelOpenCloseButton->draw();
 	gameHelpButton->draw();
 	
 	window.display();
