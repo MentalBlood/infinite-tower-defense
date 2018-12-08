@@ -9,7 +9,7 @@ class ModelA : public Monster
 	public:
 		ModelA(	unsigned int numberOfVertexes, float initialMouthAngle,
 				const float speed, unsigned int health):
-			Monster(5, speed, health), initialMouthAngle(initialMouthAngle), currentMouthAngle(initialMouthAngle),
+			Monster(1, speed, health), initialMouthAngle(initialMouthAngle), currentMouthAngle(initialMouthAngle),
 			numberOfVertexes(numberOfVertexes), closingMouth(true)
 		{
 			graphicalElements = new std::vector<sf::VertexArray>;
@@ -19,7 +19,7 @@ class ModelA : public Monster
 			(*graphicalElements)[0][0].position = sf::Vector2f(0, 0); //center
 
 			sf::Transform rotation;
-			rotation.rotate((360 - initialMouthAngle) / (numberOfVertexes-1), position); //for geting other points
+			rotation.rotate((360.0 - initialMouthAngle) / (numberOfVertexes-1), position); //for geting other points
 
 			sf::Transform mouthRotation;
 			mouthRotation.rotate(initialMouthAngle/2, position); //for geting point with index 1

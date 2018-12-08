@@ -24,6 +24,7 @@ MapForPlaying *gameMap;
 #include "monsters/Monster.cpp"
 #include "monsters/ModelA.cpp"
 #include "monsters/ModelB.cpp"
+#include "monsters/ModelC.cpp"
 std::list<Monster*> monsters;
 
 #include "gameFunctions.cpp"

@@ -11,7 +11,7 @@ class ModelB : public Monster
 				sf::Color backgroundMinColor, sf::Color backgroundMaxColor,
 				sf::Color linesMinColor, sf::Color linesMaxColor,
 				const float speed, unsigned int health):
-		Monster(10, speed, health), numberOfVertexes(numberOfVertexes),
+		Monster(2, speed, health), numberOfVertexes(numberOfVertexes),
 		backgroundMinColor(backgroundMinColor), backgroundMaxColor(backgroundMaxColor),
 		linesMinColor(linesMinColor), linesMaxColor(linesMaxColor)
 		{
@@ -21,7 +21,7 @@ class ModelB : public Monster
 			(*graphicalElements)[1].resize(numberOfVertexes+1);
 
 			sf::Transform rotation;
-			rotation.rotate(360 / numberOfVertexes, sf::Vector2f(0, 0)); //for geting other points
+			rotation.rotate(360.0 / numberOfVertexes, sf::Vector2f(0, 0)); //for geting other points
 
 			//positioning points
 			(*graphicalElements)[1][0].position = sf::Vector2f(radius, 0);

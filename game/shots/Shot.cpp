@@ -1,18 +1,3 @@
-float vectorLengthSquare(const sf::Vector2f & vector)
-{ return vector.x * vector.x + vector.y * vector.y; }
-
-float vectorLength(const sf::Vector2f & vector)
-{ return sqrt(vector.x * vector.x + vector.y * vector.y); }
-
-sf::Vector2f unitVector(sf::Vector2f distanceVector)
-{ return distanceVector / vectorLength(distanceVector); }
-
-sf::Vector2f unitVector(sf::Vector2f & A, sf::Vector2f & B)
-{
-	sf::Vector2f distanceVector = B - A;
-	return distanceVector / vectorLength(distanceVector);
-}
-
 float triangleHeightSquareFromSidesLengthsSquares(float a2, float b2, float c2)
 { return (b2 + c2 - (a2 + pow(b2 - c2, 2) / a2) / 2) / 2; }
 
