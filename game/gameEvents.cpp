@@ -174,7 +174,7 @@ void moveCellSelector(char direction)
 
 void gameKeyPressed()
 {
-	if ((event.key.code <= 35) && (event.key.code >= 27))
+	if ((!pause) && (event.key.code <= 35) && (event.key.code >= 27))
 	{
 		towersInfoStack->click(event.key.code - 26 - 1);
 		tryToSetAddingTower();
@@ -245,7 +245,8 @@ void gameMouseButtonPressed()
 						currentShowingUpgradeInfoTower->refreshRangeCircle();
 				}
 				else
-					towersInfoStack->click(event.mouseButton.x, event.mouseButton.y);
+					if (!pause)
+						towersInfoStack->click(event.mouseButton.x, event.mouseButton.y);
 				return;
 			}
 		}
@@ -260,7 +261,7 @@ void gameMouseButtonPressed()
 		gameMapDraggingMapInitialCoordinates = gameMap->getPosition();
 	}
 	else
-	if (event.mouseButton.button == sf::Mouse::Right)
+	if ((!pause) && (event.mouseButton.button == sf::Mouse::Right))
 		tryToSetAddingTower();
 }
 
