@@ -48,13 +48,21 @@ void spawnNextWave(char monsterType)
 			new Timer<Monster*>(timeToWait, spawn,
 								new ModelC(nextWaveMonstersSpeed->getValue(),
 										   nextWaveMonstersHealth->getValue()));
+	else
+	if (monsterType == TYPE_D)
+		for (	unsigned int i = 0;
+				i < nextWaveNumberOfMonsters->getValue();
+				i++, timeToWait += nextWaveSecondsBetweenSpawns->getValue())
+			new Timer<Monster*>(timeToWait, spawn,
+								new ModelD(nextWaveMonstersSpeed->getValue(),
+										   nextWaveMonstersHealth->getValue()));
 
 	Timer<char> *timer = 
 		new Timer<char>(nextWaveSecondsBetweenSpawns->getValue()
 						* (nextWaveNumberOfMonsters->getValue() - 1)
 						+	gameMap->getCellSize() * (gameMap->getPathPointer()->size() + 2.5)
 							/ nextWaveMonstersSpeed->getValue() / 1000.0 + delayBetweenWaves,
-						spawnNextWave, char((monsterType + 1) % 3));
+						spawnNextWave, char((monsterType + 1) % 4));
 	currentSecondsToNextWave = timer->getTimeLeftPointer();
 
 	++currentWaveNumber;

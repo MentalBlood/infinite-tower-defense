@@ -42,9 +42,9 @@ void updateGame()
 		else
 		if ((*i)->isDead())
 		{
+			money += 4 * (*i)->getDamage() * (*i)->getSpeed() * (*i)->getInitialHealth();
 			delete *i;
 			monsters.erase(i);
-			money += (*i)->getDamage() * (*i)->getSpeed() * (*i)->getInitialHealth();
 			gotSomeMoney = true;
 			i--;
 		}
