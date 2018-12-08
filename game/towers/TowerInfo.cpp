@@ -44,6 +44,10 @@ class TowerInfo
 											 towerParameterTypeName[i],
 											 specification->getParameterValue(towerParameterType(i)));
 			}
+			if (specification->areShotsHoming())
+				charactersWritten += sprintf(textString + charactersWritten, "\nhoming shots: yes");
+			else
+				charactersWritten += sprintf(textString + charactersWritten, "\nhoming shots: no");
 			sprintf(textString + charactersWritten, "\n\nCOST: %u", specification->getCost());
 			text.setString(sf::String(textString));
 			fitTextIntoRectangle(&text, x + width * relativeSeparatorPosition, y + 2 * bordersThickness,
