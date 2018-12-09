@@ -93,7 +93,6 @@ class Shot : public GraphicalEntity
 
 		void moveCorrectlyUsingGrid()
 		{
-			printf("moveCorrectlyUsingGrid\n");
 			float maxDistanceToMove = speed * elapsed.asSeconds();
 			if (maxDistanceToMove > (distanceLeft * scale))
 			{
@@ -137,7 +136,6 @@ class Shot : public GraphicalEntity
 			}
 
 			if (!finished) moveInCorrectDirection(maxDistanceToMove);
-			printf("moved\n");
 		}
 
 		void updateScale()

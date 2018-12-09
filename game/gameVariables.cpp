@@ -4,7 +4,8 @@ bool gameMapDragging,
 float gameMapDraggingMouseX1,
 	  gameMapDraggingMouseY1,
 	  gameScaleDelta,
-	  gameScale;
+	  gameScale,
+	  gameSpeed;
 sf::Vector2f	gameMapDraggingMapInitialCoordinates,
 				gameDragOffset,
 				gameScaleCenter;
@@ -39,6 +40,16 @@ Tower *currentShowingUpgradeInfoTower;
 
 #include "Grid.cpp"
 #include "shooting.cpp"
+
+std::list<Tower*>::iterator getTowerUnderSelector()
+{
+	if (!gameMap->selectorOnTower()) return towers.end();
+	sf::Vector2f cellSelectorPosition = gameMap->getSelectorCenteredPosition();
+	for (std::list<Tower*>::iterator i = towers.begin(); i != towers.end(); i++)
+		if ((*i)->havePoint(cellSelectorPosition))
+			return i;
+	return towers.end();
+}
 
 #include "Bot/Bot.cpp"
 
@@ -116,7 +127,11 @@ void setGameVariables(const char *gameMapFileName)
 
 	setGrid();
 
+	gameSpeed = 1;
 	startWaving();
 	fillVirtualMap();
-	makeVirtualActions(100, "botVirtualActions.txt");
+	if (!developerMode)
+		makeVirtualActions(100, "botVirtualActions.txt");
+	else
+		setNextAction();
 }

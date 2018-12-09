@@ -7,7 +7,7 @@ class GameAction
 		char type;
 
 	public:
-		GameAction(unsigned int x, unsigned int y, bool type):
+		GameAction(unsigned int x, unsigned int y, char type):
 		x(x), y(y), type(type)
 		{}
 
@@ -19,6 +19,9 @@ class GameAction
 			else
 				fprintf(file, "build type %d\n", type);
 		}
+
+		char getType()
+		{ return type; }
 };
 
 class VirtualMapCell
@@ -28,6 +31,7 @@ class VirtualMapCell
 		VirtualTower *tower;
 		float maxBuildProfitValue;
 		unsigned int maxBuildProfitTowerSpecificationIndex;
+		GameAction *maxProfitAction;
 
 		float getDistanceCoveredByTowerOnThisCell(float towerDamageRadius)
 		{ return getDistanceCoveredByTower(x, y, towerDamageRadius); }
@@ -56,36 +60,72 @@ class VirtualMapCell
 					maxBuildProfitTowerSpecificationIndex = i;
 				}
 			}
+			printf("%u -> %f\n", maxBuildProfitTowerSpecificationIndex, maxBuildProfitValue);
 		}
 
 		void buildTower(TowerSpecification *specification)
 		{
+			if (specification == (*baseTowersSpecifications)[0])
+				printf("OK\n");
+			else
+				printf("not OK\n");
 			tower = new VirtualTower(specification,
 						getDistanceCoveredByTowerOnThisCell(specification->getParameterValue(RANGE)),
 						getDistanceCoveredByTowerOnThisCell(specification->getNextParameterValue(RANGE)));
 		}
 
+		void recalculateMaxProfitAction()
+		{
+			if (maxProfitAction)
+				delete maxProfitAction;
+			if (tower)
+				maxProfitAction = new GameAction(x, y, UPGRADE);
+			else
+				maxProfitAction = new GameAction(x, y, maxBuildProfitTowerSpecificationIndex + 1);
+		}
+
 	public:
 		VirtualMapCell(unsigned int x, unsigned int y):
-		x(x), y(y), tower(NULL)
-		{ setMaxBuildProfitValue(); }
+		x(x), y(y), tower(NULL), maxProfitAction(NULL)
+		{
+			setMaxBuildProfitValue();
+			recalculateMaxProfitAction();
+		}
+
+		~VirtualMapCell()
+		{
+			delete tower;
+			delete maxProfitAction;
+		}
 
 		float getMaxActionProfitValue()
 		{ return (tower) ? tower->getNextLevelProfit() : maxBuildProfitValue; }
 
-		GameAction makeAction()
+		void makeAction()
 		{
 			if (tower)
-			{
 				tower->upgrade();
-				return GameAction(x, y, UPGRADE);
-			}
 			else
 			{
+				printf("building tower of type %u\n", maxBuildProfitTowerSpecificationIndex);
 				buildTower((*baseTowersSpecifications)[maxBuildProfitTowerSpecificationIndex]);
-				return GameAction(x, y, maxBuildProfitTowerSpecificationIndex + 1);
 			}
+			recalculateMaxProfitAction();
 		}
+
+		GameAction getMaxProfitAction()
+		{ return *maxProfitAction; }
+
+		unsigned int getMaxProfitActionCost()
+		{
+			if (tower)
+				return tower->getUpgradeCost();
+			else
+				return (*baseTowersSpecifications)[maxBuildProfitTowerSpecificationIndex]->getCost();
+		}
+
+		sf::Vector2u getPosition()
+		{ return sf::Vector2u(x, y); }
 };
 
 std::list<VirtualMapCell*> *towersCellsList;

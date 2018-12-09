@@ -56,7 +56,10 @@ void gameClear()
 void gameExit()
 {
 	gameClear();
-	startSelectMapScreen();
+	if (developerMode)
+		startDeveloperMode();
+	else
+		startSelectMapScreen();
 }
 
 void gameOver()
@@ -94,16 +97,6 @@ void changeScale(bool up)
 		addingTower->refreshScale();
 		addingTower->goToCellSelector();
 	}
-}
-
-std::list<Tower*>::iterator getTowerUnderSelector()
-{
-	if (!gameMap->selectorOnTower()) return towers.end();
-	sf::Vector2f cellSelectorPosition = gameMap->getSelectorCenteredPosition();
-	for (std::list<Tower*>::iterator i = towers.begin(); i != towers.end(); i++)
-		if ((*i)->havePoint(cellSelectorPosition))
-			return i;
-	return towers.end();
 }
 
 bool tryToShowTowerUpgradeInfo()
@@ -168,6 +161,14 @@ void moveCellSelector(char direction)
 	if (addingTower) addingTower->goToCellSelector();
 }
 
+void increaseGameSpeed()
+{ if ((gameSpeed * 1.1) < 4) gameSpeed *= 1.1; }
+
+void decreaseGameSpeed()
+{
+	if ((gameSpeed / 1.1) > 0.1) gameSpeed /= 1.1;
+}
+
 void gameKeyPressed()
 {
 	if ((!pause) && (event.key.code <= 35) && (event.key.code >= 27))
@@ -175,6 +176,31 @@ void gameKeyPressed()
 		towersInfoStack->click(event.key.code - 26 - 1);
 		tryToSetAddingTower();
 	}
+	else if (event.key.code == sf::Keyboard::Escape)
+	{
+		if (currentShowingUpgradeInfoTower)
+			hideTowerUpgradeInfo();
+		else
+			gameExit();
+	}
+	else if (event.key.code == sf::Keyboard::PageUp)
+		changeScale(SCALE_UP);
+	else if (event.key.code == sf::Keyboard::PageDown)
+		changeScale(SCALE_DOWN);
+	else if (event.key.code == sf::Keyboard::Space)
+		changeBool(&pause);
+	else if (event.key.code == sf::Keyboard::L)
+		changeBool(&printTowersLevels);
+	else if (event.key.code == sf::Keyboard::R)
+		tryToShowHideTowerRangeRadius();
+	else if (event.key.code == sf::Keyboard::F)
+	{
+		if (event.key.shift) decreaseGameSpeed();
+		else increaseGameSpeed();
+	}
+
+	else if (developerMode) return;
+
 	else if (event.key.code == sf::Keyboard::Up)
 		moveCellSelector(UP);
 	else if (event.key.code == sf::Keyboard::Down)
@@ -183,29 +209,12 @@ void gameKeyPressed()
 		moveCellSelector(RIGHT);
 	else if (event.key.code == sf::Keyboard::Left)
 		moveCellSelector(LEFT);
-	else if (event.key.code == sf::Keyboard::PageUp)
-		changeScale(SCALE_UP);
-	else if (event.key.code == sf::Keyboard::PageDown)
-		changeScale(SCALE_DOWN);
-	else if (event.key.code == sf::Keyboard::Space)
-		changeBool(&pause);
 	else if (event.key.code == sf::Keyboard::N)
 		abandonTimers<char>();
-	else if (event.key.code == sf::Keyboard::R)
-		tryToShowHideTowerRangeRadius();
 	else if (event.key.code == sf::Keyboard::S)
 		tryToSetAddingTower();
-	else if (event.key.code == sf::Keyboard::L)
-		changeBool(&printTowersLevels);
 	else if (event.key.code == sf::Keyboard::Delete)
 		tryToDeleteTower();
-	else if (event.key.code == sf::Keyboard::Escape)
-	{
-		if (currentShowingUpgradeInfoTower)
-			hideTowerUpgradeInfo();
-		else
-			gameExit();
-	}
 }
 
 void gameMouseWheelScrolled()
@@ -236,16 +245,13 @@ void gameMouseButtonPressed()
 			else
 			{
 				itWasNotDraggingButClick = false;
-				if (currentShowingUpgradeInfoTower)
+				if ((!developerMode) && currentShowingUpgradeInfoTower)
 				{
 					if (currentShowingUpgradeInfoTower->getUpgradeInfo()->tryToPress(event.mouseButton.x, event.mouseButton.y))
-					{
-						currentShowingUpgradeInfoTower->refreshRangeCircle();
-						currentShowingUpgradeInfoTower->printNextLevel();
-					}
+						currentShowingUpgradeInfoTower->upgrade();
 				}
 				else
-					if (!pause)
+					if ((!developerMode) && (!pause))
 						towersInfoStack->click(event.mouseButton.x, event.mouseButton.y);
 				return;
 			}
@@ -260,7 +266,7 @@ void gameMouseButtonPressed()
 		gameMapDraggingMapInitialCoordinates = gameMap->getPosition();
 	}
 	else
-	if ((!pause) && (event.mouseButton.button == sf::Mouse::Right))
+	if ((!developerMode) && (!pause) && (event.mouseButton.button == sf::Mouse::Right))
 		tryToSetAddingTower();
 }
 

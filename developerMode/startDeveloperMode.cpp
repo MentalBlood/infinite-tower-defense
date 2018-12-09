@@ -1,6 +1,6 @@
-void startSelectMapScreen()
+void startDeveloperMode()
 {
-	developerMode = false;
+	developerMode = true;
 	setSelectMapScreenVariables();
 	setSelectMapScreenEvents();
 	updateFunction = updateSelectMapScreen;

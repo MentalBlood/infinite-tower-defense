@@ -35,7 +35,7 @@ class TowersInfoStack
 				sprintf(textureFileName, "%s/%u.png", towersTexturesDir, i);
 				sprintf(characteristicsFileName, "%s/%u.txt", towersCharacteristicsDir, i);
 				baseTowersSpecifications->push_back(new TowerSpecification(textureFileName,
-													   characteristicsFileName, i));
+													    characteristicsFileName, i));
 				towersInfo[i] = new TowerInfo((*baseTowersSpecifications)[i],
 									currentTowerInfoRelativeX, currentTowerInfoRelativeY,
 									currentTowerInfoRelativeWidth, currentTowerInfoRelativeHeight);

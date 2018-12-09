@@ -143,6 +143,12 @@ class MapForPlaying : public Map
 				--cellSelectorY;
 		}
 
+		void moveCellSelectorToCell(unsigned int x, unsigned int y)
+		{
+			cellSelectorX = x;
+			cellSelectorY = y;
+		}
+
 		bool moveCellSelectorToMouse(float x, float y)
 		{
 			int selectedCellX = int((x - mapPositionX) / realCellTextureSize),

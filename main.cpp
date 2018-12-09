@@ -57,6 +57,8 @@ void startMapEditor();
 #include "newMapSettings/newMapSettingsEvents.cpp"
 #include "newMapSettings/startNewMapSettings.cpp"
 
+bool developerMode;
+
 #include "gameOverScreen/gameOverScreenVariables.cpp"
 #include "gameOverScreen/updateGameOverScreen.cpp"
 #include "gameOverScreen/drawGameOverScreen.cpp"
@@ -74,6 +76,8 @@ void startMapEditor();
 #include "selectMapScreen/drawSelectMapScreen.cpp"
 #include "selectMapScreen/selectMapScreenEvents.cpp"
 #include "selectMapScreen/startSelectMapScreen.cpp"
+
+#include "developerMode/startDeveloperMode.cpp"
 
 #include "chooseNewOrSavedMapToEditDialog/chooseNewOrSavedMapToEditDialogVariables.cpp"
 #include "chooseNewOrSavedMapToEditDialog/updateChooseNewOrSavedMapToEditDialog.cpp"

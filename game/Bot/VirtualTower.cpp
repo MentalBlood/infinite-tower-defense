@@ -61,6 +61,10 @@ class VirtualTower
 					 float distanceCovered, float nextLevelDistanceCovered):
 		distanceCovered(distanceCovered), nextLevelDistanceCovered(nextLevelDistanceCovered)
 		{
+			if (specification == (*baseTowersSpecifications)[0])
+				printf("OK\n");
+			else
+				printf("not OK\n");
 			std::vector<Parameter*>* specificationParametersPointer =
 				specification->getParametersPointer();
 			parameters.resize(specificationParametersPointer->size());
@@ -77,4 +81,7 @@ class VirtualTower
 			setNextParametersValues(parameters);
 			recalculateNextLevelProfit();
 		}
+
+		unsigned int getUpgradeCost()
+		{ return parameters[UPGRADE_COST]->getValue(); }
 };

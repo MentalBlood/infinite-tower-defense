@@ -98,8 +98,7 @@ class TowerSpecification
 		void setNextValues()
 		{
 			costWithUpgrades += parameters[UPGRADE_COST]->getValue();
-			for (unsigned int i = 0; i < parameters.size(); i++)
-				parameters[i]->setNextValue();
+			setNextParametersValues(parameters);
 		}
 
 		bool areShotsHoming()

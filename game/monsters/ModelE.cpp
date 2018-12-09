@@ -31,13 +31,13 @@ class ModelE : public Monster
 				(*graphicalElements)[0][i+2].color = randomColor(255);
 			}
 
-			makeVertexArrayCircle(&(*graphicalElements)[1], 0, 0, radius, 16, sf::Color(0, 0, 0, 128), sf::Color::Transparent);
+			makeVertexArrayCircle(&(*graphicalElements)[1], 0, 0, radius, 16, sf::Color(0, 0, 0, 255), sf::Color::Transparent);
 		}
 
 		void animate()
 		{
 			sf::Transform rotation, inverseRotation;
-			float rotationAngle = elapsed.asMilliseconds() / 4;
+			float rotationAngle = float(elapsed.asMilliseconds()) / 4;
 			rotation.rotate(rotationAngle, sf::Vector2f(0, 0));
 			inverseRotation.rotate(-rotationAngle, sf::Vector2f(0, 0));
 			for (unsigned int i = 2; i < (*graphicalElements)[0].getVertexCount(); i += 3)

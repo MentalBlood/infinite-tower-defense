@@ -38,11 +38,11 @@ class Splinter : public GraphicalEntity
 		{
 			move(velocity * elapsed.asSeconds());
 			secondsBeforeDissapear -= elapsed.asSeconds();
-			for (unsigned int i = 0; i < graphicalElements->size(); i++)
+			/*for (unsigned int i = 0; i < graphicalElements->size(); i++)
 			{
-				//for (unsigned int j = 0; j < (*graphicalElements)[i].getVertexCount(); j++)
-					//(*graphicalElements)[i][j].color.a -= colorDissapearDelta * elapsed.asSeconds();
-			}
+				for (unsigned int j = 0; j < (*graphicalElements)[i].getVertexCount(); j++)
+					(*graphicalElements)[i][j].color.a -= colorDissapearDelta * elapsed.asSeconds();
+			}*/
 			rotate(colorDissapearDelta * (rand()%3 + 1) * elapsed.asSeconds() * relativeRotatingVelocity);
 		}
 

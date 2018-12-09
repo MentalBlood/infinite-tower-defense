@@ -1,5 +1,9 @@
 void updateGame()
 {
+	elapsed *= gameSpeed;
+	if (developerMode)
+		tryToMakeNextAction();
+
 	if (pause) return;
 	//monsters are moving
 	for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
@@ -30,6 +34,7 @@ void updateGame()
 
 	//corpses are removed
 	bool gotSomeMoney = false;
+	bool thereWereSomeMonsters = (monsters.size() > 0);
 	for (std::list<Monster*>::iterator i = monsters.begin(); i != monsters.end(); i++)
 	{
 		if ((*i)->isCame())
@@ -49,6 +54,8 @@ void updateGame()
 			i--;
 		}
 	}
+	if (thereWereSomeMonsters && (!monsters.size()) && (!Timer<Monster*>::first))
+		abandonTimers<char>();
 	if (gotSomeMoney) updateMoneyText();
 
 	processTimers<Tower*>(); //towers shooting

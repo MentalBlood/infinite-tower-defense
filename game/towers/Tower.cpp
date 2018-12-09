@@ -151,6 +151,23 @@ class Tower
 		void showHideRangeCircle()
 		{ changeBool(&drawRangeCircle); }
 
+		void upgrade()
+		{
+			if (specification->getParameterValue(UPGRADE_COST) > money) return;
+			money -= specification->getParameterValue(UPGRADE_COST);
+			upgradeAnyway();
+		}
+
+		void upgradeAnyway()
+		{
+			specification->setNextValues();
+			upgradeInfo->refreshText();
+			upgradeInfo->refreshButtonText();
+			updateMoneyText();
+			refreshRangeCircle();
+			printNextLevel();
+		}
+
 		const sf::Vector2f & getPosition()
 		{ return sprite.getPosition(); }
 

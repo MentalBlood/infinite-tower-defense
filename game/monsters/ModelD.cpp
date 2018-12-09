@@ -54,7 +54,7 @@ class ModelD : public Monster
 		void animate()
 		{
 			sf::Transform rotation, inverseRotation;
-			float rotationAngle = elapsed.asMilliseconds() / 4;
+			float rotationAngle = float(elapsed.asMilliseconds()) / 4;
 			rotation.rotate(rotationAngle, sf::Vector2f(0, 0));
 			inverseRotation.rotate(-rotationAngle, sf::Vector2f(0, 0));
 			for (unsigned int i = 2; i < (*graphicalElements)[0].getVertexCount(); i += 3)

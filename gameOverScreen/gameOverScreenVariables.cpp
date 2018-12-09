@@ -1,15 +1,18 @@
 Message *gameOverScreenMessage;
 
 void updateGameOverScreenVariables()
-{
-	gameOverScreenMessage->updatePositionAndSize();
-}
+{ gameOverScreenMessage->updatePositionAndSize(); }
+
+void startDeveloperMode();
 
 void gameOverScreenExit()
 {
 	delete gameOverScreenMessage;
 	gameOverScreenMessage = NULL;
-	startSelectMapScreen();
+	if (developerMode)
+		startDeveloperMode();
+	else
+		startSelectMapScreen();
 }
 
 void setGameOverScreenVariables()
