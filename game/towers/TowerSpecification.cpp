@@ -86,6 +86,9 @@ class TowerSpecification
 		std::vector<Parameter*> & getParameters()
 		{ return parameters; }
 
+		std::vector<Parameter*>* getParametersPointer()
+		{ return &parameters; }
+
 		float getParameterValue(enum towerParameterType parameterType)
 		{ return parameters[parameterType]->getValue(); }
 

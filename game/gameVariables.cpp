@@ -40,7 +40,7 @@ Tower *currentShowingUpgradeInfoTower;
 #include "Grid.cpp"
 #include "shooting.cpp"
 
-#include "Bot.cpp"
+#include "Bot/Bot.cpp"
 
 void updateGameVariables()
 {
@@ -117,4 +117,6 @@ void setGameVariables(const char *gameMapFileName)
 	setGrid();
 
 	startWaving();
+	fillVirtualMap();
+	makeVirtualActions(100, "botVirtualActions.txt");
 }

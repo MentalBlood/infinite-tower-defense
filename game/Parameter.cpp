@@ -44,3 +44,9 @@ class Parameter
 			nextValue = calculateNextValue();
 		}
 };
+
+void setNextParametersValues(std::vector<Parameter*> & parameters)
+{
+	for (unsigned int i = 0; i < parameters.size(); i++)
+		parameters[i]->setNextValue();
+}

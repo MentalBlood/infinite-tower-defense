@@ -46,6 +46,11 @@ void gameClear()
 	printf("19\n");
 	deleteTowersPanel();
 	printf("20\n");
+	delete baseTowersSpecifications;
+	baseTowersSpecifications = NULL;
+	printf("21\n");
+	deleteVirtualMap();
+	printf("22\n");
 }
 
 void gameExit()
@@ -138,15 +143,6 @@ void tryToShowHideTowerRangeRadius()
 		(*towerUnderSelector)->showHideRangeCircle();
 }
 
-void tryToGetDistanceCoveredByTower()
-{
-	std::list<Tower*>::iterator towerUnderSelector = getTowerUnderSelector();
-	if (towerUnderSelector != towers.end())
-		printf("tower covers distance %f\n", getDistanceCoveredByTower((*towerUnderSelector)));
-	else
-		printf("no tower here\n");
-}
-
 void tryToSetAddingTower()
 {
 	if (!addingTower) return;
@@ -199,8 +195,6 @@ void gameKeyPressed()
 		tryToShowHideTowerRangeRadius();
 	else if (event.key.code == sf::Keyboard::S)
 		tryToSetAddingTower();
-	else if (event.key.code == sf::Keyboard::D)
-		tryToGetDistanceCoveredByTower();
 	else if (event.key.code == sf::Keyboard::L)
 		changeBool(&printTowersLevels);
 	else if (event.key.code == sf::Keyboard::Delete)

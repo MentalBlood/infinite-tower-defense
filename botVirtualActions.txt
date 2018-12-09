@@ -1,0 +1,100 @@
+action 0: (5, 8) build type 1
+action 1: (5, 8) upgrade
+action 2: (5, 8) upgrade
+action 3: (5, 5) build type 1
+action 4: (5, 5) upgrade
+action 5: (5, 5) upgrade
+action 6: (8, 10) build type 1
+action 7: (8, 10) upgrade
+action 8: (8, 10) upgrade
+action 9: (8, 3) build type 1
+action 10: (8, 3) upgrade
+action 11: (8, 3) upgrade
+action 12: (8, 4) build type 1
+action 13: (8, 4) upgrade
+action 14: (8, 4) upgrade
+action 15: (8, 9) build type 1
+action 16: (8, 9) upgrade
+action 17: (8, 9) upgrade
+action 18: (5, 8) upgrade
+action 19: (5, 5) upgrade
+action 20: (8, 10) upgrade
+action 21: (8, 3) upgrade
+action 22: (8, 4) upgrade
+action 23: (8, 9) upgrade
+action 24: (6, 8) build type 1
+action 25: (6, 8) upgrade
+action 26: (6, 8) upgrade
+action 27: (5, 9) build type 1
+action 28: (5, 9) upgrade
+action 29: (5, 9) upgrade
+action 30: (6, 5) build type 1
+action 31: (6, 5) upgrade
+action 32: (6, 5) upgrade
+action 33: (5, 4) build type 1
+action 34: (5, 4) upgrade
+action 35: (5, 4) upgrade
+action 36: (5, 7) build type 1
+action 37: (5, 7) upgrade
+action 38: (5, 7) upgrade
+action 39: (5, 6) build type 1
+action 40: (5, 6) upgrade
+action 41: (5, 6) upgrade
+action 42: (6, 8) upgrade
+action 43: (5, 9) upgrade
+action 44: (6, 5) upgrade
+action 45: (5, 4) upgrade
+action 46: (5, 7) upgrade
+action 47: (5, 6) upgrade
+action 48: (8, 2) build type 1
+action 49: (8, 2) upgrade
+action 50: (8, 2) upgrade
+action 51: (8, 2) upgrade
+action 52: (6, 9) build type 1
+action 53: (6, 9) upgrade
+action 54: (6, 9) upgrade
+action 55: (6, 4) build type 1
+action 56: (6, 4) upgrade
+action 57: (6, 4) upgrade
+action 58: (6, 9) upgrade
+action 59: (6, 4) upgrade
+action 60: (9, 9) build type 1
+action 61: (9, 9) upgrade
+action 62: (9, 9) upgrade
+action 63: (9, 4) build type 1
+action 64: (9, 4) upgrade
+action 65: (9, 4) upgrade
+action 66: (5, 8) upgrade
+action 67: (5, 5) upgrade
+action 68: (9, 9) upgrade
+action 69: (9, 4) upgrade
+action 70: (8, 10) upgrade
+action 71: (8, 3) upgrade
+action 72: (8, 4) upgrade
+action 73: (8, 9) upgrade
+action 74: (7, 9) build type 1
+action 75: (7, 9) upgrade
+action 76: (7, 9) upgrade
+action 77: (9, 3) build type 1
+action 78: (9, 3) upgrade
+action 79: (9, 3) upgrade
+action 80: (5, 10) build type 1
+action 81: (5, 10) upgrade
+action 82: (5, 10) upgrade
+action 83: (10, 4) build type 1
+action 84: (10, 4) upgrade
+action 85: (10, 4) upgrade
+action 86: (9, 10) build type 1
+action 87: (9, 10) upgrade
+action 88: (9, 10) upgrade
+action 89: (7, 3) build type 1
+action 90: (7, 3) upgrade
+action 91: (7, 3) upgrade
+action 92: (6, 3) build type 1
+action 93: (6, 3) upgrade
+action 94: (6, 3) upgrade
+action 95: (5, 3) build type 1
+action 96: (5, 3) upgrade
+action 97: (5, 3) upgrade
+action 98: (7, 10) build type 1
+action 99: (7, 10) upgrade

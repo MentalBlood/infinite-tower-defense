@@ -89,6 +89,9 @@ class MapForPlaying : public Map
 		std::vector<char>* getPathPointer()
 		{ return &path; }
 
+		std::vector<std::vector<char> >* getPathMapPointer()
+		{ return &pathMap; }
+
 		float getCellSize()
 		{ return float(cellTextureSize); }
 

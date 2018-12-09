@@ -1,3 +1,5 @@
+std::vector<TowerSpecification*> *baseTowersSpecifications;
+
 class TowersInfoStack
 {
 	private:
@@ -26,15 +28,18 @@ class TowersInfoStack
 				  currentTowerInfoRelativeY = relativeY,
 				  currentTowerInfoRelativeWidth = relativeWidth,
 				  currentTowerInfoRelativeHeight = (relativeHeight - relativeIndent*(count-1)) / count;
+			baseTowersSpecifications = new std::vector<TowerSpecification*>;
 			for (unsigned int i = 0; i < towersInfo.size(); i++, 
 				currentTowerInfoRelativeY += currentTowerInfoRelativeHeight + relativeIndent)
 			{
 				sprintf(textureFileName, "%s/%u.png", towersTexturesDir, i);
 				sprintf(characteristicsFileName, "%s/%u.txt", towersCharacteristicsDir, i);
-				towersInfo[i] =
-					new TowerInfo(	new TowerSpecification(textureFileName, characteristicsFileName, i),
+				baseTowersSpecifications->push_back(new TowerSpecification(textureFileName,
+													   characteristicsFileName, i));
+				towersInfo[i] = new TowerInfo((*baseTowersSpecifications)[i],
 									currentTowerInfoRelativeX, currentTowerInfoRelativeY,
 									currentTowerInfoRelativeWidth, currentTowerInfoRelativeHeight);
+				
 			}
 		}
 

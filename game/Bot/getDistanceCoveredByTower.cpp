@@ -77,6 +77,12 @@ float getDistanceCoveredByTower(float towerPositionX, float towerPositionY, floa
 	return distanceCoveredByTower;
 }
 
+float getDistanceCoveredByTower(unsigned int towerPositionX, unsigned int towerPositionY, float towerDamageRadius)
+{
+	return getDistanceCoveredByTower(towerPositionX * gameMap->getCellSize(), towerPositionY * gameMap->getCellSize(),
+									 towerDamageRadius);
+}
+
 float getDistanceCoveredByTower(Tower *tower)
 {
 	sf::Vector2f towerRelativePosition  = tower->getRelativePosition();
