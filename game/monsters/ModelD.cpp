@@ -1,3 +1,9 @@
+sf::Color randomRedColor(unsigned int alpha)
+{ return sf::Color(196 + rand() % 36, 0, 0, alpha); }
+
+sf::Color randomBlueColor(unsigned int alpha)
+{ return sf::Color(0, 0, 196 + rand() % 36, alpha); }
+
 sf::Color randomColor(unsigned char alpha)
 { return sf::Color(rand() % 256, rand() % 256, rand() % 256, alpha); }
 
@@ -36,25 +42,25 @@ class ModelD : public Monster
 			sf::Transform rotation;
 			rotation.rotate(360.0 / numberOfTriangles);
 			(*graphicalElements)[0][0].position = sf::Vector2f(radius, 0);
-			(*graphicalElements)[0][0].color = randomColor(128);
+			(*graphicalElements)[0][0].color = randomRedColor(128);
 			(*graphicalElements)[0][1].position = rotation.transformPoint((*graphicalElements)[0][0].position);
-			(*graphicalElements)[0][1].color = randomColor(128);
+			(*graphicalElements)[0][1].color = randomRedColor(128);
 			(*graphicalElements)[0][2].position = randomPoint(radius / 2);
-			(*graphicalElements)[0][2].color = randomColor(255);
+			(*graphicalElements)[0][2].color = randomBlueColor(255);
 			for (unsigned int i = 3; i < numberOfVertexes; i += 3)
 			{
 				(*graphicalElements)[0][i] = (*graphicalElements)[0][i-2];
 				(*graphicalElements)[0][i+1] = rotation.transformPoint((*graphicalElements)[0][i].position);
-				(*graphicalElements)[0][i+1].color = randomColor(128);
+				(*graphicalElements)[0][i+1].color = randomRedColor(128);
 				(*graphicalElements)[0][i+2].position = randomPoint(radius / 2);
-				(*graphicalElements)[0][i+2].color = randomColor(255);
+				(*graphicalElements)[0][i+2].color = randomBlueColor(255);
 			}
 		}
 
 		void animate()
 		{
 			sf::Transform rotation, inverseRotation;
-			float rotationAngle = float(elapsed.asMilliseconds()) / 4;
+			float rotationAngle = float(elapsed.asMilliseconds()) / 2;
 			rotation.rotate(rotationAngle, sf::Vector2f(0, 0));
 			inverseRotation.rotate(-rotationAngle, sf::Vector2f(0, 0));
 			for (unsigned int i = 2; i < (*graphicalElements)[0].getVertexCount(); i += 3)

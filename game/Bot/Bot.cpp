@@ -22,19 +22,35 @@ VirtualMapCell* getNextActionCell()
 void makeVirtualAction(FILE *logFile)
 {
 	VirtualMapCell *maxActionProfitCell = getNextActionCell();
-	maxActionProfitCell->getMaxProfitAction().printToFile(logFile);
+	if (logFile)
+	{
+		maxActionProfitCell->getMaxProfitAction().printToFile(logFile);
+		fprintf(logFile, "actionProfitValue = %lf, totalProfit = %f => ",
+			maxActionProfitCell->getMaxActionProfitValue(), currentProfitValue);
+	}
+	currentProfitValue += maxActionProfitCell->getMaxActionProfitValue();
 	maxActionProfitCell->makeAction();
 }
 
-void makeVirtualActions(unsigned int number, const char *logFileName)
+float makeVirtualActions(unsigned int number, const char *logFileName)
 {
+	if (!logFileName)
+	{
+		for (unsigned int i = 0; i < number; i++)
+			makeVirtualAction(NULL);
+		return currentProfitValue / number;
+	}
+
 	FILE *logFile = fopen(logFileName, "wb");
 	for (unsigned int i = 0; i < number; i++)
 	{
 		fprintf(logFile, "action %u: ", i+1);
 		makeVirtualAction(logFile);
 	}
+	float averageProfitValue = currentProfitValue / number;
+	fprintf(logFile, "averageProfitValue = %f\n", averageProfitValue);
 	fclose(logFile);
+	return averageProfitValue;
 }
 
 VirtualMapCell *nextActionCell;
@@ -74,12 +90,21 @@ void tryToMakeNextAction()
 	if (nextActionCell->getMaxProfitAction().getType() == UPGRADE)
 		upgradeTower(actionCellCoordinates.x, actionCellCoordinates.y);
 	else
-	{
-		printf("setting tower with type %d\n", nextActionCell->getMaxProfitAction().getType()-1);
 		setTower(actionCellCoordinates.x, actionCellCoordinates.y,
 				 (*baseTowersSpecifications)[nextActionCell->getMaxProfitAction().getType()-1]);
-	}
 	money -= nextActionCost;
+	updateMoneyText();
 	nextActionCell->makeAction();
 	setNextAction();
+}
+
+float monstersRewardCoefficient = 0;
+
+void setMonstersRewardCoefficient()
+{
+	fillVirtualMap();
+	float averageProfitValue = makeVirtualActions(2000, NULL);
+	float a = monstersParameters[HEALTH]->getMultiplier();
+	monstersRewardCoefficient = a * (a - 1) / (averageProfitValue * (a - 1.0/pow(a, 1)));
+	deleteVirtualMap();
 }

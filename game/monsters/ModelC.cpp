@@ -57,7 +57,7 @@ class ModelC : public Monster
 
 		void animate()
 		{
-			float distanceToMove = float(elapsed.asMilliseconds()) / 32;
+			float distanceToMove = fmax(minf(float(elapsed.asMilliseconds()) / 32, 0.05), 0.01);
 			if (closingMouth)
 			{
 				if (distanceToMove > distanceFromTeethToCenter)

@@ -30,7 +30,7 @@ class VirtualMapCell
 		unsigned int x, y;
 		VirtualTower *tower;
 		float maxBuildProfitValue;
-		unsigned int maxBuildProfitTowerSpecificationIndex;
+		long long unsigned int maxBuildProfitTowerSpecificationIndex;
 		GameAction *maxProfitAction;
 
 		float getDistanceCoveredByTowerOnThisCell(float towerDamageRadius)
@@ -60,15 +60,10 @@ class VirtualMapCell
 					maxBuildProfitTowerSpecificationIndex = i;
 				}
 			}
-			printf("%u -> %f\n", maxBuildProfitTowerSpecificationIndex, maxBuildProfitValue);
 		}
 
 		void buildTower(TowerSpecification *specification)
 		{
-			if (specification == (*baseTowersSpecifications)[0])
-				printf("OK\n");
-			else
-				printf("not OK\n");
 			tower = new VirtualTower(specification,
 						getDistanceCoveredByTowerOnThisCell(specification->getParameterValue(RANGE)),
 						getDistanceCoveredByTowerOnThisCell(specification->getNextParameterValue(RANGE)));
@@ -101,22 +96,28 @@ class VirtualMapCell
 		float getMaxActionProfitValue()
 		{ return (tower) ? tower->getNextLevelProfit() : maxBuildProfitValue; }
 
+		float getMaxActionJobIncrease()
+		{
+			if (tower)
+				return tower->getUpgradeCost() * tower->getNextLevelProfit();
+			else
+				return (*baseTowersSpecifications)[maxBuildProfitTowerSpecificationIndex]->getCost() *
+					   maxBuildProfitValue;
+		}
+
 		void makeAction()
 		{
 			if (tower)
 				tower->upgrade();
 			else
-			{
-				printf("building tower of type %u\n", maxBuildProfitTowerSpecificationIndex);
 				buildTower((*baseTowersSpecifications)[maxBuildProfitTowerSpecificationIndex]);
-			}
 			recalculateMaxProfitAction();
 		}
 
 		GameAction getMaxProfitAction()
 		{ return *maxProfitAction; }
 
-		unsigned int getMaxProfitActionCost()
+		long long unsigned int getMaxProfitActionCost()
 		{
 			if (tower)
 				return tower->getUpgradeCost();
@@ -130,8 +131,11 @@ class VirtualMapCell
 
 std::list<VirtualMapCell*> *towersCellsList;
 
+double currentProfitValue;
+
 void fillVirtualMap()
 {
+	currentProfitValue = 0;
 	towersCellsList = new std::list<VirtualMapCell*>;
 	std::vector<std::vector<char> >* pathMapPointer = gameMap->getPathMapPointer();
 	for (unsigned int i = 0; i < pathMapPointer->size(); i++)

@@ -129,9 +129,15 @@ void setGameVariables(const char *gameMapFileName)
 
 	gameSpeed = 1;
 	startWaving();
-	fillVirtualMap();
-	if (!developerMode)
-		makeVirtualActions(100, "botVirtualActions.txt");
-	else
+	setMonstersRewardCoefficient();
+	if (developerMode)
+	{
+		fillVirtualMap();
 		setNextAction();
+	}
+	else
+	{
+		fillVirtualMap();
+		makeVirtualActions(2000, "botVirtualActions.txt");
+	}
 }

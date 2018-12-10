@@ -15,7 +15,7 @@ float getJobOnTheWave(float distanceCovered, float damage, float shotsDelay)
 }
 
 float getProfit(float jobOnTheWave, float nextLevelJobOnTheWave, float cost)
-{ return (nextLevelJobOnTheWave - jobOnTheWave) / cost; }
+{ return ((nextLevelJobOnTheWave - jobOnTheWave) / cost) * 0.01; }
 
 class VirtualTower
 {
@@ -61,10 +61,6 @@ class VirtualTower
 					 float distanceCovered, float nextLevelDistanceCovered):
 		distanceCovered(distanceCovered), nextLevelDistanceCovered(nextLevelDistanceCovered)
 		{
-			if (specification == (*baseTowersSpecifications)[0])
-				printf("OK\n");
-			else
-				printf("not OK\n");
 			std::vector<Parameter*>* specificationParametersPointer =
 				specification->getParametersPointer();
 			parameters.resize(specificationParametersPointer->size());

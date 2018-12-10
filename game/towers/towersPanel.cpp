@@ -61,7 +61,6 @@ void setTowersPanel()
 	towersPanelGraphicsElements.resize(1);
 	towersPanelOpened = true;
 	updateTowersPanelPositionAndSize();
-	printf("%lu towers\n", baseTowersSpecifications->size());
 }
 
 void deleteTowersPanel()

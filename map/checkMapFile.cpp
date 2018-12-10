@@ -21,9 +21,9 @@ bool checkMapFile(const char *fileName)
 
 	//check start and end cells
 	unsigned int mapWidth; fscanf(file, "%u", &mapWidth);
-	if ((mapWidth < 8) || (mapWidth > 128)) return false; //width too small or too big
+	if ((mapWidth < 2) || (mapWidth > 128)) return false; //width too small or too big
 	unsigned int mapHeight; fscanf(file, "%u", &mapHeight);
-	if ((mapHeight < 8) || (mapHeight > 128)) return false; //height too small or too big
+	if ((mapHeight < 2) || (mapHeight > 128)) return false; //height too small or too big
 	unsigned int x1; fscanf(file, "%u", &x1);
 	if (x1 > mapWidth) return false; //coordinate is out of map
 	unsigned int y1; fscanf(file, "%u", &y1);

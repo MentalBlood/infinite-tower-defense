@@ -48,8 +48,8 @@ void updateNewMapSettingsVariables()
 
 void setNewMapSettingsVariables()
 {
-	newMapSettings.push_back(Setting(sf::String("width"), &fonts[newMapSettingsFont], newMapSettingsFontColor, 1, 8, 128));
-	newMapSettings.push_back(Setting(sf::String("height"), &fonts[newMapSettingsFont], newMapSettingsFontColor, 1, 8, 128));
+	newMapSettings.push_back(Setting(sf::String("width"), &fonts[newMapSettingsFont], newMapSettingsFontColor, 1, 2, 128));
+	newMapSettings.push_back(Setting(sf::String("height"), &fonts[newMapSettingsFont], newMapSettingsFontColor, 1, 2, 128));
 
 	updateNewMapSettingsVariables();
 	newMapSettingsSelectedSettingNumber = 0;

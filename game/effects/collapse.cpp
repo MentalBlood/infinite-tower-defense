@@ -10,7 +10,6 @@ sf::Vector2f getCenter(const sf::VertexArray & vertexArray)
 void GraphicalEntity::completeSplinter(std::vector<sf::VertexArray> *splinterGraphicalElements)
 {
 	sf::Vector2f splinterCenter = getCenter((*splinterGraphicalElements)[0]) + position;
-	printf("(%f, %f)\n", splinterCenter.x, splinterCenter.y);
 	sf::Vector2f splinterVelocity = (splinterCenter - position) * float(16);
 	splinterVelocity.x *= 0.7 + 0.1 * (rand() % 4);
 	splinterVelocity.y *= 0.7 + 0.1 * (rand() % 4);

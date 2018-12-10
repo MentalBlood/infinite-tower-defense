@@ -49,7 +49,8 @@ void gameClear()
 	delete baseTowersSpecifications;
 	baseTowersSpecifications = NULL;
 	printf("21\n");
-	deleteVirtualMap();
+	if (towersCellsList)
+		deleteVirtualMap();
 	printf("22\n");
 }
 

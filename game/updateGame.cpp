@@ -47,7 +47,7 @@ void updateGame()
 		else
 		if ((*i)->isDead())
 		{
-			money += 4 * (*i)->getDamage() * (*i)->getSpeed() * (*i)->getInitialHealth();
+			money += monstersRewardCoefficient * (*i)->getInitialHealth();
 			delete *i;
 			monsters.erase(i);
 			gotSomeMoney = true;
