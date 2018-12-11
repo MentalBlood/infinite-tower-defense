@@ -105,7 +105,7 @@ void setMonstersRewardCoefficient()
 {
 	fillVirtualMap();
 	makeVirtualActions(2000, NULL);
-	printf("lastProfitValue = %f\n", lastActionProfitValue);
+	//printf("lastProfitValue = %f\n", lastActionProfitValue);
 	float a = monstersParameters[HEALTH]->getMultiplier();
 	monstersRewardCoefficient = a * (a - 1) / (lastActionProfitValue * (a - 1.0/pow(a, 2)));
 	deleteVirtualMap();
