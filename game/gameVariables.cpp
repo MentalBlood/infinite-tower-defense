@@ -10,8 +10,9 @@ sf::Vector2f	gameMapDraggingMapInitialCoordinates,
 				gameDragOffset,
 				gameScaleCenter;
 
+long long unsigned int money;
 unsigned int gameBaseHealth,
-			 money;
+			 actionsNumber;
 
 TwoConditionButton *gameHelpButton;
 
@@ -124,6 +125,7 @@ void setGameVariables(const char *gameMapFileName)
 	updateBaseHealthText();
 	money = 350;
 	updateMoneyText();
+	actionsNumber = 0;
 
 	setGrid();
 

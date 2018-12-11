@@ -28,17 +28,18 @@ void makeVirtualAction(FILE *logFile)
 		fprintf(logFile, "actionProfitValue = %lf, totalProfit = %f => ",
 			maxActionProfitCell->getMaxActionProfitValue(), currentProfitValue);
 	}
-	currentProfitValue += maxActionProfitCell->getMaxActionProfitValue();
+	lastActionProfitValue = maxActionProfitCell->getMaxActionProfitValue();
+	currentProfitValue += lastActionProfitValue;
 	maxActionProfitCell->makeAction();
 }
 
-float makeVirtualActions(unsigned int number, const char *logFileName)
+void makeVirtualActions(unsigned int number, const char *logFileName)
 {
 	if (!logFileName)
 	{
 		for (unsigned int i = 0; i < number; i++)
 			makeVirtualAction(NULL);
-		return currentProfitValue / number;
+		return;
 	}
 
 	FILE *logFile = fopen(logFileName, "wb");
@@ -47,10 +48,9 @@ float makeVirtualActions(unsigned int number, const char *logFileName)
 		fprintf(logFile, "action %u: ", i+1);
 		makeVirtualAction(logFile);
 	}
-	float averageProfitValue = currentProfitValue / number;
-	fprintf(logFile, "averageProfitValue = %f\n", averageProfitValue);
+	fprintf(logFile, "averageProfitValue = %f\n", currentProfitValue / number);
 	fclose(logFile);
-	return averageProfitValue;
+	return;
 }
 
 VirtualMapCell *nextActionCell;
@@ -94,6 +94,7 @@ void tryToMakeNextAction()
 				 (*baseTowersSpecifications)[nextActionCell->getMaxProfitAction().getType()-1]);
 	money -= nextActionCost;
 	updateMoneyText();
+	++actionsNumber;
 	nextActionCell->makeAction();
 	setNextAction();
 }
@@ -103,8 +104,9 @@ float monstersRewardCoefficient = 0;
 void setMonstersRewardCoefficient()
 {
 	fillVirtualMap();
-	float averageProfitValue = makeVirtualActions(2000, NULL);
+	makeVirtualActions(2000, NULL);
+	printf("lastProfitValue = %f\n", lastActionProfitValue);
 	float a = monstersParameters[HEALTH]->getMultiplier();
-	monstersRewardCoefficient = a * (a - 1) / (averageProfitValue * (a - 1.0/pow(a, 1)));
+	monstersRewardCoefficient = a * (a - 1) / (lastActionProfitValue * (a - 1.0/pow(a, 2)));
 	deleteVirtualMap();
 }

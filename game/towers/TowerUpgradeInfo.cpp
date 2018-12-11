@@ -36,7 +36,7 @@ class TowerUpgradeInfo
 			{
 				if (i)
 					charactersWritten += sprintf(textString + charactersWritten, "\n\n");
-				charactersWritten += sprintf(textString + charactersWritten, "%s\n%-6.2f -> %6.2f",
+				charactersWritten += sprintf(textString + charactersWritten, "%s\n%-6.2lf -> %6.2lf",
 											 towerParameterTypeName[i],
 											 specification->getParameterValue(towerParameterType(i)),
 											 specification->getNextParameterValue(towerParameterType(i)));
@@ -65,7 +65,7 @@ class TowerUpgradeInfo
 		void refreshButtonText()
 		{
 			char costString[32];
-			int costStringLength = sprintf( costString, "(costs %.0f)",
+			int costStringLength = sprintf( costString, "(costs %.0lf)",
 											specification->getParameterValue(towerParameterType(UPGRADE_COST)));
 			char stringFormat[32];
 			sprintf(stringFormat, "%%%ds\n%s", costStringLength - 2, costString);

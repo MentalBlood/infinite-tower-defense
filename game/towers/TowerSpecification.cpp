@@ -26,8 +26,8 @@ class TowerSpecification
 		std::vector<Parameter*> parameters;
 		bool homingShots;
 
-		unsigned int cost,
-					 costWithUpgrades;
+		long long unsigned int cost,
+							   costWithUpgrades;
 
 	public:
 		TowerSpecification(char *textureFileName, char *characteristicsFileName, char shotTypeArg)
@@ -68,7 +68,7 @@ class TowerSpecification
 			else
 				homingShots = false;
 
-			fscanf(characteristicsFile, "%u", &cost);
+			fscanf(characteristicsFile, "%llu", &cost);
 			costWithUpgrades = cost;
 
 			fclose(characteristicsFile);
@@ -77,10 +77,10 @@ class TowerSpecification
 		const sf::Texture & getTexture()
 		{ return texture; }
 
-		unsigned int getCost()
+		long long unsigned int getCost()
 		{ return cost; }
 
-		unsigned int getCostWithUpgrades()
+		long long unsigned int getCostWithUpgrades()
 		{ return costWithUpgrades; }
 
 		std::vector<Parameter*> & getParameters()
@@ -89,10 +89,10 @@ class TowerSpecification
 		std::vector<Parameter*>* getParametersPointer()
 		{ return &parameters; }
 
-		float getParameterValue(enum towerParameterType parameterType)
+		double getParameterValue(enum towerParameterType parameterType)
 		{ return parameters[parameterType]->getValue(); }
 
-		float getNextParameterValue(enum towerParameterType parameterType)
+		double getNextParameterValue(enum towerParameterType parameterType)
 		{ return parameters[parameterType]->getNextValue(); }
 
 		void setNextValues()

@@ -67,10 +67,10 @@ float getDistanceCoveredByTower(float towerPositionX, float towerPositionY, floa
 	{
 		coveredByTower = (distanceFromTestMonsterToPoint(towerPositionX, towerPositionY) <=
 						  realDamageRadius);
-		float distanceToMove = float(gameMap->getCellSize()) / 32.0;
-		/*float distanceToMove = fmax(float(gameMap->getCellSize()) / 32.0,
+		//float distanceToMove = float(gameMap->getCellSize()) / 32.0;
+		float distanceToMove = fmax(float(gameMap->getCellSize()) / 32.0,
 									abs(distanceFromTestMonsterToPoint(towerPositionX, towerPositionY) -
-										realDamageRadius));*/
+										realDamageRadius));
 		//printf("testMonsterCurrentDirectionIndex = %u, distanceToMove = %f, distanceCoveredByTower = %f\n",
 		//	   testMonsterCurrentDirectionIndex, distanceToMove, distanceCoveredByTower);
 		moveTestMonster(distanceToMove);
@@ -80,7 +80,8 @@ float getDistanceCoveredByTower(float towerPositionX, float towerPositionY, floa
 
 float getDistanceCoveredByTower(unsigned int towerPositionX, unsigned int towerPositionY, float towerDamageRadius)
 {
-	return getDistanceCoveredByTower(towerPositionX * gameMap->getCellSize(), towerPositionY * gameMap->getCellSize(),
+	return getDistanceCoveredByTower(float(float(gameMap->getCellSize()) * (float(towerPositionX) + 0.5)),
+									 float(float(gameMap->getCellSize()) * (float(towerPositionY) + 0.5)),
 									 towerDamageRadius);
 }
 

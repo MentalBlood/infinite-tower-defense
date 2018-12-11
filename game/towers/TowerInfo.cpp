@@ -48,7 +48,7 @@ class TowerInfo
 				charactersWritten += sprintf(textString + charactersWritten, "\nhoming shots: yes");
 			else
 				charactersWritten += sprintf(textString + charactersWritten, "\nhoming shots: no");
-			sprintf(textString + charactersWritten, "\n\nCOST: %u", specification->getCost());
+			sprintf(textString + charactersWritten, "\n\nCOST: %llu", specification->getCost());
 			text.setString(sf::String(textString));
 			fitTextIntoRectangle(&text, x + width * relativeSeparatorPosition, y + 2 * bordersThickness,
 										width * (1 - relativeSeparatorPosition) - bordersThickness,

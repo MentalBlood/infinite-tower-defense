@@ -172,12 +172,7 @@ void decreaseGameSpeed()
 
 void gameKeyPressed()
 {
-	if ((!pause) && (event.key.code <= 35) && (event.key.code >= 27))
-	{
-		towersInfoStack->click(event.key.code - 26 - 1);
-		tryToSetAddingTower();
-	}
-	else if (event.key.code == sf::Keyboard::Escape)
+	if (event.key.code == sf::Keyboard::Escape)
 	{
 		if (currentShowingUpgradeInfoTower)
 			hideTowerUpgradeInfo();
@@ -194,6 +189,8 @@ void gameKeyPressed()
 		changeBool(&printTowersLevels);
 	else if (event.key.code == sf::Keyboard::R)
 		tryToShowHideTowerRangeRadius();
+	else if (event.key.code == sf::Keyboard::A)
+		printf("%u actions done\n", actionsNumber);
 	else if (event.key.code == sf::Keyboard::F)
 	{
 		if (event.key.shift) decreaseGameSpeed();
@@ -202,6 +199,11 @@ void gameKeyPressed()
 
 	else if (developerMode) return;
 
+	if ((!pause) && (event.key.code <= 35) && (event.key.code >= 27))
+	{
+		towersInfoStack->click(event.key.code - 26 - 1);
+		tryToSetAddingTower();
+	}
 	else if (event.key.code == sf::Keyboard::Up)
 		moveCellSelector(UP);
 	else if (event.key.code == sf::Keyboard::Down)

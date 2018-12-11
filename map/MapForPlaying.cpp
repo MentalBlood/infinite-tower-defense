@@ -101,6 +101,13 @@ class MapForPlaying : public Map
 		sf::Vector2u getMapSize()
 		{ return sf::Vector2u(mapWidth, mapHeight); }
 
+		bool havePoint(sf::Vector2f point)
+		{
+			return ((point.x > mapPositionX) && (point.y > mapPositionY) &&
+					(point.x < (mapPositionX + mapWidth * realCellTextureSize)) &&
+					(point.y < (mapPositionY + mapHeight * realCellTextureSize)));
+		}
+
 		sf::Vector2f getRelativeSelectorPosition()
 		{
 			return sf::Vector2f(cellTextureSize * (cellSelectorX + 0.5),

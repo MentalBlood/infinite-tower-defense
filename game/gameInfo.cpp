@@ -48,9 +48,12 @@ void updateBaseHealthText()
 										255 * float(gameBaseHealth) / 100.0, 0, 192));
 }
 
+char moneyTextString[64];
+
 void updateMoneyText()
 {
-	moneyText->setString("money: " + sf::String(intToString(int(money))));
+	sprintf(moneyTextString, "money: %llu", money);
+	moneyText->setString(moneyTextString);
 }
 
 void drawGameInfo()

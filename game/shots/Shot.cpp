@@ -93,6 +93,12 @@ class Shot : public GraphicalEntity
 
 		void moveCorrectlyUsingGrid()
 		{
+			if (finished) return;
+			if (!gameMap->havePoint(getPosition()))
+			{
+				finished = true;
+				return;
+			}
 			float maxDistanceToMove = speed * elapsed.asSeconds();
 			if (maxDistanceToMove > (distanceLeft * scale))
 			{

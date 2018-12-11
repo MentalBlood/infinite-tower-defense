@@ -131,7 +131,8 @@ class VirtualMapCell
 
 std::list<VirtualMapCell*> *towersCellsList;
 
-double currentProfitValue;
+double currentProfitValue,
+	   lastActionProfitValue;
 
 void fillVirtualMap()
 {
