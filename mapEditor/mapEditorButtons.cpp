@@ -75,7 +75,7 @@ void mapEditorTryToSaveMap(std::string fileName)
 						 "Overwrite", "Cancel",
 						 messageFont,
 						 0.3, 0.3, 0.4, 0.4, 4,
-						 sf::Color(255, 255, 255), sf::Color(192, 64, 64), sf::Color(0, 0, 0));
+						 sf::Color(255, 255, 255), sf::Color(192, 64, 64), sf::Color(0, 0, 0), 2);
 	else
 		mapEditorSaveMap();
 }

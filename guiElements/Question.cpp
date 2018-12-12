@@ -32,7 +32,7 @@ class Question
 				sf::String textString, sf::String leftButtonString, sf::String rightButtonString,
 				enum fontType fontIndex,
 				float relativeX, float relativeY, float relativeWidth, float relativeHeight, float relativeTextIndent,
-				sf::Color textColor, sf::Color fillColor, sf::Color bordersColor):
+				sf::Color textColor, sf::Color fillColor, sf::Color bordersColor, float buttonsRelativeBordersThickness):
 			leftButtonFunction(leftButtonFunction), rightButtonFunction(rightButtonFunction),
 			textString(textString),
 			relativeX(relativeX), relativeY(relativeY), relativeWidth(relativeWidth), relativeHeight(relativeHeight),
@@ -45,11 +45,13 @@ class Question
 			leftButton = new TwoConditionButton(nothing, leftButtonFunction, leftButtonString, fontIndex,
 												textColor, fillColor, bordersColor,
 												relativeX + relativeWidth/5, relativeY + relativeHeight*3/4,
-												relativeWidth/5, relativeHeight/8, relativeTextIndent);
+												relativeWidth/5, relativeHeight/8, relativeTextIndent,
+												buttonsRelativeBordersThickness);
 			rightButton = new TwoConditionButton(nothing, rightButtonFunction, rightButtonString, fontIndex,
 												textColor, fillColor, bordersColor,
 												relativeX + 3 * relativeWidth/5, relativeY + relativeHeight*3/4,
-												relativeWidth/5, relativeHeight/8, relativeTextIndent);
+												relativeWidth/5, relativeHeight/8, relativeTextIndent,
+												buttonsRelativeBordersThickness);
 			updatePositionAndSize();
 		}
 

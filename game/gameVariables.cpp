@@ -139,7 +139,7 @@ void setGameVariables(const char *gameMapFileName)
 	}
 	else
 	{
-		fillVirtualMap();
-		makeVirtualActions(2000, "botVirtualActions.txt");
+//		fillVirtualMap();
+//		makeVirtualActions(2000, "botVirtualActions.txt");
 	}
 }

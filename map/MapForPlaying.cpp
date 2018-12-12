@@ -6,14 +6,17 @@ class MapForPlaying : public Map
 			pathMap.resize(mapWidth);
 			for (unsigned int i = 0; i < mapWidth; i++)
 				pathMap[i].resize(mapHeight);
+			printf("pathMapSize = (%lu, %lu)\n", pathMap.size(), pathMap[0].size());
 		}
 
 		void loadFile(const char *fileName)
 		{
+			printf("load %s\n", fileName);
 			FILE *file = fopen(fileName, "rb");
 
 			//read start and end cells
 			fscanf(file, "%u%u%u%u", &mapWidth, &mapHeight, &x1, &y1);
+			printf("mapWidth = %u, mapHeight = %u, x1 = %u, y1 = %u\n", mapWidth, mapHeight, x1, y1);
 			//creating path map of read size
 			createPathMap();
 			pathMap[x1][y1] = BEGIN;
@@ -27,6 +30,7 @@ class MapForPlaying : public Map
 				if (rockX == -1) break;
 
 				fscanf(file, "%d", &rockY);
+				printf("rockX = %d, rockY = %d\n", rockX, rockY);
 				pathMap[rockX][rockY] = ROCK;
 			}
 
@@ -48,6 +52,7 @@ class MapForPlaying : public Map
 			pathMap[x2][y2] = END;
 
 			fclose(file);
+			printf("loaded\n");
 		}
 
 	public:

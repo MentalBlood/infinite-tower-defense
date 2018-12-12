@@ -4,11 +4,11 @@
 
 VirtualMapCell* getNextActionCell()
 {
-	VirtualMapCell *maxActionProfitCell = NULL;
-	float maxActionProfit = 0;
+	VirtualMapCell *maxActionProfitCell = (*towersCellsList->begin());
+	double maxActionProfit = 0;
 	for (std::list<VirtualMapCell*>::iterator i = towersCellsList->begin(); i != towersCellsList->end(); i++)
 	{
-		float currentCellActionProfit = (*i)->getMaxActionProfitValue();
+		double currentCellActionProfit = (*i)->getMaxActionProfitValue();
 		if (currentCellActionProfit > maxActionProfit)
 		{
 			maxActionProfit = currentCellActionProfit;
@@ -104,7 +104,8 @@ float monstersRewardCoefficient = 0;
 void setMonstersRewardCoefficient()
 {
 	fillVirtualMap();
-	makeVirtualActions(2000, NULL);
+	if (!towersCellsList->size()) return;
+	makeVirtualActions(towersCellsList->size() * 200, NULL);
 	//printf("lastProfitValue = %f\n", lastActionProfitValue);
 	float a = monstersParameters[HEALTH]->getMultiplier();
 	monstersRewardCoefficient = a * (a - 1) / (lastActionProfitValue * (a - 1.0/pow(a, 2)));

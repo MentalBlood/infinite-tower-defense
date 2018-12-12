@@ -365,6 +365,7 @@ class MapForEditing : public Map
 
 		void save(const char *fileName)
 		{
+			printf("save %s\n", fileName);
 			FILE *file = fopen(fileName, "wb");
 
 			//write width, height and start cell coordinates

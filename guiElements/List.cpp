@@ -137,10 +137,13 @@ class List
 
 		void selectPrevious()
 		{
+			printf("selectPrevious\n");
 			if (selectedItemNumber == 0) return;
+			printf("not zero\n");
 
 			if (selectedItemNumber == firstItemShownNumber)
 			{
+				printf("moving up\n");
 				--firstItemShownNumber;
 				--lastItemShownNumber;
 				updateItems();
@@ -153,10 +156,28 @@ class List
 		std::string getThis()
 		{ return items[selectedItemNumber].getString(); }
 
-		void deleteThis()
+		bool deleteThis()
 		{
+			printf("erase\n");
 			items.erase(items.begin() + selectedItemNumber);
+			if (lastItemShownNumber == int(items.size()))
+			{
+				printf("if\n");
+				if (firstItemShownNumber)
+				{
+					printf("firstItemShownNumber\n");
+					--firstItemShownNumber;
+				}
+				--lastItemShownNumber;
+			}
+			selectPrevious();
+			if (!items.size())
+				return false;
+			printf("firstItemShownNumber = %u, lastItemShownNumber = %u, selectedItemNumber = %u\n",
+				   firstItemShownNumber, lastItemShownNumber, selectedItemNumber);
+			printf("done\n");
 			updateItems();
+			return true;
 		}
 
 		void selectThis()
@@ -171,6 +192,7 @@ class List
 
 		bool selectByMouse(float mouseX, float mouseY)
 		{
+			printf("selectByMouse\n");
 			if (!mouseOnMe(mouseX, mouseY)) return false;
 
 			bool mouseOnItem = true;
@@ -202,8 +224,10 @@ class List
 			window.draw(itemsFrame);
 			window.draw(nameText);
 			if (!items.size()) return;
+			printf("draw\n");
 			for (int i = firstItemShownNumber; i <= lastItemShownNumber; i++)
 				window.draw(items[i]);
+			printf("drawed\n");
 			window.draw(selector);
 		}
 };

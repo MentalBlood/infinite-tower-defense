@@ -1,4 +1,5 @@
 List *selectMapScreenMapsList;
+Question *selectMapScreenDeleteMapQuestion;
 
 void fillMapsList(List *mapsList)
 {
@@ -43,6 +44,8 @@ void fillMapsList(List *mapsList)
 void updateSelectMapScreenVariables()
 {
 	selectMapScreenMapsList->updatePositionAndSize();
+	if (selectMapScreenDeleteMapQuestion)
+		selectMapScreenDeleteMapQuestion->updatePositionAndSize();
 }
 
 void setSelectMapScreenVariables()
@@ -50,7 +53,8 @@ void setSelectMapScreenVariables()
 	selectMapScreenMapsList = new List(	"Select map to play on:", startGame,
 										selectMapScreenFont, selectMapScreenFont,
 										0, 0, 1, 1, 4,
-										sf::Color(32, 192, 32), sf::Color(215, 215, 215),
-										sf::Color(32, 32, 32), sf::Color(0, 0, 0), sf::Color(32, 192, 32));
+										sf::Color(192, 92, 0), sf::Color(215, 215, 215),
+										sf::Color(32, 32, 32), sf::Color(0, 0, 0), sf::Color(192, 92, 0));
 	fillMapsList(selectMapScreenMapsList);
+	selectMapScreenDeleteMapQuestion = NULL;
 }
