@@ -156,6 +156,13 @@ void tryToSetAddingTower()
 	addingTower = NULL;
 }
 
+void tryToUpgradeTower()
+{
+	std::list<Tower*>::iterator towerUnderSelector = getTowerUnderSelector();
+	if (towerUnderSelector != towers.end())
+		(*towerUnderSelector)->upgrade();
+}
+
 void moveCellSelector(char direction)
 {
 	gameMap->moveCellSelector(direction);
@@ -166,9 +173,7 @@ void increaseGameSpeed()
 { if ((gameSpeed * 1.1) < 4) gameSpeed *= 1.1; }
 
 void decreaseGameSpeed()
-{
-	if ((gameSpeed / 1.1) > 0.1) gameSpeed /= 1.1;
-}
+{ if ((gameSpeed / 1.1) > 0.1) gameSpeed /= 1.1; }
 
 void gameKeyPressed()
 {
@@ -199,11 +204,13 @@ void gameKeyPressed()
 
 	else if (developerMode) return;
 
-	if ((!pause) && (event.key.code <= 35) && (event.key.code >= 27))
+	if ((!pause || (currentWaveNumber == 0)) && (event.key.code <= 35) && (event.key.code >= 27))
 	{
 		towersInfoStack->click(event.key.code - 26 - 1);
 		tryToSetAddingTower();
 	}
+	else if ((event.key.code == sf::Keyboard::U) && (!pause || (currentWaveNumber == 0)))
+		tryToUpgradeTower();
 	else if (event.key.code == sf::Keyboard::Up)
 		moveCellSelector(UP);
 	else if (event.key.code == sf::Keyboard::Down)
@@ -248,18 +255,18 @@ void gameMouseButtonPressed()
 			else
 			{
 				itWasNotDraggingButClick = false;
-				if ((!developerMode) && currentShowingUpgradeInfoTower)
+				if ((!pause || currentWaveNumber == 0) && (!developerMode) && currentShowingUpgradeInfoTower)
 				{
 					if (currentShowingUpgradeInfoTower->getUpgradeInfo()->tryToPress(event.mouseButton.x, event.mouseButton.y))
 						currentShowingUpgradeInfoTower->upgrade();
 				}
 				else
-					if ((!developerMode) && (!pause))
+					if ((!developerMode) && (!pause || (currentWaveNumber == 0)))
 						towersInfoStack->click(event.mouseButton.x, event.mouseButton.y);
 				return;
 			}
 		}
-		
+
 		if (gameHelpButton->tryToPress(event.mouseButton.x, event.mouseButton.y)) return;
 		gameMapDragging = true;
 		gameMapDraggingMouseX1 = event.mouseButton.x;
@@ -269,8 +276,12 @@ void gameMouseButtonPressed()
 		gameMapDraggingMapInitialCoordinates = gameMap->getPosition();
 	}
 	else
-	if ((!developerMode) && (!pause) && (event.mouseButton.button == sf::Mouse::Right))
+	if ((!developerMode) && (!pause || (currentWaveNumber == 0)) &&
+		(event.mouseButton.button == sf::Mouse::Right))
+	{
+		tryToUpgradeTower();
 		tryToSetAddingTower();
+	}
 }
 
 void gameMouseButtonReleased()

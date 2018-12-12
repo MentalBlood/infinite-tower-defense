@@ -1,6 +1,7 @@
 void updateGame()
 {
 	elapsed *= gameSpeed;
+
 	if (developerMode)
 		tryToMakeNextAction();
 
@@ -54,7 +55,7 @@ void updateGame()
 			i--;
 		}
 	}
-	if (thereWereSomeMonsters && (!monsters.size()) && (!Timer<Monster*>::first))
+	if (developerMode && thereWereSomeMonsters && (!monsters.size()) && (!Timer<Monster*>::first))
 		abandonTimers<char>();
 	if (gotSomeMoney) updateMoneyText();
 

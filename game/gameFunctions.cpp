@@ -81,9 +81,11 @@ void spawnNextWave(char monsterType)
 void startWaving()
 {
 	currentWaveNumber = 0;
-	delayBetweenWaves = 0;
+	delayBetweenWaves = 8;
 	loadMonstersParameters();
-	spawnNextWave(TYPE_A);
+	Timer<char> *timer = new Timer<char>(delayBetweenWaves, spawnNextWave, TYPE_A);
+	currentSecondsToNextWave = timer->getTimeLeftPointer();
+	updateCurrentWaveNumberText();
 }
 
 void gameOver();
