@@ -15,10 +15,12 @@ IN GAME:
 
 SPACE...........................set pause on/off, launch first wave
 N...............................launch next wave immediately
-R...............................show/hide selected tower range circle
+delete..........................delete selected tower
 <NUMBER>........................add tower with this number (in list)
+R...............................show/hide selected tower range circle
+left mouse key click on tower...show this tower upgrade info
+right mouse key click on tower..try to upgrade this tower
 
 ADDING TOWERS USING MOUSE:
-LEFT MOUSE BUTTON on tower info in towers panel
-move mouse so selector is on cell which fits for tower setting
-RIGHT MOUSE BUTTON to set tower
+left mouse key click on tower info in towers panel
+right mouse key click to set tower
