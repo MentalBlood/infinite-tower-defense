@@ -9,6 +9,7 @@ void fillMapsList(List *mapsList)
 
 	struct dirent *entery;
 	char fileName[256];
+	char *userFriendlyMapName;
 	while ((entery = readdir(dir)) != NULL)
 	{
 		sprintf(fileName,"%s/%s", path, entery->d_name);
@@ -27,7 +28,8 @@ void fillMapsList(List *mapsList)
 		if (checkMapFile(fileName))
 		{
 			//making user friendly name of map (without path and extension)
-			char userFriendlyMapName[128];
+			userFriendlyMapName = (char*)malloc(sizeof(char) * 128);
+			printf("userFriendlyMapName address %p\n", userFriendlyMapName);
 			strcpy(userFriendlyMapName, entery->d_name);
 			c = userFriendlyMapName;
 			while (*c) ++c;
@@ -53,8 +55,8 @@ void setSelectMapScreenVariables()
 	selectMapScreenMapsList = new List(	"Select map to play on:", startGame,
 										selectMapScreenFont, selectMapScreenFont,
 										0, 0, 1, 1, 4,
-										sf::Color(192, 92, 0), sf::Color(215, 215, 215),
-										sf::Color(32, 32, 32), sf::Color(0, 0, 0), sf::Color(192, 92, 0));
+										sf::Color(0, 192, 0), sf::Color(215, 215, 215),
+										sf::Color(32, 32, 32), sf::Color(0, 0, 0), sf::Color(0, 192, 0));
 	fillMapsList(selectMapScreenMapsList);
 	selectMapScreenDeleteMapQuestion = NULL;
 }

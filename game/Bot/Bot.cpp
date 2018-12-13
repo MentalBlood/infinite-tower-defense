@@ -105,7 +105,11 @@ void setMonstersRewardCoefficient()
 {
 	fillVirtualMap();
 	if (!towersCellsList->size()) return;
-	makeVirtualActions(towersCellsList->size() * 200, NULL);
+	unsigned int actionsNumber = towersCellsList->size() * 200;
+	if (actionsNumber > 2000)
+		actionsNumber = 2000;
+	printf("actionsNumber = %u\n", actionsNumber);
+	makeVirtualActions(actionsNumber, NULL);
 	//printf("lastProfitValue = %f\n", lastActionProfitValue);
 	float a = monstersParameters[HEALTH]->getMultiplier();
 	monstersRewardCoefficient = a * (a - 1) / (lastActionProfitValue * (a - 1.0/pow(a, 2)));

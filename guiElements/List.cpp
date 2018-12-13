@@ -99,7 +99,9 @@ class List
 
 		void addItem(sf::String name)
 		{
-			sf::Text *newItem = new sf::Text(name, fonts[itemsFontIndex]);
+			sf::String *string = new sf::String(name);
+			printf("string address is %p\n", string);
+			sf::Text *newItem = new sf::Text(*string, fonts[itemsFontIndex]);
 			newItem->setFillColor(itemsColor);
 
 			bool inserted = false;
@@ -158,8 +160,9 @@ class List
 
 		bool deleteThis()
 		{
-			printf("erase\n");
+			printf("erase %u\n", selectedItemNumber);
 			items.erase(items.begin() + selectedItemNumber);
+			printf("items size = %lu\n", items.size());
 			if (lastItemShownNumber == int(items.size()))
 			{
 				printf("if\n");
@@ -192,7 +195,6 @@ class List
 
 		bool selectByMouse(float mouseX, float mouseY)
 		{
-			printf("selectByMouse\n");
 			if (!mouseOnMe(mouseX, mouseY)) return false;
 
 			bool mouseOnItem = true;
@@ -224,10 +226,8 @@ class List
 			window.draw(itemsFrame);
 			window.draw(nameText);
 			if (!items.size()) return;
-			printf("draw\n");
 			for (int i = firstItemShownNumber; i <= lastItemShownNumber; i++)
 				window.draw(items[i]);
-			printf("drawed\n");
 			window.draw(selector);
 		}
 };

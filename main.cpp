@@ -118,6 +118,7 @@ int main(void)
 
 		drawFunction();
 	}
+	fonts.clear();
 
 	return 0;
 }
