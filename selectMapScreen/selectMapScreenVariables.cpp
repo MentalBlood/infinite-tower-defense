@@ -29,7 +29,6 @@ void fillMapsList(List *mapsList)
 		{
 			//making user friendly name of map (without path and extension)
 			userFriendlyMapName = (char*)malloc(sizeof(char) * 128);
-			printf("userFriendlyMapName address %p\n", userFriendlyMapName);
 			strcpy(userFriendlyMapName, entery->d_name);
 			c = userFriendlyMapName;
 			while (*c) ++c;

@@ -58,6 +58,7 @@ unsigned int nextActionCost;
 
 void setNextAction()
 {
+	if (!towersCellsList->size()) return;
 	nextActionCell = getNextActionCell();
 	nextActionCost = nextActionCell->getMaxProfitActionCost();
 }
@@ -85,6 +86,7 @@ void upgradeTower(unsigned int x, unsigned int y)
 
 void tryToMakeNextAction()
 {
+	if (!towersCellsList->size()) return;
 	if (money < nextActionCost) return;
 	sf::Vector2u actionCellCoordinates = nextActionCell->getPosition();
 	if (nextActionCell->getMaxProfitAction().getType() == UPGRADE)
@@ -104,6 +106,7 @@ float monstersRewardCoefficient = 0;
 void setMonstersRewardCoefficient()
 {
 	fillVirtualMap();
+	printf("towersCellsList size = %lu\n", towersCellsList->size());
 	if (!towersCellsList->size()) return;
 	unsigned int actionsNumber = towersCellsList->size() * 200;
 	if (actionsNumber > 2000)

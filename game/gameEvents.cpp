@@ -79,9 +79,10 @@ void changeScale(bool up)
 	else
 	{
 		gameScaleDelta = 0.98;
-		if ((gameScale * gameScaleDelta) < 0.1)
+		if ((gameScale * gameScaleDelta) < 0.3)
 			return;
 	}
+	gameScale *= gameScaleDelta;
 	gameScaleCenter.x = event.mouseWheelScroll.x;
 	gameScaleCenter.y = event.mouseWheelScroll.y;
 	gameMap->changeZoom();
@@ -184,9 +185,9 @@ void gameKeyPressed()
 		else
 			gameExit();
 	}
-	else if (event.key.code == sf::Keyboard::PageUp)
+	else if (event.key.code == sf::Keyboard::Add)
 		changeScale(SCALE_UP);
-	else if (event.key.code == sf::Keyboard::PageDown)
+	else if (event.key.code == sf::Keyboard::Subtract)
 		changeScale(SCALE_DOWN);
 	else if (event.key.code == sf::Keyboard::Space)
 		changeBool(&pause);

@@ -20,7 +20,7 @@ void selectMapScreenCloseDeleteMapQuestion()
 
 void selectMapScreenDeleteMap()
 {
-	//remove(("maps/" + selectMapScreenMapsList->getThis() + ".tdm").data());
+	remove(("maps/" + selectMapScreenMapsList->getThis() + ".tdm").data());
 	bool listHaveElements = selectMapScreenMapsList->deleteThis();
 	selectMapScreenCloseDeleteMapQuestion();
 	if (!listHaveElements)

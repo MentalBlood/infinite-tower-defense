@@ -100,7 +100,6 @@ class List
 		void addItem(sf::String name)
 		{
 			sf::String *string = new sf::String(name);
-			printf("string address is %p\n", string);
 			sf::Text *newItem = new sf::Text(*string, fonts[itemsFontIndex]);
 			newItem->setFillColor(itemsColor);
 
@@ -139,13 +138,10 @@ class List
 
 		void selectPrevious()
 		{
-			printf("selectPrevious\n");
 			if (selectedItemNumber == 0) return;
-			printf("not zero\n");
 
 			if (selectedItemNumber == firstItemShownNumber)
 			{
-				printf("moving up\n");
 				--firstItemShownNumber;
 				--lastItemShownNumber;
 				updateItems();
@@ -160,25 +156,16 @@ class List
 
 		bool deleteThis()
 		{
-			printf("erase %u\n", selectedItemNumber);
 			items.erase(items.begin() + selectedItemNumber);
-			printf("items size = %lu\n", items.size());
 			if (lastItemShownNumber == int(items.size()))
 			{
-				printf("if\n");
 				if (firstItemShownNumber)
-				{
-					printf("firstItemShownNumber\n");
 					--firstItemShownNumber;
-				}
 				--lastItemShownNumber;
 			}
 			selectPrevious();
 			if (!items.size())
 				return false;
-			printf("firstItemShownNumber = %u, lastItemShownNumber = %u, selectedItemNumber = %u\n",
-				   firstItemShownNumber, lastItemShownNumber, selectedItemNumber);
-			printf("done\n");
 			updateItems();
 			return true;
 		}

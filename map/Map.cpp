@@ -51,7 +51,7 @@ class Map
 		mapWidth(width), mapHeight(height), x1(0), y1(0), x2(width - 1), y2(height - 1), zoom(1),
 		cellSelectorX(0), cellSelectorY(0),
 		towerCellTexture(NULL), pathCellTexture(NULL), cellSelectorTexture(NULL), startCellTexture(NULL),
-		endCellTexture(NULL), rockCellTexture(NULL)
+		endCellTexture(NULL), rockCellTexture(NULL), cellSelectorPressed(false)
 		{}
 
 		void setPosition(float x, float y)
