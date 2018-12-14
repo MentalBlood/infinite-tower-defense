@@ -15,10 +15,7 @@ void updateGame()
 	updateMonstersCoordinatesInGrid();
 	//shots are flying & monsters are dying
 	for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
-	{
-		(*i)->checkMonsterExistance();
 		(*i)->refreshLastMonsterPosition();
-	}
 	for (std::list<Shot*>::iterator i = shots.begin(); i != shots.end(); i++)
 	{
 		(*i)->checkMonsterExistance();
@@ -32,6 +29,8 @@ void updateGame()
 			i--;
 		}
 	}
+	for (std::list<Shot*>::iterator i = shots.begin(); i != --shots.end(); i++)
+		(*i)->checkMonsterExistance();
 
 	//corpses are removed
 	bool gotSomeMoney = false;

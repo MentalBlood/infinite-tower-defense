@@ -171,7 +171,7 @@ void moveCellSelector(char direction)
 }
 
 void increaseGameSpeed()
-{ if ((gameSpeed * 1.1) < 4) gameSpeed *= 1.1; }
+{ if ((gameSpeed * 1.1) < 2) gameSpeed *= 1.1; }
 
 void decreaseGameSpeed()
 { if ((gameSpeed / 1.1) > 0.1) gameSpeed /= 1.1; }

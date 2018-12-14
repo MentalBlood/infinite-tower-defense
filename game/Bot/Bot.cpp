@@ -5,8 +5,8 @@
 VirtualMapCell* getNextActionCell()
 {
 	VirtualMapCell *maxActionProfitCell = (*towersCellsList->begin());
-	double maxActionProfit = 0;
-	for (std::list<VirtualMapCell*>::iterator i = towersCellsList->begin(); i != towersCellsList->end(); i++)
+	double maxActionProfit = (*towersCellsList->begin())->getMaxActionProfitValue();
+	for (std::list<VirtualMapCell*>::iterator i = ++towersCellsList->begin(); i != towersCellsList->end(); i++)
 	{
 		double currentCellActionProfit = (*i)->getMaxActionProfitValue();
 		if (currentCellActionProfit > maxActionProfit)
@@ -15,7 +15,6 @@ VirtualMapCell* getNextActionCell()
 			maxActionProfitCell = (*i);
 		}
 	}
-
 	return maxActionProfitCell;
 }
 

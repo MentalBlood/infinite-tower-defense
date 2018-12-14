@@ -106,42 +106,49 @@ class Shot : public GraphicalEntity
 				finished = true;
 			}
 
-			std::list<Monster*> *monstersWhichCanTouch = getMonstersWhichCanTouch(getPosition());
 			sf::Vector2f movementVector = unitMovementVector * maxDistanceToMove;
-			if (!monstersWhichCanTouch)
-			{
-				moveInCorrectDirection(maxDistanceToMove);
-				return;
-			}
-
 			sf::Vector2f positionAfterMovement = getPosition() +  movementVector;
+			std::list<Monster*> *monstersWhichCanTouch = getMonstersWhichCanTouch(getPosition());
+			std::list<Monster*> *monstersWhichCanTouchInFuture =
+								getMonstersWhichCanTouch(positionAfterMovement);
 
-			for (	std::list<Monster*>::iterator i = monstersWhichCanTouch->begin();
-					i != monstersWhichCanTouch->end(); i++)
+			for (int j = 0; j < 2; monstersWhichCanTouch = monstersWhichCanTouchInFuture, j++)
 			{
-				sf::Vector2f monsterPosition = (*i)->getPosition();
-				float R2 = pow((radius + (*i)->getRadius()) * scale, 2);
-				if (vectorLengthSquare(monsterPosition - positionAfterMovement) < R2)
-				{	//have already reached
-					(*i)->sufferDamage(damage);
+				if (!monstersWhichCanTouch) continue;
+				for (	std::list<Monster*>::iterator i = monstersWhichCanTouch->begin();
+						i != monstersWhichCanTouch->end(); i++)
+				{
+					sf::Vector2f monsterPosition = (*i)->getPosition();
+					float R2 = pow((radius + (*i)->getRadius()) * scale, 2);
+					if (vectorLengthSquare(monsterPosition - positionAfterMovement) < R2)
+					{	//have already reached
+						(*i)->sufferDamage(damage);
+						finished = true;
+						continue;
+					}
+
+					float a2 = vectorLengthSquare(positionAfterMovement - getPosition()),
+						  b2 = vectorLengthSquare(monsterPosition - positionAfterMovement),
+						  c2 = vectorLengthSquare(monsterPosition - getPosition());
+					float h2 = triangleHeightSquareFromSidesLengthsSquares(a2, b2, c2);
+
+					if ((h2 > R2) || //passing by
+						(vectorLength(vectorsMultiplication(monsterPosition - getPosition(), positionAfterMovement - getPosition())) > vectorLengthSquare(positionAfterMovement - getPosition()))) //did not reach
+						continue;
+
+					(*i)->sufferDamage(damage); //will reach after the movement
 					finished = true;
-					continue;
+					return;
 				}
-
-				float a2 = vectorLengthSquare(positionAfterMovement - getPosition()),
-					  b2 = vectorLengthSquare(monsterPosition - positionAfterMovement),
-					  c2 = vectorLengthSquare(monsterPosition - getPosition());
-				float h2 = triangleHeightSquareFromSidesLengthsSquares(a2, b2, c2);
-
-				if ((h2 > R2) || //passing by
-					(vectorLength(vectorsMultiplication(monsterPosition - getPosition(), positionAfterMovement - getPosition())) > vectorLengthSquare(positionAfterMovement - getPosition()))) //did not reach
-					continue;
-
-				(*i)->sufferDamage(damage); //will reach after the movement
-				finished = true;
 			}
 
-			if (!finished) moveInCorrectDirection(maxDistanceToMove);
+			if (!finished)
+			{
+				if (!gameMap->havePoint(positionAfterMovement))
+					finished = true;
+				else
+					moveInCorrectDirection(maxDistanceToMove);
+			}
 		}
 
 		void updateScale()

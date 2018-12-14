@@ -2,23 +2,22 @@ ESC.............................return to previous screen
 
 IN EDITOR:
 
-LEFT MOUSE BUTTON...............drag map
-ARROW KEYS......................move cell selector
-SPACE or RIGHT MOUSE BUTTON.....draw path
-R...............................draw rocks
-Ctrl+Z..........................undo
-Ctrl+Shift+Z....................redo
-"RESET".........................reset map
-"SAVE"..........................save map
+LEFT MOUSE BUTTON...............drag map  | ARROW KEYS......................move cell selector
+SPACE or RIGHT MOUSE BUTTON.....draw path | R...............................draw rocks
+Ctrl+Z..........................undo      | Ctrl+Shift+Z....................redo
+"RESET".........................reset map | "SAVE"..........................save map
 
 IN GAME:
 
 SPACE...........................set pause on/off, launch first wave
+left mouse key click on tower...show this tower upgrade info
+F...............................increase game speed
+Shift+F.........................decrease game speed
 N...............................launch next wave immediately
 delete..........................delete selected tower
 <NUMBER>........................add tower with this number (in list)
 R...............................show/hide selected tower range circle
-left mouse key click on tower...show this tower upgrade info
+U...............................try to upgrade selected tower
 right mouse key click on tower..try to upgrade this tower
 
 ADDING TOWERS USING MOUSE:

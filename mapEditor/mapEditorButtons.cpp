@@ -71,7 +71,7 @@ void mapEditorTryToSaveMap(std::string fileName)
 	saveFileName = fileName;
 	if (checkFileWithSuchNameExistance(fileName))
 		mapEditorFileAlreadyExistsQuestion =
-			new Question(mapEditorSaveMap, mapEditorCloseFileAlreadyExistsQuestion, "file with such name\nalready exists",
+			new Question(mapEditorSaveMap, mapEditorCloseFileAlreadyExistsQuestion, "file with such name\n\nalready exists",
 						 "Overwrite", "Cancel",
 						 messageFont,
 						 0.3, 0.3, 0.4, 0.4, 4,
